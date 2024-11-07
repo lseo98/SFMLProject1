@@ -3,7 +3,7 @@
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
-Player::Player() : attackStrategy(nullptr), Character(3, 7.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 2.0f)) {  }
+Player::Player() : attackStrategy(nullptr), Character(3, 11.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 2.0f)) {  }
 
 
 void Player::move(sf::Vector2f updatePosition) {
