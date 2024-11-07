@@ -6,8 +6,8 @@
 #include "InputPlayerMoveKey.h"
 
 
-int WINDOWWIDTH = 900;    // ∏  ≥ ∫Ò
-int WINDOWHEIGHT = 900;    // ∏  ≥Ù¿Ã
+int WINDOWWIDTH = 1900;    // ∏  ≥ ∫Ò
+int WINDOWHEIGHT = 980;    // ∏  ≥Ù¿Ã
  
 // a;ldskjf
 
