@@ -1,7 +1,7 @@
 #include "Enemy.h"
 #include <iostream>
 
-Enemy::Enemy(float health, float speed) : Character(health, speed), attackPattern(nullptr) {}
+Enemy::Enemy(float health, float speed, sf::Vector2f position) : Character(health, speed, position), attackPattern(nullptr) {}
 
 void Enemy::setAttackPattern(std::unique_ptr<EnemyAttackPattern> pattern) {
     attackPattern = std::move(pattern);
