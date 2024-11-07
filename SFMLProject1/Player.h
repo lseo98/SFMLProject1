@@ -7,7 +7,7 @@ class Player : public Character {
 public:
     Player();
 
-    void move();
+    void move(sf::Vector2f updatePosition);
     void take_damage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
 
@@ -16,6 +16,8 @@ public:
     void ultimate_attack();
 
     void setAttackStrategy(std::unique_ptr<AttackStrategy> attackStrategy);
+
+    float power = 150.0f;
 
 private:
     std::unique_ptr<AttackStrategy> attackStrategy;

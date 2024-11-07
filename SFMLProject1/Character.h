@@ -4,7 +4,7 @@
 class Character {
 public:
     Character();  
-    Character(float health, float speed);
+    Character(float health, float speed, sf::Vector2f position);
     virtual ~Character() = default;
 
     virtual void take_damage(float amount);
@@ -16,5 +16,6 @@ public:
 protected:
     float health;
     float speed;
+    sf::Vector2f position;
     sf::RectangleShape shape;  // 그래픽 표현을 위한 SFML 도형
 };
