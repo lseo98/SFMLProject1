@@ -1,18 +1,20 @@
 #pragma once
 #include "AttackStrategy.h"
+#include "Projectile.h"
+#include <vector>
+#include <memory>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 
 class SeaAttackStrategy : public AttackStrategy {
 public:
-    void basic_attack() override {
-        std::cout << "Sea Stage: 기본 공격 - 물속에서 발사되는 총알\n";
-    }
+    SeaAttackStrategy() = default;
 
-    void special_attack() override {
-        std::cout << "Sea Stage: 특수 공격 - 어뢰 발사\n";
-    }
+    void basic_attack(const sf::Vector2f& playerPosition) override;
+    void special_attack(const sf::Vector2f& playerPosition) override;
+    void ultimate_attack() override;
+    void updateProjectiles(sf::RenderWindow& window);
 
-    void ultimate_attack() override {
-        std::cout << "Sea Stage: 필살기 - 대규모 기뢰 폭발\n";
-    }
+private:
+    std::vector<std::unique_ptr<Projectile>> projectiles; // 발사체들을 저장하는 벡터
 };

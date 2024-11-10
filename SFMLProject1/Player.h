@@ -2,6 +2,7 @@
 #include "Character.h"
 #include "AttackStrategy.h"
 #include <memory>
+#include "Projectile.h"
 
 class Player : public Character {
 public:
@@ -16,6 +17,12 @@ public:
     void ultimate_attack();
 
     void setAttackStrategy(std::unique_ptr<AttackStrategy> attackStrategy);
+    AttackStrategy* getAttackStrategy() const { return attackStrategy.get(); } // 현재 공격 전략 반환
+
+    void performBasicAttack();      // 기본 공격 수행
+    void performSpecialAttack();    // 특수 공격 수행 추가
+
+    std::vector<std::unique_ptr<Projectile>> projectiles; // 발사체 벡터
 
     float power = 150.0f;
 

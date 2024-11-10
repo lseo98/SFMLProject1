@@ -1,18 +1,20 @@
 #pragma once
 #include "AttackStrategy.h"
+#include "Projectile.h"
+#include <vector>
+#include <memory>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 
 class SkyAttackStrategy : public AttackStrategy {
 public:
-    void basic_attack() override {
-        std::cout << "Sky Stage: 기본 공격 - 총알 발사\n";
-    }
+    SkyAttackStrategy() = default;
 
-    void special_attack() override {
-        std::cout << "Sky Stage: 특수 공격 - 유도 미사일 발사\n";
-    }
+    void basic_attack(const sf::Vector2f& playerPosition) override;
+    void special_attack(const sf::Vector2f& playerPosition) override;
+    void ultimate_attack() override;
+    void updateProjectiles(sf::RenderWindow& window); // 발사체 업데이트 메서드
 
-    void ultimate_attack() override {
-        std::cout << "Sky Stage: 필살기 - 아군 비행기 지원 공격\n";
-    }
+private:
+    std::vector<std::unique_ptr<Projectile>> projectiles; // 발사체들을 저장하는 벡터
 };
