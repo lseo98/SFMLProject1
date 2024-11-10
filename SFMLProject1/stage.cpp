@@ -9,8 +9,9 @@
 #include "LandNormalAttack.h"
 #include "LandEliteAttack.h"
 #include <memory>
+#include <chrono>
 
-Stage::Stage() : stageNumber(1), bossSpawned(false) { }
+Stage::Stage() : stageNumber(1), bossSpawned(false), lastAttackTime(std::chrono::steady_clock::now()) { }
 
 void Stage::setStage(int stageNumber, Player& player, std::vector<Enemy*>& enemies) {
     this->stageNumber = stageNumber;
@@ -69,4 +70,34 @@ void Stage::setEnemyAttackPatterns(int stageNumber, std::vector<Enemy*>& enemies
             }
         }
     }
+}
+
+// update 메서드: 플레이어의 기본 공격을 200ms 간격으로 자동 실행하고 발사체 및 적을 업데이트
+void Stage::update(Player& player, std::vector<Enemy*>& enemies, sf::RenderWindow& window) {
+    // 200ms마다 기본 공격 수행
+    auto now = std::chrono::steady_clock::now();
+    if (std::chrono::duration_cast<std::chrono::milliseconds>(now - lastAttackTime).count() > 200) {
+        player.performBasicAttack(); // 기본 공격 수행
+        lastAttackTime = now;
+    }
+
+    // 화면 지우기
+    window.clear();
+
+    // 플레이어 그리기
+    player.draw(window);
+
+    // 현재 공격 전략을 통해 발사체 업데이트 및 그리기
+    if (player.getAttackStrategy()) {
+        player.getAttackStrategy()->updateProjectiles(window);
+    }
+
+    // 적 업데이트 및 화면에 그리기
+    for (auto* enemy : enemies) {
+        enemy->attack();         // 적의 공격 수행
+        enemy->draw(window);     // 적을 화면에 그리기
+    }
+
+    // 창에 내용 표시
+    window.display();
 }
