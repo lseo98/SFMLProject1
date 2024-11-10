@@ -6,4 +6,4 @@
 #include <vector>
 
 //void playerMoveKey(Player& player, sf::Keyboard::Key keyCode);
-void playerMoveKey(Player& player, sf::Event event);
+void InputKeyUpdate(Player& player, sf::Event event);

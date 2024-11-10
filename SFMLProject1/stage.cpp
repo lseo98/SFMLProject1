@@ -81,23 +81,5 @@ void Stage::update(Player& player, std::vector<Enemy*>& enemies, sf::RenderWindo
         lastAttackTime = now;
     }
 
-    // 화면 지우기
-    window.clear();
 
-    // 플레이어 그리기
-    player.draw(window);
-
-    // 현재 공격 전략을 통해 발사체 업데이트 및 그리기
-    if (player.getAttackStrategy()) {
-        player.getAttackStrategy()->updateProjectiles(window);
-    }
-
-    // 적 업데이트 및 화면에 그리기
-    for (auto* enemy : enemies) {
-        enemy->attack();         // 적의 공격 수행
-        enemy->draw(window);     // 적을 화면에 그리기
-    }
-
-    // 창에 내용 표시
-    window.display();
 }

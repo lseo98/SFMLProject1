@@ -1,7 +1,7 @@
-#include "InputPlayerMoveKey.h"
+#include "InputKeyUpdate.h"
 #include<iostream>
 //void playerMoveKey(Player &player, sf::Keyboard::Key keyCode) {
-void playerMoveKey(Player &player, sf::Event event) {
+void InputKeyUpdate(Player &player, sf::Event event) {
 	
 	float speed = player.get_speed();
 	float dx = 0.0f, dy = 0.0f;

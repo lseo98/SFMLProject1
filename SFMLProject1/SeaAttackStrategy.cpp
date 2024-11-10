@@ -4,7 +4,7 @@
 
 // 기본 공격 구현: 총알을 생성하여 오른쪽으로 발사
 void SeaAttackStrategy::basic_attack(const sf::Vector2f& playerPosition) {
-    std::cout << "Sea Stage: 기본 공격 - 총알 발사\n";
+   // std::cout << "Sea Stage: 기본 공격 - 총알 발사\n";
     projectiles.emplace_back(std::make_unique<Bullet>(playerPosition, sf::Vector2f(1.0f, 0.0f))); // 오른쪽으로 발사
 }
 

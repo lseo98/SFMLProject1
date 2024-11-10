@@ -76,12 +76,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\82108\Downloads\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\82108\Downloads\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-main-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -144,7 +144,8 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="InputPlayerMoveKey.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="InputKeyUpdate.cpp" />
     <ClCompile Include="LandAttackStrategy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Missile.cpp" />
@@ -163,7 +164,8 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyAttackPattern.h" />
-    <ClInclude Include="InputPlayerMoveKey.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="InputKeyUpdate.h" />
     <ClInclude Include="LandAttackStrategy.h" />
     <ClInclude Include="LandEliteAttack.h" />
     <ClInclude Include="LandNormalAttack.h" />

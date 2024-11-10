@@ -4,10 +4,18 @@
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
-Player::Player() : attackStrategy(nullptr), Character(3, 7.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 2.0f)) {}
+Player::Player() : attackStrategy(nullptr), Character(3, /*speed*/ 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 2.0f)) {}
 
 void Player::move(sf::Vector2f updatePosition) {
-    this->position += updatePosition;
+    this->position += updatePosition;   // 위치 업데이트
+
+    float sizeX = this->shape.getSize().x, sizeY = this->shape.getSize().y;     // 플레이어 객채의 가로 세로 크기 추출
+    // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
+    if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
+    if (this->position.x + sizeX> WINDOWWIDTH / 4.0f * 3.0f)this->position.x = WINDOWWIDTH / 4.0f * 3.0f - sizeX;
+    if (this->position.y < 0)  this->position.y = 0;
+    if (this->position.y + sizeY > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - sizeY;
+    
 }
 
 void Player::take_damage(float amount) {
