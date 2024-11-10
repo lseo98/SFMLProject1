@@ -51,10 +51,12 @@ void Game::handleEvents() {
             window->close();
         }
         //  특수 공격 : E 키를 눌렀을 때 수행
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
-            player.performSpecialAttack(); // 특수 공격 메서드 호출
+        if(event.type == sf::Event::KeyPressed) {   // 한 번 눌렀을 때 한 개만 생성되도록 키를 새로 눌렀을 경우에만 실행
+            if (event.key.code == sf::Keyboard::E) {
+                player.performSpecialAttack(); // E 키를 눌렀을 때 한 번만 호출
+            }
         }
-
+      
         // 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
             stageNumber = 1;
