@@ -39,28 +39,28 @@ void Game::run() {
         sf::Event event;
         sf::Time deltaTime = clock.restart(); // 프레임 간 경과 시간 측정
         handleEvents();
-        update(deltaTime);
+        update();
         render();
     }
 }
 
 void Game::handleEvents() {
     while (window->pollEvent(event)) {
-        if (event.type == sf::Event::Closed || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+        if (event.type == sf::Event::Closed || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) { // 창 닫거나 esc 누른 경우 게임 종료
             isRunning = false;
             window->close();
         }
-      //  특수 공격 : E 키를 눌렀을 때 수행
+        //  특수 공격 : E 키를 눌렀을 때 수행
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
             player.performSpecialAttack(); // 특수 공격 메서드 호출
         }
 
+        // 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
             stageNumber = 1;
             currentStage.setStage(stageNumber, player, enemies);
             currentStage.spawnEnemies(enemies);
         }
-        // else if 의 경우 동시 입력이 처리 안 됨. 따라서 스테이지 전환 요구에서는 적절
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) {
             stageNumber = 2;
             currentStage.setStage(stageNumber, player, enemies);
@@ -76,13 +76,13 @@ void Game::handleEvents() {
     }
 }
 
-void Game::update(sf::Time deltaTime) {
-    float dt = deltaTime.asSeconds(); // 밀리초 단위로 변환 
-    // 게임 상태 업데이트 (예: 플레이어 이동)
-    // float dt = deltaTime.asSeconds();
+void Game::update() { // 게임 상태 업데이트
+    float dt = clock.restart().asSeconds(); // 밀리초 단위로 변환 
+ 
     float speed = player.get_speed();
     float dx = 0.0f, dy = 0.0f;
-   
+
+    // 플레이어 움직임 업데이트
     dx += (sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A)) * speed;
     dy += (sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W)) * speed;
     

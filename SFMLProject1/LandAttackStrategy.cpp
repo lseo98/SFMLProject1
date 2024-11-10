@@ -8,10 +8,10 @@ LandAttackStrategy::LandAttackStrategy()
 
 // 방향 전환을 위한 입력 처리 메서드
 void LandAttackStrategy::handleInput() {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
         bulletDirection = sf::Vector2f(-1.0f, 0.0f); // 왼쪽 방향
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         bulletDirection = sf::Vector2f(1.0f, 0.0f); // 오른쪽 방향
     }
 }

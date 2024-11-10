@@ -2,10 +2,23 @@
 #include "Bullet.h"
 #include "Torpedo.h"
 
+SeaAttackStrategy::SeaAttackStrategy()
+    : bulletDirection(1.0f, 0.0f) { // 처음에는 오른쪽 방향으로 설정
+}
+// 방향 전환을 위한 입력 처리 메서드
+void SeaAttackStrategy::handleInput() {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        bulletDirection = sf::Vector2f(-1.0f, 0.0f); // 왼쪽 방향
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        bulletDirection = sf::Vector2f(1.0f, 0.0f); // 오른쪽 방향
+    }
+}
+
 // 기본 공격 구현: 총알을 생성하여 오른쪽으로 발사
 void SeaAttackStrategy::basic_attack(const sf::Vector2f& playerPosition) {
    // std::cout << "Sea Stage: 기본 공격 - 총알 발사\n";
-    projectiles.emplace_back(std::make_unique<Bullet>(playerPosition, sf::Vector2f(1.0f, 0.0f))); // 오른쪽으로 발사
+    projectiles.emplace_back(std::make_unique<Bullet>(playerPosition, bulletDirection)); // 오른쪽으로 발사
 }
 
 // 특수 공격 구현: 어뢰 생성
@@ -22,6 +35,8 @@ void SeaAttackStrategy::ultimate_attack() {
 
 // 발사체 업데이트 및 화면에 그리기
 void SeaAttackStrategy::updateProjectiles(sf::RenderWindow& window) {
+    handleInput(); // 매 프레임마다 방향 입력을 확인하여 방향 전환
+
     for (auto& projectile : projectiles) {
         projectile->update();
         projectile->draw(window);

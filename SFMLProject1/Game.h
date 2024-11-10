@@ -23,7 +23,7 @@ private:
 
     // 게임 루프의 세 가지 주요 단계
     void handleEvents();
-    void update(sf::Time deltaTime);
+    void update();
     void render();
 
     // SFML 멤버 변수
