@@ -25,6 +25,7 @@ private:
     void handleEvents();
     void update();
     void render();
+    void spawnEnemies();  // 스테이지별 적 유닛을 스폰하는 함수
 
     // SFML 멤버 변수
     sf::RenderWindow* window;
@@ -34,7 +35,7 @@ private:
     // 게임 변수
     bool isRunning;
     bool isMaingameRunning;
-    float playerSpeed;  // 예시로 플레이어 이동 속도 변수
+    float playerSpeed;  // 예시로 플레이어 이동 속도 변수　　
 
     // 초기 객체 생성
     Player player;

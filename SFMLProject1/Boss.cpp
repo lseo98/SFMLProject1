@@ -1,7 +1,7 @@
 #include "Boss.h"
 #include <iostream>
 
-Boss::Boss() : Enemy(3000.0f, 0.5f, sf::Vector2f(0, 0)), phase(1) {
+Boss::Boss() : Enemy(3000.0f, 0.5f, sf::Vector2f(0, 0), "boss_texture.png"), phase(1) {
     // 보스의 초기 체력은 3000, 속도는 0.5로 설정
 }
 

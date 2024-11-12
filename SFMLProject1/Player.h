@@ -6,11 +6,12 @@
 
 class Player : public Character {
 public:
-    Player();
+    Player( );
 
     void move(sf::Vector2f updatePosition);
     void take_damage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
+    void setStage(int);
 
     void basic_attack();
     void special_attack();
@@ -25,7 +26,10 @@ public:
     std::vector<std::unique_ptr<Projectile>> projectiles; // 발사체 벡터
 
     float power = 150.0f;
+    sf::Texture texture;     // 텍스처 멤버 추가
+    sf::Sprite sprite;       // 스프라이트 멤버 추가
 
 private:
     std::unique_ptr<AttackStrategy> attackStrategy;
+
 };

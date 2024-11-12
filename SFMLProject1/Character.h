@@ -17,5 +17,5 @@ protected:
     float health;
     float speed;
     sf::Vector2f position;
-    sf::RectangleShape shape;  // 그래픽 표현을 위한 SFML 도형
+    sf::RectangleShape shape;  // 그래픽 표현을 위한 SFML 도형　　　　
 };

@@ -5,17 +5,15 @@
 #include <iostream>
 #include "Game.h"
 
-
 int WINDOWWIDTH = 1800;    // 맵 너비
 int WINDOWHEIGHT = 900;    // 맵 높이
-
 
 int main() {   
 
   
    
 
-    //window.setVerticalSyncEnabled(true); // V-Sync 활성화
+    //window.setVerticalSyncEnabled(true); // V-Sync 활성화  
    
     
    

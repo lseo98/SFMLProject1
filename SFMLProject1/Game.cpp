@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
 
+
 Game::Game() {
     initVariables();
     initWindow();
@@ -21,7 +22,7 @@ void Game::initVariables() {
     this->clock.restart(); // 추후 미니게임 혹은 메인 게임 시작 후 시간 계산하는 것으로 변경 필요
     stageNumber = 1;        // 1: 하늘, 2: 바다, 3: 땅
     currentStage.setStage(stageNumber, player, enemies);    // 현재 스테이지 초기화
-    currentStage.spawnEnemies(enemies);                     // 이전 스테이지 적군 삭제 및 초기화
+    spawnEnemies();  // 초기 스테이지의 적 유닛을 생성
 }
 
 void Game::initWindow() {
@@ -33,6 +34,31 @@ void Game::initWindow() {
     
     window->setFramerateLimit(60);  // 프레임 속도 제한, 초당 60프레임
 }
+// 새로운 spawnEnemies 함수 정의
+void Game::spawnEnemies() {
+    // 기존 적 유닛 메모리 해제
+    for (auto* enemy : enemies) {
+        delete enemy;
+    }
+    enemies.clear();
+
+    // 스테이지 번호에 따라 적 유닛 생성
+    if (stageNumber == 1) {
+        enemies.push_back(new NormalUnit(stageNumber));  // 하늘 스테이지의 적
+        enemies.push_back(new EliteUnit(stageNumber));
+    }
+    else if (stageNumber == 2) {
+        enemies.push_back(new NormalUnit(stageNumber));  // 바다 스테이지의 적
+        enemies.push_back(new EliteUnit(stageNumber));
+    }
+    else if (stageNumber == 3) {
+        enemies.push_back(new NormalUnit(stageNumber));  // 땅 스테이지의 적
+        enemies.push_back(new EliteUnit(stageNumber));
+        // 땅 스테이지에서 보스 등장 (필요시 Boss 클래스의 생성자도 수정)
+        enemies.push_back(new Boss(/* 필요한 인수 */));
+    }
+}
+
 
 void Game::run() {
     while (isRunning && window->isOpen()) {
@@ -55,26 +81,28 @@ void Game::handleEvents() {
             if (event.key.code == sf::Keyboard::E) {
                 player.performSpecialAttack(); // E 키를 눌렀을 때 한 번만 호출
             }
-        }
-      
-        // 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
-            stageNumber = 1;
-            currentStage.setStage(stageNumber, player, enemies);
-            currentStage.spawnEnemies(enemies);
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) {
-            stageNumber = 2;
-            currentStage.setStage(stageNumber, player, enemies);
-            currentStage.spawnEnemies(enemies);
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3)) {
-            stageNumber = 3;
-            currentStage.setStage(stageNumber, player, enemies);
-            currentStage.spawnEnemies(enemies);
-        }
+            // 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
 
-    
+            if (event.key.code == sf::Keyboard::Num1) {
+                stageNumber = 1;
+                player.setStage(stageNumber); // Player 클래스에 스테이지 번호 전달
+                currentStage.setStage(stageNumber, player, enemies);
+                spawnEnemies();
+            }
+            else if (event.key.code == sf::Keyboard::Num2) {
+                stageNumber = 2;
+                player.setStage(stageNumber); // Player 클래스에 스테이지 번호 전달
+                currentStage.setStage(stageNumber, player, enemies);
+                spawnEnemies();
+            }
+            else if (event.key.code == sf::Keyboard::Num3) {
+                stageNumber = 3;
+                player.setStage(stageNumber); // Player 클래스에 스테이지 번호 전달
+                currentStage.setStage(stageNumber, player, enemies);
+                spawnEnemies();
+            }
+
+        }   
     }
 }
 
@@ -119,7 +147,7 @@ void Game::render() {
     player.draw(*window);
     // 현재 공격 전략을 통해 발사체 업데이트 및 그리기
     if (player.getAttackStrategy()) {
-        player.getAttackStrategy()->updateProjectiles(*window);
+        player.getAttackStrategy()->updateProjectiles(*window);         
     }
 
     // 적 업데이트 및 화면에 그리기
@@ -131,3 +159,6 @@ void Game::render() {
 
     window->display(); // 화면에 그린 내용을 표시
 }
+
+
+
