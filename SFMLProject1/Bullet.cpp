@@ -8,7 +8,7 @@ Bullet::Bullet(const sf::Vector2f& startPosition, const sf::Vector2f& direction)
 }
 
 void Bullet::update() {
-    position += direction * speed * 4.0f;
+    position += direction * speed * 2.0f;
     shape.setPosition(position);
 }
 

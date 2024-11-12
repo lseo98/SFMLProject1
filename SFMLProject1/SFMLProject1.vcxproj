@@ -76,12 +76,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\82108\Downloads\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\82108\Downloads\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-main-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -110,12 +110,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\82108\Downloads\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\82108\Downloads\SFML-2.6.1-windows-vc17-32-bit\SFML-2.6.1\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-main-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -146,40 +146,37 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputKeyUpdate.cpp" />
-    <ClCompile Include="LandAttackStrategy.cpp" />
+    <ClCompile Include="LandPlayerAttack.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Missile.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="SeaAttackStrategy.cpp" />
-    <ClCompile Include="SkyAttackStrategy.cpp" />
+    <ClCompile Include="SeaPlayerAttack.cpp" />
+    <ClCompile Include="SkyPlayerAttack.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="Torpedo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntiTankMissile.h" />
-    <ClInclude Include="AttackStrategy.h" />
+    <ClInclude Include="LandEnemyAttack.h" />
+    <ClInclude Include="PlayerAttack.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyAttackPattern.h" />
+    <ClInclude Include="EnemyAttack.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputKeyUpdate.h" />
-    <ClInclude Include="LandAttackStrategy.h" />
-    <ClInclude Include="LandEliteAttack.h" />
-    <ClInclude Include="LandNormalAttack.h" />
+    <ClInclude Include="LandPlayerAttack.h" />
     <ClInclude Include="Missile.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
-    <ClInclude Include="SeaAttackStrategy.h" />
-    <ClInclude Include="SeaEliteAttack.h" />
-    <ClInclude Include="SeaNormalAttack.h" />
-    <ClInclude Include="SkyAttackStrategy.h" />
-    <ClInclude Include="SkyEliteAttack.h" />
-    <ClInclude Include="SkyNormalAttack.h" />
+    <ClInclude Include="SeaEnemyAttack.h" />
+    <ClInclude Include="SeaPlayerAttack.h" />
+    <ClInclude Include="SkyPlayerAttack.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="Torpedo.h" />
+    <ClInclude Include="SkyEnemyAttack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

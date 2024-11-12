@@ -1,6 +1,6 @@
 #pragma once
 #include "Character.h"
-#include "EnemyAttackPattern.h"
+#include "EnemyAttack.h"
 #include <memory>
 #include <iostream>
 
@@ -12,10 +12,10 @@ public:
     void draw(sf::RenderWindow& window) override;
 
     virtual void attack() = 0;
-    void setAttackPattern(std::unique_ptr<EnemyAttackPattern> attackPattern);
+    void setEnemyAttack(std::unique_ptr<EnemyAttack> attackPattern);
 
 protected:
-    std::unique_ptr<EnemyAttackPattern> attackPattern;
+    std::unique_ptr<EnemyAttack> attackPattern;
 };
 
 class NormalUnit : public Enemy {

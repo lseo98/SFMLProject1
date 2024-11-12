@@ -1,6 +1,6 @@
 #pragma once
 #include "Character.h"
-#include "AttackStrategy.h"
+#include "PlayerAttack.h"
 #include <memory>
 #include "Projectile.h"
 
@@ -16,8 +16,8 @@ public:
     void special_attack();
     void ultimate_attack();
 
-    void setAttackStrategy(std::unique_ptr<AttackStrategy> attackStrategy);
-    AttackStrategy* getAttackStrategy() const { return attackStrategy.get(); } // 현재 공격 전략 반환
+    void setPlayerAttack(std::unique_ptr<PlayerAttack> attackType);
+    PlayerAttack* getAttackStrategy() const { return attackType.get(); } // 현재 공격 전략 반환
 
     void performBasicAttack();      // 기본 공격 수행
     void performSpecialAttack();    // 특수 공격 수행 추가
@@ -27,5 +27,5 @@ public:
     float power = 150.0f;
 
 private:
-    std::unique_ptr<AttackStrategy> attackStrategy;
+    std::unique_ptr<PlayerAttack> attackType;
 };

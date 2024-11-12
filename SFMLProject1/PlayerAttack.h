@@ -1,9 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-class AttackStrategy {
+class PlayerAttack {
 public:
-    virtual ~AttackStrategy() = default;
+    virtual ~PlayerAttack() = default;
 
     virtual void basic_attack(const sf::Vector2f& playerPosition) = 0; // 위치 인자 추가
     virtual void special_attack(const sf::Vector2f& playerPosition) = 0; // 위치 인자 추가

@@ -3,7 +3,7 @@
 
 Enemy::Enemy(float health, float speed, sf::Vector2f position) : Character(health, speed, position), attackPattern(nullptr) {}
 
-void Enemy::setAttackPattern(std::unique_ptr<EnemyAttackPattern> pattern) {
+void Enemy::setEnemyAttack(std::unique_ptr<EnemyAttack> pattern) {
     attackPattern = std::move(pattern);
 }
 

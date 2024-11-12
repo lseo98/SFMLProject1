@@ -1,12 +1,13 @@
-#include "SeaAttackStrategy.h"
+#include "LandPlayerAttack.h"
 #include "Bullet.h"
-#include "Torpedo.h"
+#include "AntiTankMissile.h"
 
-SeaAttackStrategy::SeaAttackStrategy()
+LandPlayerAttack::LandPlayerAttack()
     : bulletDirection(1.0f, 0.0f) { // 처음에는 오른쪽 방향으로 설정
 }
+
 // 방향 전환을 위한 입력 처리 메서드
-void SeaAttackStrategy::handleInput() {
+void LandPlayerAttack::handleInput() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
         bulletDirection = sf::Vector2f(-1.0f, 0.0f); // 왼쪽 방향
     }
@@ -15,26 +16,26 @@ void SeaAttackStrategy::handleInput() {
     }
 }
 
-// 기본 공격 구현: 총알을 생성하여 오른쪽으로 발사
-void SeaAttackStrategy::basic_attack(const sf::Vector2f& playerPosition) {
-   // std::cout << "Sea Stage: 기본 공격 - 총알 발사\n";
-    projectiles.emplace_back(std::make_unique<Bullet>(playerPosition, bulletDirection)); // 오른쪽으로 발사
+// 기본 공격 구현: 총알을 생성하여 왼쪽 또는 오른쪽으로 발사
+void LandPlayerAttack::basic_attack(const sf::Vector2f& playerPosition) {
+    std::cout << "Land Stage: 기본 공격 - 총알 발사\n";
+    projectiles.emplace_back(std::make_unique<Bullet>(playerPosition, bulletDirection)); // 현재 방향으로 발사
 }
 
-// 특수 공격 구현: 어뢰 생성
-void SeaAttackStrategy::special_attack(const sf::Vector2f& playerPosition) {
-    std::cout << "Sea Stage: 특수 공격 - 어뢰 발사\n";
-    projectiles.emplace_back(std::make_unique<Torpedo>(playerPosition)); // 어뢰 발사
+// 특수 공격 구현: 대전차 미사일 생성
+void LandPlayerAttack::special_attack(const sf::Vector2f & playerPosition) {
+    std::cout << "Land Stage: 특수 공격 - 대전차 미사일 발사\n";
+    projectiles.emplace_back(std::make_unique<AntiTankMissile>(playerPosition)); // 대전차 미사일 생성
 }
 
 // 필살기 (현재는 구현 없음)
-void SeaAttackStrategy::ultimate_attack() {
-    std::cout << "Sea Stage: 필살기 - 대규모 수중 폭발\n";
+void LandPlayerAttack::ultimate_attack() {
+    std::cout << "Land Stage: 필살기 - 대규모 지상 폭발\n";
     // 필살기 구현 추가 가능
 }
 
 // 발사체 업데이트 및 화면에 그리기
-void SeaAttackStrategy::updateProjectiles(sf::RenderWindow& window) {
+void LandPlayerAttack::updateProjectiles(sf::RenderWindow& window) {
     handleInput(); // 매 프레임마다 방향 입력을 확인하여 방향 전환
 
     for (auto& projectile : projectiles) {

@@ -17,6 +17,6 @@ private:
     bool bossSpawned;
     std::chrono::steady_clock::time_point lastAttackTime; // 공격 간격을 위한 시간 변수
 
-    void setPlayerAttackStrategy(int stageNumber, Player& player);
-    void setEnemyAttackPatterns(int stageNumber, std::vector<Enemy*>& enemies);
+    void setPlayerAttack(int stageNumber, Player& player);
+    void setEnemyAttack(int stageNumber, std::vector<Enemy*>& enemies);
 };

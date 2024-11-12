@@ -42,7 +42,7 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="LandAttackStrategy.cpp">
+    <ClCompile Include="LandPlayerAttack.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Missile.cpp">
@@ -51,10 +51,10 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SeaAttackStrategy.cpp">
+    <ClCompile Include="SeaPlayerAttack.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SkyAttackStrategy.cpp">
+    <ClCompile Include="SkyPlayerAttack.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Torpedo.cpp">
@@ -80,37 +80,19 @@
     <ClInclude Include="stage.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="AttackStrategy.h">
+    <ClInclude Include="PlayerAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyAttackPattern.h">
+    <ClInclude Include="EnemyAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SkyAttackStrategy.h">
+    <ClInclude Include="SkyPlayerAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SeaAttackStrategy.h">
+    <ClInclude Include="SeaPlayerAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="LandAttackStrategy.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyNormalAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyEliteAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SeaNormalAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SeaEliteAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="LandNormalAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="LandEliteAttack.h">
+    <ClInclude Include="LandPlayerAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="InputKeyUpdate.h">
@@ -132,6 +114,15 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyEnemyAttack.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SeaEnemyAttack.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="LandEnemyAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
