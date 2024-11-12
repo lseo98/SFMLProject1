@@ -2,6 +2,8 @@
 #include "Bullet.h"
 #include "Missile.h"
 
+extern int WINDOWWIDTH, WINDOWHEIGHT;
+
 // 기본 공격 구현: 총알을 생성하여 위쪽으로 발사
 void SkyPlayerAttack::basic_attack(const sf::Vector2f& playerPosition) {
     std::cout << "Sky Stage: 기본 공격 - 총알 발사\n";
@@ -20,17 +22,23 @@ void SkyPlayerAttack::ultimate_attack() {
     // 필살기 구현 추가 가능
 }
 
-// 발사체 업데이트 및 화면에 그리기
-void SkyPlayerAttack::updateProjectiles(sf::RenderWindow& window) {
+void SkyPlayerAttack::updateProjectiles() {
+
     for (auto& projectile : projectiles) {
-        projectile->update();
-        projectile->draw(window);
+        projectile->update(); // 발사체 상태 업데이트
     }
 
     projectiles.erase(
         std::remove_if(projectiles.begin(), projectiles.end(),
-                       [&window](const std::unique_ptr<Projectile>& projectile) {
-                           return projectile->isOffScreen(window.getSize().x, window.getSize().y);
-                       }),
+            [](const std::unique_ptr<Projectile>& projectile) {
+                return projectile->isOffScreen(); // 화면 크기를 사용
+            }),
         projectiles.end());
+
+}
+
+void SkyPlayerAttack::drawProjectiles(sf::RenderWindow& window) {
+    for (auto& projectile : projectiles) {
+        projectile->draw(window); // 발사체 화면에 그리기
+    }
 }

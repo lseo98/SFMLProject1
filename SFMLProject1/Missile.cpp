@@ -17,6 +17,3 @@ void Missile::draw(sf::RenderWindow& window) {
     window.draw(shape);
 }
 
-bool Missile::isOffScreen(int screenWidth, int screenHeight) const {
-    return (position.x < 0 || position.x > screenWidth || position.y < 0 || position.y > screenHeight);
-}

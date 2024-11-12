@@ -7,6 +7,16 @@ Projectile::Projectile(const sf::Vector2f& startPosition, const sf::Vector2f& di
     shape.setPosition(position);
 }
 
+bool Projectile::isOffScreen() const {
+    int centerX = WINDOWWIDTH / 2;
+    int centerY = WINDOWHEIGHT / 2;
+    int rangeX = 450;
+    int rangeY = 450;
+
+    return (position.x < centerX - rangeX || position.x > centerX + rangeX ||
+        position.y < centerY - rangeY || position.y > centerY + rangeY);
+}
+
 void Projectile::adjustDirection(){
     float angle = 0.0f; // 초기 각도 설정
 

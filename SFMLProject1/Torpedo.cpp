@@ -17,9 +17,6 @@ void Torpedo::draw(sf::RenderWindow& window) {
     window.draw(shape);
 }
 
-bool Torpedo::isOffScreen(int screenWidth, int screenHeight) const {
-    return (position.x < 0 || position.x > screenWidth || position.y < 0 || position.y > screenHeight);
-}
 
 
 

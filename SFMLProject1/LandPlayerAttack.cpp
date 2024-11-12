@@ -2,6 +2,8 @@
 #include "Bullet.h"
 #include "AntiTankMissile.h"
 
+extern int WINDOWWIDTH, WINDOWHEIGHT;
+
 LandPlayerAttack::LandPlayerAttack()
     : bulletDirection(1.0f, 0.0f) { // 처음에는 오른쪽 방향으로 설정
 }
@@ -34,19 +36,25 @@ void LandPlayerAttack::ultimate_attack() {
     // 필살기 구현 추가 가능
 }
 
-// 발사체 업데이트 및 화면에 그리기
-void LandPlayerAttack::updateProjectiles(sf::RenderWindow& window) {
-    handleInput(); // 매 프레임마다 방향 입력을 확인하여 방향 전환
+// 발사체 업데이트
+void LandPlayerAttack::updateProjectiles() {
+    handleInput(); // 방향 입력 확인
 
     for (auto& projectile : projectiles) {
-        projectile->update();
-        projectile->draw(window);
+        projectile->update(); // 발사체 상태 업데이트
     }
 
     projectiles.erase(
         std::remove_if(projectiles.begin(), projectiles.end(),
-            [&window](const std::unique_ptr<Projectile>& projectile) {
-                return projectile->isOffScreen(window.getSize().x, window.getSize().y);
+            [](const std::unique_ptr<Projectile>& projectile) {
+                return projectile->isOffScreen(); // 화면 크기를 사용
             }),
         projectiles.end());
+}
+
+// 발사체 화면에 그리기
+void LandPlayerAttack::drawProjectiles(sf::RenderWindow& window) {
+    for (auto& projectile : projectiles) {
+        projectile->draw(window); // 발사체 화면에 그리기
+    }
 }

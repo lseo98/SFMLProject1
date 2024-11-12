@@ -26,6 +26,7 @@ private:
     void update();
     void render();
 
+
     // SFML ¸â¹ö º¯¼ö
     sf::RenderWindow* window;
     sf::Event event;

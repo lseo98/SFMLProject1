@@ -6,9 +6,8 @@
 #include "SeaEnemyAttack.h"
 #include "LandEnemyAttack.h"
 #include <memory>
-#include <chrono>
 
-Stage::Stage() : stageNumber(1), bossSpawned(false), lastAttackTime(std::chrono::steady_clock::now()) { }
+Stage::Stage() : stageNumber(1), bossSpawned(false), timeSinceLastAttack(0.0f), attackCooldown(0.2f) { }
 
 void Stage::setStage(int stageNumber, Player& player, std::vector<Enemy*>& enemies) {
     this->stageNumber = stageNumber;
@@ -59,14 +58,13 @@ void Stage::setEnemyAttack(int stageNumber, std::vector<Enemy*>& enemies) {
     }
 }
 
-// update 메서드: 플레이어의 기본 공격을 200ms 간격으로 자동 실행하고 발사체 및 적을 업데이트
-void Stage::update(Player& player, std::vector<Enemy*>& enemies, sf::RenderWindow& window) {
-    // 200ms마다 기본 공격 수행
-    auto now = std::chrono::steady_clock::now();
-    if (std::chrono::duration_cast<std::chrono::milliseconds>(now - lastAttackTime).count() > 200) {
-        player.performBasicAttack(); // 기본 공격 수행
-        lastAttackTime = now;
-    }
-
-
-}
+//// update 메서드: 플레이어의 기본 공격을 200ms 간격으로 자동 실행
+//void Stage::update(Player& player, float deltaTime) {
+//    // 델타 타임을 누적하여 200ms마다 기본 공격 수행
+//    timeSinceLastAttack += deltaTime;
+//
+//    if (timeSinceLastAttack >= 0.2f) { // 200ms 간격으로 공격
+//        player.performBasicAttack();   // 기본 공격 수행
+//        timeSinceLastAttack = 0.0f;    // 공격 간격 초기화
+//    }
+//}

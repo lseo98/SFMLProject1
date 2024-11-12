@@ -16,8 +16,3 @@ void AntiTankMissile::update() {
 void AntiTankMissile::draw(sf::RenderWindow& window) {
     window.draw(shape); // 창에 그리기
 }
-
-bool AntiTankMissile::isOffScreen(int screenWidth, int screenHeight) const {
-    sf::Vector2f pos = shape.getPosition();
-    return (pos.x < 0 || pos.x > screenWidth || pos.y < 0 || pos.y > screenHeight); // 화면 밖 확인
-}

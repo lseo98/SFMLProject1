@@ -79,19 +79,40 @@ void Game::handleEvents() {
 }
 
 void Game::update() { // 게임 상태 업데이트
-    float dt = clock.restart().asSeconds(); // 밀리초 단위로 변환 
- 
+    static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
+    float dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
+
     float speed = player.get_speed();
     float dx = 0.0f, dy = 0.0f;
 
     // 플레이어 움직임 업데이트
     dx += (sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A)) * speed;
     dy += (sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W)) * speed;
-    
+
     if (dx * dy) {  // 대각선 이동의 경우 좌우, 상하 단일 움직임 보다 빨라지는 속도를 보정
         dx *= 0.7;
         dy *= 0.7;
     }
+
+    for (float i = 0; i < 1; i += dt) player.move(sf::Vector2f(dx * dt, dy * dt));
+
+    // 200ms 간격으로 기본 공격 발사
+    if (attackClock.getElapsedTime().asMilliseconds() >= 200) {
+        player.performBasicAttack(); // 기본 공격 발사
+        attackClock.restart();       // 타이머 초기화
+    }
+
+    //currentStage.update(player, dt);
+    if (player.getAttackStrategy()) {
+        player.getAttackStrategy()->updateProjectiles(); // 발사체 상태 업데이트
+    }
+
+    // 적의 상태 업데이트 및 공격 수행
+    for (auto* enemy : enemies) {
+        //enemy->update(dt);  // 적 상태 업데이트 (필요 시)
+        enemy->attack();    // 적의 공격 수행 (공격 타입에 따라)
+    }
+
 
     /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         dy -= speed;
@@ -106,28 +127,24 @@ void Game::update() { // 게임 상태 업데이트
         dx += speed;
     }*/
 
-    for (float i = 0; i < 1; i += dt) player.move(sf::Vector2f(dx * dt, dy * dt));
-    
 }
 
 void Game::render() {
     window->clear(); // 화면 지우기
 
-    currentStage.update(player, enemies, *window);
     // player.draw(playerSpeed * dt, 0);
      // 여기에서 게임 객체를 그리기 (예: player, enemy 등)
     player.draw(*window);
-    // 현재 공격 전략을 통해 발사체 업데이트 및 그리기
+  
     if (player.getAttackStrategy()) {
-        player.getAttackStrategy()->updateProjectiles(*window);
+        player.getAttackStrategy()->drawProjectiles(*window);
     }
 
     // 적 업데이트 및 화면에 그리기
     for (auto* enemy : enemies) {
-        enemy->attack();         // 적의 공격 수행
+        //enemy->attack();         // 적의 공격 수행
         enemy->draw(*window);     // 적을 화면에 그리기
     }
-
 
     window->display(); // 화면에 그린 내용을 표시
 }

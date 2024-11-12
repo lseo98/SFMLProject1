@@ -8,14 +8,10 @@ Bullet::Bullet(const sf::Vector2f& startPosition, const sf::Vector2f& direction)
 }
 
 void Bullet::update() {
-    position += direction * speed * 2.0f;
+    position += direction * speed * 4.0f;
     shape.setPosition(position);
 }
 
 void Bullet::draw(sf::RenderWindow& window) {
     window.draw(shape);
-}
-
-bool Bullet::isOffScreen(int screenWidth, int screenHeight) const {
-    return (position.x < 0 || position.x > screenWidth || position.y < 0 || position.y > screenHeight);
 }

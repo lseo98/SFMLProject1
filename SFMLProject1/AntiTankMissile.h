@@ -8,5 +8,4 @@ public:
 
     void update() override;
     void draw(sf::RenderWindow& window) override;
-    bool isOffScreen(int screenWidth, int screenHeight) const override;
 };
