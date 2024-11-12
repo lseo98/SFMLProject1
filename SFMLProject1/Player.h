@@ -26,6 +26,11 @@ public:
 
     float power = 150.0f;
 
+    void image(std::string);
+
+    sf::Texture texture;      // 이미지 텍스처
+    sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
+
 private:
     std::unique_ptr<AttackStrategy> attackStrategy;
 };

@@ -9,13 +9,16 @@ Player::Player() : attackStrategy(nullptr), Character(3, /*speed*/ 15.0f, sf::Ve
 void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
 
-    float sizeX = this->shape.getSize().x, sizeY = this->shape.getSize().y;     // 플레이어 객채의 가로 세로 크기 추출
+    float sizeX = sprite.getGlobalBounds().width;
+    float sizeY = sprite.getGlobalBounds().height;     // 플레이어 객채의 가로 세로 크기 추출
     // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
     if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
     if (this->position.x + sizeX> WINDOWWIDTH / 4.0f * 3.0f)this->position.x = WINDOWWIDTH / 4.0f * 3.0f - sizeX;
     if (this->position.y < 0)  this->position.y = 0;
     if (this->position.y + sizeY > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - sizeY;
     
+    sprite.setPosition(position); // 스프라이트의 위치 업데이트
+
 }
 
 void Player::take_damage(float amount) {
@@ -24,16 +27,16 @@ void Player::take_damage(float amount) {
 }
 
 void Player::draw(sf::RenderWindow& window) {
-    this->shape.setPosition(this->position);
-    window.draw(this->shape);
+    this->sprite.setPosition(this->position);
+    window.draw(this->sprite);
 }
 
 void Player::basic_attack() {
     if (attackStrategy) {
         // 플레이어의 중앙 위치를 계산하여 총알의 시작 위치로 사용
         sf::Vector2f bulletStartPosition = this->position;
-        bulletStartPosition.x += this->shape.getGlobalBounds().width / 2; // 플레이어의 중심 x 좌표
-        bulletStartPosition.y += this->shape.getGlobalBounds().height / 2; // 플레이어의 중심 y 좌표
+        bulletStartPosition.x += this->sprite.getGlobalBounds().width / 2; // 플레이어의 중심 x 좌표
+        bulletStartPosition.y += this->sprite.getGlobalBounds().height / 8; // 플레이어의 중심 y 좌표
 
         attackStrategy->basic_attack(bulletStartPosition); // 전략에 플레이어의 중앙 위치 전달
     }
@@ -43,8 +46,8 @@ void Player::basic_attack() {
 void Player::special_attack() {
     if (attackStrategy) {
         sf::Vector2f bulletStartPosition = this->position;
-        bulletStartPosition.x += this->shape.getGlobalBounds().width / 2;
-        bulletStartPosition.y += this->shape.getGlobalBounds().height / 2;
+        bulletStartPosition.x += this->sprite.getGlobalBounds().width / 2;
+        bulletStartPosition.y += this->sprite.getGlobalBounds().height / 8;
 
         attackStrategy->special_attack(bulletStartPosition);
     }
@@ -64,4 +67,15 @@ void Player::performBasicAttack() {
 
 void Player::performSpecialAttack() {
     special_attack(); // 특수 공격 수행
+}
+
+void Player::image(std::string textureFile) {
+    if (!texture.loadFromFile(textureFile)) {
+        std::cerr << "Error loading texture: " << textureFile << std::endl;
+    }
+    else {
+        sprite.setScale(0.1f, 0.1f);
+        sprite.setTexture(texture);
+        sprite.setPosition(position);
+    }
 }
