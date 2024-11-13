@@ -132,6 +132,8 @@ void Game::update() { // 게임 상태 업데이트
 void Game::render() {
     window->clear(); // 화면 지우기
 
+    currentStage.drawBackground(*window);
+
     // player.draw(playerSpeed * dt, 0);
      // 여기에서 게임 객체를 그리기 (예: player, enemy 등)
     player.draw(*window);

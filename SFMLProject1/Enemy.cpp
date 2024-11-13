@@ -17,5 +17,16 @@ void Enemy::take_damage(float amount) {
 }
 
 void Enemy::draw(sf::RenderWindow& window) {
-    window.draw(shape);
+    this->sprite.setPosition(this->position);
+    window.draw(this->sprite);
+}
+
+void Enemy::image(const std::string& textureFile) {
+    if (!texture.loadFromFile(textureFile)) {
+        std::cerr << "Error loading texture: " << textureFile << std::endl;
+    }
+    else {
+        sprite.setScale(0.2f, 0.2f);  // 필요에 따라 스케일 조정
+        sprite.setTexture(texture);   // 텍스처를 스프라이트에 적용
+    }
 }

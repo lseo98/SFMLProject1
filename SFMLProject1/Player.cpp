@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "Bullet.h" // Bullet 클래스 포함
+#include "Bullet.h" 
 #include <iostream>
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
@@ -24,8 +24,19 @@ void Player::take_damage(float amount) {
 }
 
 void Player::draw(sf::RenderWindow& window) {
-    this->shape.setPosition(this->position);
-    window.draw(this->shape);
+    this->sprite.setPosition(this->position);
+    window.draw(this->sprite);
+}
+
+void Player::image(std::string textureFile) {
+    if (!texture.loadFromFile(textureFile)) {
+        std::cerr << "Error loading texture: " << textureFile << std::endl;
+    }
+    else {
+        sprite.setScale(0.1f, 0.1f);
+        sprite.setTexture(texture);
+        sprite.setPosition(position);
+    }
 }
 
 void Player::basic_attack() {

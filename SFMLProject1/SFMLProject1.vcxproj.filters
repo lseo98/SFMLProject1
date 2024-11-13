@@ -126,4 +126,45 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="sky.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sky_elite_unit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sky_enemy_unit.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sky_my_unit.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sea.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sea_elite_unit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sea_enemy_unit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sea_my_unit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="land.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="land_elite_unit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="land_enemy_unit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="land_my_unit_left.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="land_my_unit_right.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
