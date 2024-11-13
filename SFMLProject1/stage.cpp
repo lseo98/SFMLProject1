@@ -53,7 +53,7 @@ void Stage::drawBackground(sf::RenderWindow& window) {
             backgroundXPos = 450;  // 스크롤 위치 초기화
         }
         backgroundSprite.setPosition(450 + backgroundXPos, 0);
-        backgroundSprite1.setPosition(450 + backgroundXPos - backgroundTexture.getSize().x, 0);
+        backgroundSprite1.setPosition(450 + backgroundXPos - backgroundTexture.getSize().x, 0);          
     }
 
     // 창의 지정된 영역(450~1350) 내에만 배경 출력
