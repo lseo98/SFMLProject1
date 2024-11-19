@@ -11,6 +11,13 @@ Stage::Stage() : stageNumber(1), bossSpawned(false), timeSinceLastAttack(0.0f), 
 
 void Stage::setStage(int stageNumber, Player& player, std::vector<Enemy*>& enemies) {
     this->stageNumber = stageNumber;
+
+    // 스테이지 변경 시 적 초기화
+    for (auto* enemy : enemies) {
+        delete enemy; // 기존 적 삭제
+    }
+    enemies.clear(); // 벡터 초기화
+
     // 배경 설정
     if (stageNumber == 1) {
         backgroundTexture.loadFromFile("sky.png");
@@ -60,18 +67,70 @@ void Stage::drawBackground(sf::RenderWindow& window) {
     window.draw(backgroundSprite1);
 }
 
-void Stage::spawnEnemies(std::vector<Enemy*>& enemies) {
-    enemies.clear(); // 스테이지 변경 시 기존 적 삭제
+void Stage::spawnEnemies(std::vector<Enemy*>& enemies, float deltaTime) {
+    // 시간 누적
+    timeSinceLastAttack += deltaTime;
 
-    enemies.push_back(new NormalUnit());
-    enemies.push_back(new EliteUnit());
+    // 적 생성 주기
+    if (timeSinceLastAttack >= spawnInterval && enemies.size() < maxEnemies) {
+        float normalUnitStartX = 0, normalUnitStartY = 0;
+        float eliteUnitStartX = 0, eliteUnitStartY = 0;
 
-    // 땅 스테이지에서 보스 등장
-    if (stageNumber == 3 && !bossSpawned) {
-        enemies.push_back(new Boss());
-        bossSpawned = true;
+        if (stageNumber == 1) { // 하늘 스테이지: 맨 위에서 랜덤 X 위치
+            normalUnitStartX = rand() % (1350 - 450) + 450; // 일반 유닛 X 좌표: 화면의 중앙 영역
+            normalUnitStartY = -50;                           // 일반 유닛 Y 좌표: 화면 상단
+
+            eliteUnitStartX = rand() % (1350 - 450) + 450;  // 정예 유닛 X 좌표: 화면의 중앙 영역
+            eliteUnitStartY = -50;                            // 정예 유닛 Y 좌표: 화면 상단
+        }
+        else if (stageNumber == 2) { // 바다 스테이지: 맨 오른쪽에서 랜덤 Y 위치
+            normalUnitStartX = 1400;                        // 일반 유닛 X 좌표: 화면 오른쪽 끝
+            normalUnitStartY = rand() % 900;                // 일반 유닛 Y 좌표: 화면 전체 높이
+
+            eliteUnitStartX = 1400;                         // 정예 유닛 X 좌표: 화면 오른쪽 끝
+            eliteUnitStartY = rand() % 900;                 // 정예 유닛 Y 좌표: 화면 전체 높이
+        }
+        else if (stageNumber == 3) { // 땅 스테이지: 양 옆 맨 아래
+            if (rand() % 2 == 0) {
+                normalUnitStartX = 400; // 일반 유닛 왼쪽 시작
+            }
+            else {
+                normalUnitStartX = 1400; // 일반 유닛 오른쪽 시작
+            }
+            normalUnitStartY = 700; // 일반 유닛 Y 좌표: 화면 아래
+
+            if (rand() % 2 == 0) {
+                eliteUnitStartX = 400; // 정예 유닛 왼쪽 시작
+            }
+            else {
+                eliteUnitStartX = 1400; // 정예 유닛 오른쪽 시작
+            }
+            eliteUnitStartY = 200; // 정예 유닛 Y 좌표: 화면 위
+        }
+
+        // 일반 유닛 생성
+        NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY));
+        if (stageNumber == 3) {
+            int direction = (normalUnitStartX == 400) ? 1 : -1; // 왼쪽에서 시작하면 오른쪽으로, 오른쪽에서 시작하면 왼쪽으로
+            normalUnit->updateDirection(direction);
+        }
+        enemies.push_back(normalUnit);
+
+        // 정예 유닛 생성
+        EliteUnit* eliteUnit = new EliteUnit(stageNumber, sf::Vector2f(eliteUnitStartX, eliteUnitStartY));
+        if (stageNumber == 3) {
+            int direction = (eliteUnitStartX == 400) ? 1 : -1; // 왼쪽에서 시작하면 오른쪽으로, 오른쪽에서 시작하면 왼쪽으로
+            eliteUnit->updateDirection(direction);
+        }
+        //eliteUnit->initializeRandomSpeeds(); // 정예 유닛의 랜덤 속도 초기화
+        enemies.push_back(eliteUnit);
+
+        // 타이머 초기화
+        timeSinceLastAttack = 0.0f;
     }
 }
+
+
 
 void Stage::setPlayerAttack(int stageNumber, Player& player) {
     if (stageNumber == 1) {

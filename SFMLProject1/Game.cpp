@@ -21,7 +21,6 @@ void Game::initVariables() {
     this->clock.restart(); // 추후 미니게임 혹은 메인 게임 시작 후 시간 계산하는 것으로 변경 필요
     stageNumber = 1;        // 1: 하늘, 2: 바다, 3: 땅
     currentStage.setStage(stageNumber, player, enemies);    // 현재 스테이지 초기화
-    currentStage.spawnEnemies(enemies);                     // 이전 스테이지 적군 삭제 및 초기화
 }
 
 void Game::initWindow() {
@@ -36,10 +35,9 @@ void Game::initWindow() {
 
 void Game::run() {
     while (isRunning && window->isOpen()) {
-        sf::Event event;
-        sf::Time deltaTime = clock.restart(); // 프레임 간 경과 시간 측정
+        float dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
         handleEvents();
-        update();
+        update(dt);
         render();
     }
 }
@@ -61,26 +59,22 @@ void Game::handleEvents() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
             stageNumber = 1;
             currentStage.setStage(stageNumber, player, enemies);
-            currentStage.spawnEnemies(enemies);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) {
             stageNumber = 2;
             currentStage.setStage(stageNumber, player, enemies);
-            currentStage.spawnEnemies(enemies);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3)) {
             stageNumber = 3;
             currentStage.setStage(stageNumber, player, enemies);
-            currentStage.spawnEnemies(enemies);
         }
 
     
     }
 }
 
-void Game::update() { // 게임 상태 업데이트
+void Game::update(float dt) { // 게임 상태 업데이트
     static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
-    float dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
 
     float speed = player.get_speed();
     float dx = 0.0f, dy = 0.0f;
@@ -107,11 +101,15 @@ void Game::update() { // 게임 상태 업데이트
         player.getAttackStrategy()->updateProjectiles(); // 발사체 상태 업데이트
     }
 
-    // 적의 상태 업데이트 및 공격 수행
+
+    // 적 생성 및 업데이트
+    currentStage.spawnEnemies(enemies, dt);
     for (auto* enemy : enemies) {
-        //enemy->update(dt);  // 적 상태 업데이트 (필요 시)
-        enemy->attack();    // 적의 공격 수행 (공격 타입에 따라)
+        enemy->update(dt);
+        enemy->attack(); // 적의 공격 수행
     }
+
+
 
 
     /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
@@ -141,6 +139,7 @@ void Game::render() {
     if (player.getAttackStrategy()) {
         player.getAttackStrategy()->drawProjectiles(*window);
     }
+
 
     // 적 업데이트 및 화면에 그리기
     for (auto* enemy : enemies) {

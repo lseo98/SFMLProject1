@@ -20,7 +20,7 @@ void LandPlayerAttack::handleInput() {
 
 // 기본 공격 구현: 총알을 생성하여 왼쪽 또는 오른쪽으로 발사
 void LandPlayerAttack::basic_attack(const sf::Vector2f& playerPosition) {
-    std::cout << "Land Stage: 기본 공격 - 총알 발사\n";
+    //std::cout << "Land Stage: 기본 공격 - 총알 발사\n";
     projectiles.emplace_back(std::make_unique<Bullet>(playerPosition, bulletDirection)); // 현재 방향으로 발사
 }
 

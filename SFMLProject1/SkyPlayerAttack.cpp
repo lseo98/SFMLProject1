@@ -6,7 +6,7 @@ extern int WINDOWWIDTH, WINDOWHEIGHT;
 
 // 기본 공격 구현: 총알을 생성하여 위쪽으로 발사
 void SkyPlayerAttack::basic_attack(const sf::Vector2f& playerPosition) {
-    std::cout << "Sky Stage: 기본 공격 - 총알 발사\n";
+    //std::cout << "Sky Stage: 기본 공격 - 총알 발사\n";
     projectiles.emplace_back(std::make_unique<Bullet>(playerPosition, sf::Vector2f(0.0f, -1.0f))); // 위쪽으로 발사
 }
 
