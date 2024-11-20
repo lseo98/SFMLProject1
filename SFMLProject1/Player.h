@@ -31,7 +31,10 @@ public:
     sf::Texture texture;      // 이미지 텍스처
     sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
 
+    void updateDirection(char direction,int stageNum); // 유닛 방향 설정
 
 private:
     std::unique_ptr<PlayerAttack> attackType;
+
+    char direction;
 };

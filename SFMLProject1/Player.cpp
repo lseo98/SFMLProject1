@@ -4,7 +4,7 @@
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
-Player::Player() : attackType(nullptr), Character(3, /*speed*/ 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 2.0f)) {}
+Player::Player() : attackType(nullptr), Character(3, /*speed*/ 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 2.0f)){}
 
 void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
@@ -33,6 +33,28 @@ void Player::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
     window.draw(this->sprite);
 }
+//방향에 따라서 사진 업로드
+void Player::updateDirection(char direction,int stageNumber) {
+    if (direction != this->direction) { //버벅거림 막기
+        this->direction = direction;
+        if (stageNumber == 2) { // Only change image in stage 3
+            if (direction == 'A') {
+                image("sea_my_unit_left.png");
+            }
+            else if (direction == 'D') {
+                image("sea_my_unit_right.png");
+            }
+        }
+        if (stageNumber == 3) { // Only change image in stage 3
+            if (direction == 'A') {
+                image("land_my_unit_left.png");
+            }
+            else if (direction == 'D') {
+                image("land_my_unit_right.png");
+            }
+        }
+    }
+}
 
 void Player::image(std::string textureFile) {
     if (!texture.loadFromFile(textureFile)) {
@@ -45,6 +67,7 @@ void Player::image(std::string textureFile) {
     }
 }
 
+
 void Player::basic_attack() {
     if (attackType) {
          // 스프라이트의 글로벌 바운드를 사용하여 중앙 위치 계산
@@ -54,9 +77,10 @@ void Player::basic_attack() {
         bulletStartPosition.x = this->position.x + spriteBounds.width / 2; // 스프라이트 중심 x 좌표
         bulletStartPosition.y = this->position.y + spriteBounds.height / 2; // 스프라이트 중심 y 좌표
         
-        attackType->basic_attack(bulletStartPosition);
+        attackType->basic_attack(bulletStartPosition);  
     }
 }
+
 
 
 void Player::special_attack() {
@@ -72,7 +96,7 @@ void Player::special_attack() {
 }
 
 void Player::ultimate_attack() {
-    if (attackType) attackType->ultimate_attack();
+    if (attackType) attackType->ultimate_attack();   
 }
 
 void Player::setPlayerAttack(std::unique_ptr<PlayerAttack> attackStageType) {

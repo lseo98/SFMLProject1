@@ -32,6 +32,7 @@ void Enemy::image(const std::string& textureFile) {
         sprite.setScale(0.15f, 0.15f);  // 필요에 따라 스케일 조정
         sprite.setTexture(texture);   // 텍스처를 스프라이트에 적용
     }
+
 }
 
 void Enemy::updateDirection(int newDirection) {

@@ -18,15 +18,29 @@ void Stage::setStage(int stageNumber, Player& player, std::vector<Enemy*>& enemi
     }
     enemies.clear(); // 벡터 초기화
 
+    // 배경 뷰 설정
+    sf::FloatRect viewRect(450, 0, 900, 900); // 크기: 900x900
+    backgroundView.reset(viewRect);
+
+    // Viewport 설정
+    backgroundView.setViewport(sf::FloatRect(
+        450.f / 1800.f, // 상대 x 위치
+        0.f,            // 상대 y 위치
+        900.f / 1800.f, // 상대 너비
+        1.f             // 상대 높이
+    ));
+
     // 배경 설정
     if (stageNumber == 1) {
         backgroundTexture.loadFromFile("sky.png");
+
         scrollSpeed = 1.0f;
         backgroundYPos = 0;
     }
     else if (stageNumber == 2) {
         backgroundTexture.loadFromFile("sea.png");
-        scrollSpeed = 1.0f;
+
+        scrollSpeed = 0.7f;
         backgroundXPos = 0;
     }
     else if (stageNumber == 3) {
@@ -37,7 +51,7 @@ void Stage::setStage(int stageNumber, Player& player, std::vector<Enemy*>& enemi
     backgroundSprite.setTexture(backgroundTexture);
     backgroundSprite1.setTexture(backgroundTexture);
 
-    backgroundSprite.setPosition(450, 0);  // 화면 중앙 영역에 배경 설정
+    backgroundSprite.setPosition(450, 0);  // 화면 중앙 영역에 배경 설정  
     backgroundSprite1.setPosition(450, -(float)backgroundTexture.getSize().y);
 
     setPlayerAttack(stageNumber, player);
@@ -45,6 +59,11 @@ void Stage::setStage(int stageNumber, Player& player, std::vector<Enemy*>& enemi
 }
 
 void Stage::drawBackground(sf::RenderWindow& window) {
+    // 기존 뷰 저장
+    sf::View originalView = window.getView();
+
+    // 배경 뷰 설정
+    window.setView(backgroundView);
     if (stageNumber == 1) { // 하늘 스테이지: 위로 스크롤
         backgroundYPos += scrollSpeed;
         if (backgroundYPos >= backgroundTexture.getSize().y) {
@@ -53,18 +72,21 @@ void Stage::drawBackground(sf::RenderWindow& window) {
         backgroundSprite.setPosition(450, backgroundYPos);
         backgroundSprite1.setPosition(450, backgroundYPos - backgroundTexture.getSize().y);
     }
+
     else if (stageNumber == 2) { // 바다 스테이지: 옆으로 스크롤
         backgroundXPos -= scrollSpeed;
-        if (backgroundXPos >= backgroundTexture.getSize().x) {
+        if (backgroundXPos <= -450) {
             backgroundXPos = 450;  // 스크롤 위치 초기화
         }
-        backgroundSprite.setPosition(450 + backgroundXPos, 0);
-        backgroundSprite1.setPosition(450 + backgroundXPos + backgroundTexture.getSize().x, 0);
+        backgroundSprite.setPosition(backgroundXPos, 0);
+        backgroundSprite1.setPosition(backgroundXPos + 900, 0);
     }
 
     // 창의 지정된 영역(450~1350) 내에만 배경 출력
     window.draw(backgroundSprite);
     window.draw(backgroundSprite1);
+    window.setView(originalView);
+
 }
 
 void Stage::spawnEnemies(std::vector<Enemy*>& enemies, float deltaTime) {
@@ -138,11 +160,11 @@ void Stage::setPlayerAttack(int stageNumber, Player& player) {
         player.setPlayerAttack(std::make_unique<SkyPlayerAttack>());
     }
     else if (stageNumber == 2) {
-        player.image("sea_my_unit.png");
+        player.image("sea_my_unit_right.png");
         player.setPlayerAttack(std::make_unique<SeaPlayerAttack>());
     }
     else if (stageNumber == 3) {
-        player.image("land_my_unit_left.png");
+        player.image("land_my_unit_right.png");
         player.setPlayerAttack(std::make_unique<LandPlayerAttack>());
     }
 }

@@ -82,6 +82,24 @@ void Game::update(float dt) { // 게임 상태 업데이트
     // 플레이어 움직임 업데이트
     dx += (sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A)) * speed;
     dy += (sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W)) * speed;
+    
+    // 플레이어 좌우 반전
+    if (stageNumber == 2) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            player.updateDirection('A', 2);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            player.updateDirection('D', 2);
+        }
+    }
+    if (stageNumber == 3) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            player.updateDirection('A', 3);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            player.updateDirection('D', 3);
+        }
+    }
 
     if (dx * dy) {  // 대각선 이동의 경우 좌우, 상하 단일 움직임 보다 빨라지는 속도를 보정
         dx *= 0.7;

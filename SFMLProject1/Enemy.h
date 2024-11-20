@@ -43,7 +43,7 @@ public:
     NormalUnit(int stageNumber, sf::Vector2f position)
         : Enemy(100.0f, 1.0f, position, stageNumber) {
         image(stageNumber == 1 ? "sky_enemy_unit.png" :
-              stageNumber == 2 ? "sea_enemy_unit.png" :
+              stageNumber == 2 ? "sea_enemy_unit_b.png" :
                                  "land_enemy_unit.png"); // 이미지 설정
     }
 
