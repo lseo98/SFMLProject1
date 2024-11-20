@@ -9,13 +9,19 @@ Player::Player() : attackType(nullptr), Character(3, /*speed*/ 15.0f, sf::Vector
 void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
 
-    float sizeX = this->shape.getSize().x, sizeY = this->shape.getSize().y;     // 플레이어 객채의 가로 세로 크기 추출
+    // 스프라이트의 글로벌 바운드를 사용하여 크기 추출
+    sf::FloatRect spriteBounds = this->sprite.getGlobalBounds();
+    float sizeX = spriteBounds.width;
+    float sizeY = spriteBounds.height;
+
     // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
     if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
     if (this->position.x + sizeX> WINDOWWIDTH / 4.0f * 3.0f)this->position.x = WINDOWWIDTH / 4.0f * 3.0f - sizeX;
     if (this->position.y < 0)  this->position.y = 0;
     if (this->position.y + sizeY > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - sizeY;
     
+    // 스프라이트 위치를 업데이트 (position에 따라 이동)
+    this->sprite.setPosition(this->position);
 }
 
 void Player::take_damage(float amount) {
@@ -41,21 +47,25 @@ void Player::image(std::string textureFile) {
 
 void Player::basic_attack() {
     if (attackType) {
-        // 플레이어의 중앙 위치를 계산하여 총알의 시작 위치로 사용
-        sf::Vector2f bulletStartPosition = this->position;
-        bulletStartPosition.x += this->shape.getGlobalBounds().width / 2; // 플레이어의 중심 x 좌표
-        bulletStartPosition.y += this->shape.getGlobalBounds().height / 2; // 플레이어의 중심 y 좌표
+         // 스프라이트의 글로벌 바운드를 사용하여 중앙 위치 계산
+        sf::FloatRect spriteBounds = this->sprite.getGlobalBounds();
 
-        attackType->basic_attack(bulletStartPosition); // 전략에 플레이어의 중앙 위치 전달
+        sf::Vector2f bulletStartPosition;
+        bulletStartPosition.x = this->position.x + spriteBounds.width / 2; // 스프라이트 중심 x 좌표
+        bulletStartPosition.y = this->position.y + spriteBounds.height / 2; // 스프라이트 중심 y 좌표
+        
+        attackType->basic_attack(bulletStartPosition);
     }
 }
 
 
 void Player::special_attack() {
     if (attackType) {
-        sf::Vector2f bulletStartPosition = this->position;
-        bulletStartPosition.x += this->shape.getGlobalBounds().width / 2;
-        bulletStartPosition.y += this->shape.getGlobalBounds().height / 2;
+        sf::FloatRect spriteBounds = this->sprite.getGlobalBounds();
+
+        sf::Vector2f bulletStartPosition;
+        bulletStartPosition.x = this->position.x + spriteBounds.width / 2;
+        bulletStartPosition.y = this->position.y + spriteBounds.height / 2;
 
         attackType->special_attack(bulletStartPosition);
     }

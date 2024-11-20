@@ -13,9 +13,13 @@ public:
     float get_health() const;
     float get_speed() const;
 
+    void setTexture(const std::string& textureFile); // 텍스처 설정 함수
+
 protected:
     float health;
     float speed;
     sf::Vector2f position;
-    sf::RectangleShape shape;  // 그래픽 표현을 위한 SFML 도형
+
+    sf::Texture texture;  // 캐릭터의 텍스처
+    sf::Sprite sprite;    // 캐릭터의 스프라이트
 };

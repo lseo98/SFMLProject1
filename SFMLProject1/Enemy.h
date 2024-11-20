@@ -4,6 +4,8 @@
 #include <memory>
 #include <iostream>
 
+extern int WINDOWWIDTH, WINDOWHEIGHT;
+
 class Enemy : public Character {
 public:
     Enemy(float health, float speed, sf::Vector2f position, int stageNumber);

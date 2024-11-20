@@ -29,7 +29,7 @@ void Enemy::image(const std::string& textureFile) {
         std::cerr << "Error loading texture: " << textureFile << std::endl;
     }
     else {
-        sprite.setScale(0.2f, 0.2f);  // 필요에 따라 스케일 조정
+        sprite.setScale(0.15f, 0.15f);  // 필요에 따라 스케일 조정
         sprite.setTexture(texture);   // 텍스처를 스프라이트에 적용
     }
 }
@@ -50,9 +50,9 @@ void Enemy::update(float deltaTime) {
         else if (dynamic_cast<EliteUnit*>(this)) {
             // 목표값 도달 시 새로운 목표값 설정
             if (position.y + 1.0f >= nextTargetY) {
-                targetX = rand() % (1200 - 600) + 450; // 새로운 랜덤 X 좌표
-                if (nextTargetY == 600) nextTargetY += 500; 
-                else nextTargetY += 150; // 다음 Y 목표값 증가
+                targetX = rand() % (1350 - 450) + 450; // 새로운 랜덤 X 좌표
+                if (nextTargetY == 400) nextTargetY += 500; 
+                else nextTargetY += 100; // 다음 Y 목표값 증가
                 std::cout << "New targetX: " << targetX << ", nextTargetY: " << nextTargetY << std::endl; // 디버그
             }
             // X축과 Y축 남은 거리 계산
@@ -72,9 +72,14 @@ void Enemy::update(float deltaTime) {
                 ySpeed = (ySpeed > 0 ? 1 : -1) * minSpeed; // 속도를 최소값 이상으로 유지
             }
 
+            if (position.x <= 450 || position.x >= 1350) { // 벽 범위
+                xSpeed = -xSpeed; // X축 속도 반전
+                targetX = rand() % (1350 - 450) + 450; // 새로운 랜덤 X 좌표 설정
+            }
             // 좌표 업데이트
             position.x += xSpeed * deltaTime; // 프레임당 X축 이동
             position.y += ySpeed * deltaTime; // 프레임당 Y축 이동
+            
         }
     }
     else if (stageNumber == 2) { // 바다 스테이지
@@ -102,7 +107,7 @@ void Enemy::update(float deltaTime) {
         //    position.x -= 100.0f * deltaTime;
         //}// 목표값 도달 시 새로운 목표값 설정
             if (position.x - 1.0f <= nextTargetX) { // X축 목표값 도달 여부
-                targetY = rand() % (800 - 200) + 200; // 새로운 랜덤 Y 좌표
+                targetY = rand() % 900; // 새로운 랜덤 Y 좌표
                 if (nextTargetX == 600) nextTargetX -= 500;
                 else nextTargetX -= 150; // 다음 X 목표값 감소
                 std::cout << "New targetY: " << targetY << ", nextTargetX: " << nextTargetX << std::endl; // 디버그
@@ -128,6 +133,12 @@ void Enemy::update(float deltaTime) {
             // 좌표 업데이트
             position.x += xSpeed * deltaTime; // 프레임당 X축 이동
             position.y += ySpeed * deltaTime; // 프레임당 Y축 이동
+
+            // 상하 벽 충돌 처리
+            if (position.y <= 0 || position.y >= 900) { // 벽 범위
+                xSpeed = -xSpeed; // X축 속도 반전
+                targetY = rand() % 900; // 새로운 랜덤 Y 좌표
+            }
         }
     }
     else if (stageNumber == 3) { // 땅 스테이지
@@ -139,4 +150,15 @@ void Enemy::update(float deltaTime) {
             position.y += std::cos(position.x / 50.0f) * 30.0f * deltaTime; // 위아래로 흔들리며 이동
         }
     }
+
+}
+
+bool Enemy::isOffScreen() const {
+    int centerX = WINDOWWIDTH / 2;
+    int centerY = WINDOWHEIGHT / 2;
+    int rangeX = 500;
+    int rangeY = 500;
+
+    return (position.x < centerX - rangeX || position.x > centerX + rangeX ||
+        position.y < centerY - rangeY || position.y > centerY + rangeY);
 }

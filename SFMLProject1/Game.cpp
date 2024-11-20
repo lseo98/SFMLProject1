@@ -108,7 +108,17 @@ void Game::update(float dt) { // 게임 상태 업데이트
         enemy->update(dt);
         enemy->attack(); // 적의 공격 수행
     }
-
+    // 화면 밖 적 제거
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [](Enemy* enemy) {
+                if (enemy->isOffScreen()) {
+                    delete enemy; // 메모리 해제
+                    return true; // 제거 대상
+                }
+                return false; // 유지 대상
+            }),
+        enemies.end());
 
 
 

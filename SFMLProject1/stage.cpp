@@ -153,30 +153,30 @@ void Stage::setEnemyAttack(int stageNumber, std::vector<Enemy*>& enemies) {
         std::unique_ptr<EnemyAttack> attackPattern;
         if (stageNumber == 1) {
             attackPattern = std::make_unique<SkyEnemyAttack>(type);
-            if (type == AttackType::Normal) {
-                enemy->image("sky_enemy_unit.png");   // 이미지 설정
-            }
-            else {
-                enemy->image("sky_elite_unit.png");
-            }
+            //if (type == AttackType::Normal) {
+            //    enemy->image("sky_enemy_unit.png");   // 이미지 설정
+            //}
+            //else {
+            //    enemy->image("sky_elite_unit.png");
+            //}
         }
         else if (stageNumber == 2) {
             attackPattern = std::make_unique<SeaEnemyAttack>(type);
-            if (type == AttackType::Normal) {
-                enemy->image("sea_enemy_unit.png");   // 이미지 설정
-            }
-            else {
-                enemy->image("sea_elite_unit.png");
-            }
+            //if (type == AttackType::Normal) {
+            //    enemy->image("sea_enemy_unit.png");   // 이미지 설정
+            //}
+            //else {
+            //    enemy->image("sea_elite_unit.png");
+            //}
         }
         else if (stageNumber == 3) {
             attackPattern = std::make_unique<LandEnemyAttack>(type);
-            if (type == AttackType::Normal) {
-                enemy->image("land_enemy_unit.png");   // 이미지 설정
-            }
-            else {
-                enemy->image("land_elite_unit.png");
-            }
+            //if (type == AttackType::Normal) {
+            //    enemy->image("land_enemy_unit.png");   // 이미지 설정
+            //}
+            //else {
+            //    enemy->image("land_elite_unit.png");
+            //}
         }
         enemy->setEnemyAttack(std::move(attackPattern));
     }
