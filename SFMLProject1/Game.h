@@ -36,6 +36,10 @@ private:
     bool isRunning;
     bool isMaingameRunning;
     float playerSpeed;  // 예시로 플레이어 이동 속도 변수
+    sf::Vector2f bulletDirection;
+    sf::Vector2f missileDirection;
+
+
 
     // 초기 객체 생성
     Player player;

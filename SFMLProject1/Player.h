@@ -1,31 +1,48 @@
 #pragma once
 #include "Character.h"
 #include "PlayerAttack.h"
-#include <memory>
+//#include <memory>
+#include <iostream>
 #include "Projectile.h"
+#include "Missile.h"
+#include "Bullet.h"
 
 class Player : public Character {
 public:
     Player();
+    
+
+    float power = 150.0f;
+
 
     void move(sf::Vector2f updatePosition);
     void take_damage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
+    
+    // 스테이지 전환시 플레이어 세팅
+    void setPlayer(std::string textureFile, sf::Vector2f bulletDirection, sf::Vector2f missileDirection);  // 오버라이딩x 오버로드o - 파라미터 바뀜, void image(std::string);
 
+
+    // - 공격
+    // 생성
     void basic_attack();
     void special_attack();
     void ultimate_attack();
+    // 업데이트
+    void updateAttack();
+    // 그리기
+    void renderAttack(sf::RenderWindow& window);
+    
 
-    void setPlayerAttack(std::unique_ptr<PlayerAttack> attackType);
-    PlayerAttack* getAttackStrategy() const { return attackType.get(); } // 현재 공격 전략 반환
+    sf::Texture texture;      // 이미지 텍스처
+    sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
 
-    void performBasicAttack();      // 기본 공격 수행
-    void performSpecialAttack();    // 특수 공격 수행 추가
-
-    std::vector<std::unique_ptr<Projectile>> projectiles; // 발사체 벡터
-
-    float power = 150.0f;
+    bool missileLaunched;
 
 private:
-    std::unique_ptr<PlayerAttack> attackType;
+
+    std::vector<Bullet> bullets;
+    std::vector<Missile> missiles;
+    sf::Vector2f bulletDirection; // 기본 공격 방향  
+    sf::Vector2f missileDirection;
 };
