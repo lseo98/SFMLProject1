@@ -6,8 +6,6 @@ extern int WINDOWWIDTH, WINDOWHEIGHT;
                          // health,  speed, sf::Vector2f position
 Player::Player() : Character(3, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f)) { 
     missileLaunched = false; 
-    //width = (int)sprite.getTexture()->getSize().x;
-    //height = (int)sprite.getTexture()->getSize().y;
 }
 
 
@@ -15,10 +13,10 @@ void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
 
     // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
-    //if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
-    //if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width;
-    //if (this->position.y < 0)  this->position.y = 0;
-    //if (this->position.y + height > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - height;
+    if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
+    if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width;
+    if (this->position.y < 0)  this->position.y = 0;
+    if (this->position.y + height > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - height;
 
 }
 
@@ -49,6 +47,9 @@ void Player::setPlayer(std::string textureFile, sf::Vector2f bulletDirection, sf
         sprite.setTexture(texture);
         sprite.setPosition(position);
     }
+    
+    width = sprite.getTexture()->getSize().x * sprite.getScale().x;
+    height = sprite.getTexture()->getSize().y * sprite.getScale().y;
 }
 
 void Player::basic_attack() {
@@ -58,7 +59,7 @@ void Player::basic_attack() {
     bulletStartPosition.x += this->shape.getGlobalBounds().width / 2; // 플레이어의 중심 x 좌표
     bulletStartPosition.y += this->shape.getGlobalBounds().height / 2; // 플레이어의 중심 y 좌표
 
-    bullets.emplace_back4(bulletStartPosition, bulletDirection, 10.0f);
+    bullets.emplace_back(bulletStartPosition, bulletDirection, 10.0f);
     //bullets.push_back(Bullet(bulletStartPosition, bulletDirection, 1.0f));
 
 }
