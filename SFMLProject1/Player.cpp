@@ -8,7 +8,6 @@ Player::Player() : Character(3, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHE
     missileLaunched = false; 
 }
 
-
 void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
 
@@ -29,6 +28,28 @@ void Player::take_damage(float amount) {
 void Player::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
     window.draw(this->sprite);
+}
+//방향에 따라서 사진 업로드
+void Player::updateDirection(char direction,int stageNumber) {
+    if (direction != this->direction) { //버벅거림 막기
+        this->direction = direction;
+        if (stageNumber == 2) { // Only change image in stage 3
+            if (direction == 'A') {
+                image("sea_my_unit_left.png");
+            }
+            else if (direction == 'D') {
+                image("sea_my_unit_right.png");
+            }
+        }
+        if (stageNumber == 3) { // Only change image in stage 3
+            if (direction == 'A') {
+                image("land_my_unit_left.png");
+            }
+            else if (direction == 'D') {
+                image("land_my_unit_right.png");
+            }
+        }
+    }
 }
 
 void Player::setPlayer(std::string textureFile, sf::Vector2f bulletDirection, sf::Vector2f missileDirection){
@@ -52,6 +73,7 @@ void Player::setPlayer(std::string textureFile, sf::Vector2f bulletDirection, sf
     height = sprite.getTexture()->getSize().y * sprite.getScale().y;
 }
 
+
 void Player::basic_attack() {
 
     // 플레이어의 중앙 위치를 계산하여 총알의 시작 위치로 사용
@@ -62,7 +84,9 @@ void Player::basic_attack() {
     bullets.emplace_back(bulletStartPosition, bulletDirection, 10.0f);
     //bullets.push_back(Bullet(bulletStartPosition, bulletDirection, 1.0f));
 
+
 }
+
 
 
 

@@ -31,10 +31,14 @@ void Game::initVariables() {
     isMaingameRunning = true;   // stage 1, 2, 3이 아닌 미니게임 혹은 화면 전환 중에는 false
     this->clock.restart(); // 추후 미니게임 혹은 메인 게임 시작 후 시간 계산하는 것으로 변경 필요
     stageNumber = 1;        // 1: 하늘, 2: 바다, 3: 땅
+
     currentStage.setStage(stageNumber, enemies);    // 현재 스테이지 초기화
     currentStage.spawnEnemies(enemies);             // 이전 스테이지 적군 삭제 및 초기화
 
     player.setPlayer("sky_my_unit.PNG", sf::Vector2f(0.0f, -1.0f), sf::Vector2f(0.0f, -1.0f));  // 아군 유닛 초기화
+
+
+    currentStage.setStage(stageNumber, player, enemies);    // 현재 스테이지 초기화
 
 }
 
@@ -49,6 +53,14 @@ void Game::initWindow() {
 }
 
 
+void Game::run() {
+    while (isRunning && window->isOpen()) {
+        float dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
+        handleEvents();
+        update(dt);
+        render();
+    }
+}
 
 void Game::handleEvents() {
     while (window->pollEvent(event)) {
@@ -87,15 +99,14 @@ void Game::handleEvents() {
             player.setPlayer("land_my_unit_right.PNG",sf::Vector2f(1.0f, 0.0f),sf::Vector2f(0.0f, -1.0f));
             player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3));
             currentStage.spawnEnemies(enemies);
-        }
 
-    
+            currentStage.setStage(stageNumber, player, enemies);
+        }    
     }
 }
 
-void Game::update() { // 게임 상태 업데이트
+void Game::update(float dt) { // 게임 상태 업데이트
     static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
-    float dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
 
     float speed = player.get_speed();
     float dx = 0.0f, dy = 0.0f;
@@ -112,6 +123,25 @@ void Game::update() { // 게임 상태 업데이트
 
     for (float i = 0; i < 1; i += dt) player.move(sf::Vector2f(dx * dt, dy * dt));
 
+    // 플레이어 좌우 반전
+    if (stageNumber == 2) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            player.updateDirection('A', 2);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            player.updateDirection('D', 2);
+        }
+    }
+    if (stageNumber == 3) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            player.updateDirection('A', 3);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            player.updateDirection('D', 3);
+        }
+    }
+
+       
 
     // 200ms 간격으로 기본 공격 발사
     if (attackClock.getElapsedTime().asMilliseconds() >= 100) {
@@ -122,32 +152,41 @@ void Game::update() { // 게임 상태 업데이트
     player.updateAttack();
 
 
-    // 적의 상태 업데이트 및 공격 수행
+
+    // 적 생성 및 업데이트
+    currentStage.spawnEnemies(enemies, dt);
     for (auto* enemy : enemies) {
-        //enemy->update(dt);  // 적 상태 업데이트 (필요 시)
-           // 적의 공격 수행 (공격 타입에 따라)
+        enemy->update(dt);  // 적 상태 업데이트 (필요 시)
+        // 적의 공격 수행 (공격 타입에 따라)
     }
-
-
+    // 화면 밖 적 제거
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [](Enemy* enemy) {
+                if (enemy->isOffScreen()) {
+                    delete enemy; // 메모리 해제
+                    return true; // 제거 대상
+                }
+                return false; // 유지 대상
+            }),
+        enemies.end());
 
 }
 
 void Game::render() {
     window->clear(); // 화면 지우기
 
+    // 배경 그리기
     currentStage.drawBackground(*window);
 
-    // player.draw(playerSpeed * dt, 0);
-     // 여기에서 게임 객체를 그리기 (예: player, enemy 등)
+    // 플레이어 관련 그리기
     player.draw(*window);
-  
     player.renderAttack(*window);
 
 
-    // 적 업데이트 및 화면에 그리기
+
+    // 적 관련 그리기
     for (auto* enemy : enemies) {
-        
-        //enemy->attack();         // 적의 공격 수행
         enemy->draw(*window);     // 적을 화면에 그리기
     }
 
