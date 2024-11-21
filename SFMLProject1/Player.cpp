@@ -48,7 +48,7 @@ void Player::setPlayer(std::string textureFile, sf::Vector2f bulletDirection, sf
         sprite.setPosition(position);
     }
     
-    width = sprite.getTexture()->getSize().x * sprite.getScale().x;
+    width = sprite.getTexture()->getSize().x * sprite.getScale().x;     // 
     height = sprite.getTexture()->getSize().y * sprite.getScale().y;
 }
 
