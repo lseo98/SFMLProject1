@@ -5,7 +5,7 @@ extern int WINDOWWIDTH, WINDOWHEIGHT;
 
 class Projectile {
 public:
-    Projectile(const sf::Vector2f& startPosition, const sf::Vector2f& direction, float speed); // 기본 생성자 제거
+    Projectile(sf::Vector2f startPosition, sf::Vector2f direction, float speed); // 기본 생성자 제거
     virtual ~Projectile() = default;
 
     virtual void update() = 0;           // 위치 업데이트

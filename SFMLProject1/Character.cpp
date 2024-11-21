@@ -9,6 +9,10 @@ Character::Character(float health, float speed, sf::Vector2f position) : health(
    // shape.setFillColor(sf::Color::Blue);  // 임의의 색상 설정
 }
 
+void Character::setPosition(sf::Vector2f postion) {
+    this->position = postion;
+}
+
 void Character::take_damage(float amount) {
     this->health -= amount;
     if (this->health < 0) this->health = 0;

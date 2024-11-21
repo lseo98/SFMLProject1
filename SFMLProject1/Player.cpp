@@ -4,22 +4,26 @@
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
                          // health,  speed, sf::Vector2f position
-Player::Player() : Character(3, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 2.0f)) { missileLaunched = false; }
+Player::Player() : Character(3, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f)) { 
+    missileLaunched = false; 
+    //width = (int)sprite.getTexture()->getSize().x;
+    //height = (int)sprite.getTexture()->getSize().y;
+}
+
 
 void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
 
-    float sizeX = this->shape.getSize().x, sizeY = this->shape.getSize().y;     // 플레이어 객채의 가로 세로 크기 추출
     // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
-    if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
-    if (this->position.x + sizeX> WINDOWWIDTH / 4.0f * 3.0f)this->position.x = WINDOWWIDTH / 4.0f * 3.0f - sizeX;
-    if (this->position.y < 0)  this->position.y = 0;
-    if (this->position.y + sizeY > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - sizeY;
+    //if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
+    //if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width;
+    //if (this->position.y < 0)  this->position.y = 0;
+    //if (this->position.y + height > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - height;
 
 }
 
 void Player::take_damage(float amount) {
-    this->health -= amount;
+    this->health -= 1;
     if (this->health < 0) this->health = 0;
     std::cout << "플레이어 체력 : " << this->health << std::endl;
 }
@@ -54,7 +58,8 @@ void Player::basic_attack() {
     bulletStartPosition.x += this->shape.getGlobalBounds().width / 2; // 플레이어의 중심 x 좌표
     bulletStartPosition.y += this->shape.getGlobalBounds().height / 2; // 플레이어의 중심 y 좌표
 
-    bullets.emplace_back(bulletStartPosition, bulletDirection, 1.0f);
+    bullets.emplace_back4(bulletStartPosition, bulletDirection, 10.0f);
+    //bullets.push_back(Bullet(bulletStartPosition, bulletDirection, 1.0f));
 
 }
 
@@ -79,10 +84,10 @@ void Player::ultimate_attack() {
 }
 
 void Player::updateAttack() {
-    for (Bullet bullet: bullets) {
+    for (Bullet &bullet: bullets) {
         bullet.update(); // 발사체 상태 업데이트
     }
-    for (Missile missile : missiles) {
+    for (Missile &missile : missiles) {
         missile.update(); // 발사체 상태 업데이트
     }
 }

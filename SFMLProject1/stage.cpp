@@ -1,10 +1,4 @@
 #include "Stage.h"
-#include "SkyPlayerAttack.h"
-#include "SeaPlayerAttack.h"
-#include "LandPlayerAttack.h"
-#include "SkyEnemyAttack.h"
-#include "SeaEnemyAttack.h"
-#include "LandEnemyAttack.h"
 #include <memory>
 
 Stage::Stage() : stageNumber(1), bossSpawned(false), timeSinceLastAttack(0.0f), attackCooldown(0.2f) { }
@@ -63,8 +57,8 @@ void Stage::drawBackground(sf::RenderWindow& window) {
 void Stage::spawnEnemies(std::vector<Enemy*>& enemies) {
     enemies.clear(); // 스테이지 변경 시 기존 적 삭제
 
-    enemies.push_back(new NormalUnit());
-    enemies.push_back(new EliteUnit());
+    enemies.push_back(new NormalUnit(stageNumber));
+    enemies.push_back(new EliteUnit(stageNumber));
 
     // 땅 스테이지에서 보스 등장
     if (stageNumber == 3 && !bossSpawned) {
@@ -77,36 +71,36 @@ void Stage::spawnEnemies(std::vector<Enemy*>& enemies) {
 
 void Stage::setEnemyAttack(int stageNumber, std::vector<Enemy*>& enemies) {
     for (auto* enemy : enemies) {
-        AttackType type = dynamic_cast<NormalUnit*>(enemy) ? AttackType::Normal : AttackType::Elite;
-        std::unique_ptr<EnemyAttack> attackPattern;
-        if (stageNumber == 1) {
-            attackPattern = std::make_unique<SkyEnemyAttack>(type);
-            if (type == AttackType::Normal) {
-                enemy->image("sky_enemy_unit.png");   // 이미지 설정
-            }
-            else {
-                enemy->image("sky_elite_unit.png");
-            }
-        }
-        else if (stageNumber == 2) {
-            attackPattern = std::make_unique<SeaEnemyAttack>(type);
-            if (type == AttackType::Normal) {
-                enemy->image("sea_enemy_unit.png");   // 이미지 설정
-            }
-            else {
-                enemy->image("sea_elite_unit.png");
-            }
-        }
-        else if (stageNumber == 3) {
-            attackPattern = std::make_unique<LandEnemyAttack>(type);
-            if (type == AttackType::Normal) {
-                enemy->image("land_enemy_unit.png");   // 이미지 설정
-            }
-            else {
-                enemy->image("land_elite_unit.png");
-            }
-        }
-        enemy->setEnemyAttack(std::move(attackPattern));
+
+
+        //if (stageNumber == 1) {
+
+        //    if (type == AttackType::Normal) {
+        //        enemy->image("sky_enemy_unit.png");   // 이미지 설정
+        //    }
+        //    else {
+        //        enemy->image("sky_elite_unit.png");
+        //    }
+        //}
+        //else if (stageNumber == 2) {
+        //    attackPattern = std::make_unique<SeaEnemyAttack>(type);
+        //    if (type == AttackType::Normal) {
+        //        enemy->image("sea_enemy_unit.png");   // 이미지 설정
+        //    }
+        //    else {
+        //        enemy->image("sea_elite_unit.png");
+        //    }
+        //}
+        //else if (stageNumber == 3) {
+        //    attackPattern = std::make_unique<LandEnemyAttack>(type);
+        //    if (type == AttackType::Normal) {
+        //        enemy->image("land_enemy_unit.png");   // 이미지 설정
+        //    }
+        //    else {
+        //        enemy->image("land_elite_unit.png");
+        //    }
+        //}
+
     }
 }
 

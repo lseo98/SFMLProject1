@@ -139,22 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AntiTankMissile.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputKeyUpdate.cpp" />
-    <ClCompile Include="LandPlayerAttack.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Missile.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="SeaPlayerAttack.cpp" />
-    <ClCompile Include="SkyPlayerAttack.cpp" />
     <ClCompile Include="stage.cpp" />
-    <ClCompile Include="Torpedo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntiTankMissile.h" />

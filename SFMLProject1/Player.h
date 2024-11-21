@@ -1,6 +1,6 @@
 #pragma once
 #include "Character.h"
-#include "PlayerAttack.h"
+
 //#include <memory>
 #include <iostream>
 #include "Projectile.h"
@@ -13,7 +13,6 @@ public:
     
 
     float power = 150.0f;
-
 
     void move(sf::Vector2f updatePosition);
     void take_damage(float amount) override;

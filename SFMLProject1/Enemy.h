@@ -1,6 +1,5 @@
 #pragma once
 #include "Character.h"
-#include "EnemyAttack.h"
 #include "Missile.h"
 //#include <memory>
 #include <iostream>
@@ -9,11 +8,13 @@ class Enemy : public Character {
 public:
     Enemy(float health, float speed, sf::Vector2f position);
 
+
     void take_damage(float amount) override;
-    void draw(sf::RenderWindow& window) override;
+    void draw(sf::RenderWindow& window);
+
+
 
     void image(const std::string& textureFile);
-
 
     sf::Texture texture;      // 이미지 텍스처
     sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
@@ -51,6 +52,7 @@ public:
            break;
        default:
            std::cout << "적군 생성자 오류" << std::endl;
+           missileDirection = sf::Vector2f(0, 0);
            break;
        }
     }
