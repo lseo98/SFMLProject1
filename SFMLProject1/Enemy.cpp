@@ -46,7 +46,7 @@ void Enemy::update(float deltaTime) {
                 targetX = rand() % (1350 - 450) + 450; // 새로운 랜덤 X 좌표
                 if (nextTargetY == 400) nextTargetY += 500; 
                 else nextTargetY += 100; // 다음 Y 목표값 증가
-                std::cout << "New targetX: " << targetX << ", nextTargetY: " << nextTargetY << std::endl; // 디버그
+                //std::cout << "New targetX: " << targetX << ", nextTargetY: " << nextTargetY << std::endl; // 디버그
             }
             // X축과 Y축 남은 거리 계산
             float deltaX = targetX - position.x; // X축 남은 거리

@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include "Game.h"
+#include <string>
 #include <ctime> // time() 함수 사용
 
 int WINDOWWIDTH = 1800;    // 맵 너비

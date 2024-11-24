@@ -4,6 +4,8 @@
 #include "Stage.h"
 #include <vector>
 #include <iostream>
+#include <string>
+
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
@@ -46,4 +48,22 @@ private:
     std::vector<Enemy*> enemies;
     Stage currentStage;
     int stageNumber;        // 1: 하늘, 2: 바다, 3: 땅
+
+    // 입력 상자 관련 변수
+    sf::RectangleShape inputBoxl;
+    sf::RectangleShape inputBoxr;
+    sf::RectangleShape smallBoxr;
+
+    bool isInputActive;
+
+    // 텍스트 관련 변수
+    sf::Text inputText;
+    sf::Text text;
+    sf::Font font;
+    std::string userInput;
+    sf::Text skytext;
+    sf::Text seatext;
+    sf::Text landtext;
+    int ty = 0, tx = 0;
+
 };

@@ -91,7 +91,7 @@ void Player::setPlayer(int stageNumber){
     case 3:
         direction = 'D';
         bulletDirection = sf::Vector2f(1.0f, 0.0f);
-        missileDirection = sf::Vector2f(0.0f, -1.0f);
+        missileDirection = sf::Vector2f(0.0f, -1.0f); 
         textureFile ="land_my_unit_right.PNG";
         break;
     default:
