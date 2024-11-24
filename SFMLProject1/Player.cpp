@@ -49,15 +49,59 @@ void Player::updateDirection(char direction,int stageNumber) {
                 image("land_my_unit_right.png");
             }
         }
+        bulletDirection.x *= -1.0f;    // 총알 방향 전환 - 추후 이걸로 가능하도록 변경해야. 
+    }
+   
+}
+void Player::image(std::string textureFile) {
+    if (!texture.loadFromFile(textureFile)) {
+        std::cerr << "Error loading texture: " << textureFile << std::endl;
+    }
+    else {
+        sprite.setScale(0.1f, 0.1f);
+        sprite.setTexture(texture);
+        sprite.setPosition(position);
     }
 }
 
-void Player::setPlayer(std::string textureFile, sf::Vector2f bulletDirection, sf::Vector2f missileDirection){
+void Player::setPlayer(int stageNumber){
+    std::string textureFile;
+    sf::Vector2f bulletDirection, missileDirection;
+    
+    // 기존 공격체 삭제
+    bullets.clear();
+    missiles.clear();
+    
+    this->stageNumber = stageNumber;
 
+   
+    switch (stageNumber) {
+    case 1:
+        direction = 'W';
+        bulletDirection = sf::Vector2f(0.0f, -1.0f);
+        missileDirection = sf::Vector2f(0.0f, -1.0f);
+        textureFile = "sky_my_unit.PNG";
+        break;
+    case 2:
+        direction = 'D';
+        bulletDirection = sf::Vector2f(1.0f, 0.0f);
+        missileDirection = sf::Vector2f(1.0f, 0.0f);
+        textureFile = "sea_my_unit_right.png";
+        break;
+    case 3:
+        direction = 'D';
+        bulletDirection = sf::Vector2f(1.0f, 0.0f);
+        missileDirection = sf::Vector2f(0.0f, -1.0f);
+        textureFile ="land_my_unit_right.PNG";
+        break;
+    default:
+        direction = 'W';
+        break;
+    }
+    
     // 공격체 방향 초기화
     this->bulletDirection = bulletDirection;
     this->missileDirection = missileDirection;
-
 
     // 플레이어 이미지 처리
     if (!texture.loadFromFile(textureFile)) {
@@ -68,7 +112,6 @@ void Player::setPlayer(std::string textureFile, sf::Vector2f bulletDirection, sf
         sprite.setTexture(texture);
         sprite.setPosition(position);
     }
-    
     width = sprite.getTexture()->getSize().x * sprite.getScale().x;     // 
     height = sprite.getTexture()->getSize().y * sprite.getScale().y;
 }
@@ -78,8 +121,8 @@ void Player::basic_attack() {
 
     // 플레이어의 중앙 위치를 계산하여 총알의 시작 위치로 사용
     sf::Vector2f bulletStartPosition = this->position;
-    bulletStartPosition.x += this->shape.getGlobalBounds().width / 2; // 플레이어의 중심 x 좌표
-    bulletStartPosition.y += this->shape.getGlobalBounds().height / 2; // 플레이어의 중심 y 좌표
+    bulletStartPosition.x += width / 2.0f; // 플레이어의 중심 x 좌표
+    bulletStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
 
     bullets.emplace_back(bulletStartPosition, bulletDirection, 10.0f);
     //bullets.push_back(Bullet(bulletStartPosition, bulletDirection, 1.0f));
@@ -95,8 +138,8 @@ void Player::special_attack() {
     if (!missileLaunched) {                                                 // 미사일이 없는 경우
         // 플레이어의 중앙 위치를 계산하여 미사일의 시작 위치로 사용
         sf::Vector2f missileStartPosition = this->position;
-        missileStartPosition.x += this->shape.getGlobalBounds().width / 2; // 플레이어의 중심 x 좌표
-        missileStartPosition.y += this->shape.getGlobalBounds().height / 2; // 플레이어의 중심 y 좌표
+        missileStartPosition.x += width / 2.0f; // 플레이어의 중심 x 좌표
+        missileStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
 
         missiles.emplace_back(missileStartPosition, missileDirection, 1.0f);
        // missileLaunched = true;

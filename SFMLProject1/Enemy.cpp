@@ -163,9 +163,8 @@ void EliteUnit::special_attack() {
     if (!missileLaunched) {                                                 // 미사일이 없는 경우
         // 유닛의 중앙 위치를 계산하여 미사일의 시작 위치로 사용
         sf::Vector2f missileStartPosition = this->position;
-        missileStartPosition.x += this->shape.getGlobalBounds().width / 2; // 플레이어의 중심 x 좌표
-        missileStartPosition.y += this->shape.getGlobalBounds().height / 2; // 플레이어의 중심 y 좌표
-
+        missileStartPosition.x += width / 2.0f; // 플레이어의 중심 x 좌표
+        missileStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
         missiles.emplace_back(missileStartPosition, missileDirection, 1.0f);
         // missileLaunched = true;
 

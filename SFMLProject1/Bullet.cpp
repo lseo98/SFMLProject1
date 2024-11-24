@@ -19,7 +19,3 @@ void Bullet::draw(sf::RenderWindow& window) {
    
     window.draw(shape);
 }
-
-void Bullet::draw(sf::RenderWindow& window) {      
-    window.draw(shape);
-}

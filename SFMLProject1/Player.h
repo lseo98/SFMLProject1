@@ -17,10 +17,13 @@ public:
     void move(sf::Vector2f updatePosition);
     void take_damage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
+    void updateDirection(char direction,int stageNum); // 유닛 방향 설정
+    void image(std::string textureFile);
     
     // 스테이지 전환시 플레이어 세팅
-    void setPlayer(std::string textureFile, sf::Vector2f bulletDirection, sf::Vector2f missileDirection);  // void image(std::string);
-
+    void setPlayer(int stageNumber);  
+    
+   
 
     // - 공격
     // 생성
@@ -44,9 +47,5 @@ private:
     std::vector<Missile> missiles;
     sf::Vector2f bulletDirection; // 기본 공격 방향  
     sf::Vector2f missileDirection;
-    void updateDirection(char direction,int stageNum); // 유닛 방향 설정
-
-private:
-
     char direction;
 };

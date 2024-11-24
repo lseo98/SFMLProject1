@@ -17,14 +17,14 @@ Game::~Game() {
 void Game::run() {
     while (isRunning && window->isOpen()) {
         sf::Event event;
-        sf::Time deltaTime = clock.restart(); // 프레임 간 경과 시간 측정
+        //sf::Time deltaTime = clock.restart(); // 프레임 간 경과 시간 측정
+        dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
         handleEvents();
         update();
         render();
     }
-
-
 }
+
 void Game::initVariables() {
     window = nullptr;   // 윈도우 초기화
     isRunning = true;   
@@ -33,12 +33,12 @@ void Game::initVariables() {
     stageNumber = 1;        // 1: 하늘, 2: 바다, 3: 땅
 
     currentStage.setStage(stageNumber, enemies);    // 현재 스테이지 초기화
-    currentStage.spawnEnemies(enemies);             // 이전 스테이지 적군 삭제 및 초기화
+    currentStage.spawnEnemies(enemies, dt);             // 이전 스테이지 적군 삭제 및 초기화
 
-    player.setPlayer("sky_my_unit.PNG", sf::Vector2f(0.0f, -1.0f), sf::Vector2f(0.0f, -1.0f));  // 아군 유닛 초기화
+    player.setPlayer(stageNumber);  // 아군 유닛 초기화
 
 
-    currentStage.setStage(stageNumber, player, enemies);    // 현재 스테이지 초기화
+    currentStage.setStage(stageNumber, enemies);    // 현재 스테이지 초기화
 
 }
 
@@ -53,14 +53,7 @@ void Game::initWindow() {
 }
 
 
-void Game::run() {
-    while (isRunning && window->isOpen()) {
-        float dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
-        handleEvents();
-        update(dt);
-        render();
-    }
-}
+
 
 void Game::handleEvents() {
     while (window->pollEvent(event)) {
@@ -68,10 +61,28 @@ void Game::handleEvents() {
             isRunning = false;
             window->close();
         }
-        //  특수 공격 : E 키를 눌렀을 때 수행
+        
         if(event.type == sf::Event::KeyPressed) {   // 한 번 눌렀을 때 한 개만 생성되도록 키를 새로 눌렀을 경우에만 실행
+            //  특수 공격 : E 키를 눌렀을 때 수행
             if (event.key.code == sf::Keyboard::E) {
                 player.special_attack(); // E 키를 눌렀을 때 한 번만 호출
+            }
+            // 플레이어 좌우 반전
+            if (stageNumber == 2) {
+                if (event.key.code == sf::Keyboard::A) {
+                    player.updateDirection('A', 2);
+                }
+                if (event.key.code == sf::Keyboard::D) {
+                    player.updateDirection('D', 2);
+                }
+            }
+            if (stageNumber == 3) {
+                if (event.key.code == sf::Keyboard::A) {
+                    player.updateDirection('A', 3);
+                }
+                if (event.key.code == sf::Keyboard::D) {
+                    player.updateDirection('D', 3);
+                }
             }
         }
       
@@ -80,32 +91,33 @@ void Game::handleEvents() {
             stageNumber = 1;
 
             currentStage.setStage(stageNumber, enemies);
-            player.setPlayer("sky_my_unit.PNG", sf::Vector2f(0.0f, -1.0f), sf::Vector2f(0.0f, -1.0f));
+            player.setPlayer(stageNumber);
             player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 9.0f / 10.0f));
-            currentStage.spawnEnemies(enemies);
+            currentStage.spawnEnemies(enemies, dt);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) {
             stageNumber = 2; 
             
             currentStage.setStage(stageNumber, enemies);
-            player.setPlayer("sea_my_unit.PNG",sf::Vector2f(1.0f, 0.0f), sf::Vector2f(1.0f, 0.0f));
+            player.setPlayer(stageNumber);
             player.setPosition(sf::Vector2f(WINDOWWIDTH / 4.0f, WINDOWHEIGHT / 2.0f));
-            currentStage.spawnEnemies(enemies);
+            currentStage.spawnEnemies(enemies, dt);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3)) {
             stageNumber = 3;
 
             currentStage.setStage(stageNumber, enemies);
-            player.setPlayer("land_my_unit_right.PNG",sf::Vector2f(1.0f, 0.0f),sf::Vector2f(0.0f, -1.0f));
+            player.setPlayer(stageNumber);
             player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3));
-            currentStage.spawnEnemies(enemies);
+            currentStage.spawnEnemies(enemies, dt);
 
-            currentStage.setStage(stageNumber, player, enemies);
+            currentStage.setStage(stageNumber,enemies);
         }    
+
     }
 }
 
-void Game::update(float dt) { // 게임 상태 업데이트
+void Game::update() { // 게임 상태 업데이트
     static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
 
     float speed = player.get_speed();
@@ -121,32 +133,14 @@ void Game::update(float dt) { // 게임 상태 업데이트
         dy *= 0.7;
     }
 
-    for (float i = 0; i < 1; i += dt) player.move(sf::Vector2f(dx * dt, dy * dt));
-
-    // 플레이어 좌우 반전
-    if (stageNumber == 2) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            player.updateDirection('A', 2);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            player.updateDirection('D', 2);
-        }
-    }
-    if (stageNumber == 3) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            player.updateDirection('A', 3);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            player.updateDirection('D', 3);
-        }
-    }
+    for (float i = 0; i < 1; i += this->dt) player.move(sf::Vector2f(dx * dt, dy * dt));
 
        
 
     // 200ms 간격으로 기본 공격 발사
     if (attackClock.getElapsedTime().asMilliseconds() >= 100) {
         player.basic_attack(); // 기본 공격 발사
-        attackClock.restart();       // 타이머 초기화
+        attackClock.restart(); // 타이머 초기화
     }
 
     player.updateAttack();

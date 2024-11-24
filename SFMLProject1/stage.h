@@ -9,7 +9,7 @@ public:
     Stage();
 
     void setStage(int stageNumber, std::vector<Enemy*>& enemies);
-    void spawnEnemies(std::vector<Enemy*>& enemies);
+    void spawnEnemies(std::vector<Enemy*>& enemies, float deltaTime);
     void drawBackground(sf::RenderWindow& window); // 배경을 그리는 함수
 
 private:

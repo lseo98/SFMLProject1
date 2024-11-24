@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "Missile.h"
 #include <memory>
 #include <iostream>
 
@@ -13,6 +14,7 @@ public:
     void take_damage(float amount) override;
     void draw(sf::RenderWindow& window);
 
+    void update(float deltaTime);
 
 
     void image(const std::string& textureFile);
