@@ -1,6 +1,6 @@
 #include "Projectile.h"
 
-Projectile::Projectile(const sf::Vector2f& startPosition, const sf::Vector2f& direction, float speed)
+Projectile::Projectile(sf::Vector2f startPosition, sf::Vector2f direction, float speed)
     : position(startPosition), direction(direction), speed(speed) {
     shape.setRadius(5.0f);
     shape.setFillColor(sf::Color::White);

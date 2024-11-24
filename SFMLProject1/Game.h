@@ -38,7 +38,7 @@ private:
     float playerSpeed;  // 예시로 플레이어 이동 속도 변수
     sf::Vector2f bulletDirection;
     sf::Vector2f missileDirection;
-
+    float dt;
 
 
     // 초기 객체 생성

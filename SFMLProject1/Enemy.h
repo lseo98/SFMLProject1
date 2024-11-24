@@ -1,31 +1,50 @@
 #pragma once
 #include "Character.h"
-#include "EnemyAttack.h"
 #include "Missile.h"
-//#include <memory>
+#include <memory>
 #include <iostream>
+
+extern int WINDOWWIDTH, WINDOWHEIGHT;
 
 class Enemy : public Character {
 public:
-    Enemy(float health, float speed, sf::Vector2f position);
+    Enemy(float health, float speed, sf::Vector2f position, int stageNumber);
+
 
     void take_damage(float amount) override;
-    void draw(sf::RenderWindow& window) override;
+    void draw(sf::RenderWindow& window);
+
+    void update(float deltaTime);
+
 
     void image(const std::string& textureFile);
 
+    void updateDirection(int newDirection = 0); // ë°©í–¥ ê°€ì ¸ì˜¤ê¸° 
 
-    sf::Texture texture;      // ÀÌ¹ÌÁö ÅØ½ºÃ³
-    sf::Sprite sprite;        // ÅØ½ºÃ³¸¦ »ç¿ëÇÒ ½ºÇÁ¶óÀÌÆ®
+    bool isOffScreen() const; // ì¤‘ì•™ 900x900 ë²”ìœ„ë¥¼ ê¸°ì¤€ìœ¼ë¡œ í™”ë©´ ë°–ìœ¼ë¡œ ë‚˜ê°”ëŠ”ì§€ í™•ì¸
 
+    sf::Texture texture;      // ì´ë¯¸ì§€ í…ìŠ¤ì²˜
+    sf::Sprite sprite;        // í…ìŠ¤ì²˜ë¥¼ ì‚¬ìš©í•  ìŠ¤í”„ë¼ì´íŠ¸
+
+protected:
+    int stageNumber;  // ìŠ¤í…Œì´ì§€ ë²ˆí˜¸
+    int direction;    // ë•… ìŠ¤í…Œì´ì§€ì—ì„œë§Œ ì‚¬ìš©ë˜ëŠ” ë°©í–¥ (1: ì˜¤ë¥¸ìª½, -1: ì™¼ìª½)
+
+    float targetX = 0.0f; // ëª©í‘œ X ì¢Œí‘œ
+    float targetY = 0.0f; // ëª©í‘œ Y ì¢Œí‘œ
+    float nextTargetY = 0.0f; // í•˜ëŠ˜ ìŠ¤í…Œì´ì§€: ë‹¤ìŒ Y ëª©í‘œê°’
+    float nextTargetX = 1350.0f; // ë°”ë‹¤ ìŠ¤í…Œì´ì§€: ë‹¤ìŒ X ëª©í‘œê°’
 
 };
 
 class NormalUnit : public Enemy {
 
 public:
-    NormalUnit(int stageNumber) : Enemy(100.0f, 1.0f, sf::Vector2f(0,0)) {
-        image("sky_enemy_unit.png");  // ÀÌ¹ÌÁö ÆÄÀÏÀ» ÃÊ±âÈ­
+    NormalUnit(int stageNumber, sf::Vector2f position)
+        : Enemy(100.0f, 1.0f, position, stageNumber) {
+        image(stageNumber == 1 ? "sky_enemy_unit.png" :
+              stageNumber == 2 ? "sea_enemy_unit_b.png" :
+                                 "land_enemy_unit.png"); // ì´ë¯¸ì§€ ì„¤ì •
     }
 
 
@@ -35,33 +54,38 @@ public:
 class EliteUnit : public Enemy {
 
 public:
-    EliteUnit(int stageNumber) : Enemy(300.0f, 1.5f, sf::Vector2f(0, 0)) {
-        image("sky_elite_unit.png");  // ÀÌ¹ÌÁö ÆÄÀÏÀ» ÃÊ±âÈ­
+    EliteUnit(int stageNumber, sf::Vector2f position)
+        : Enemy(300.0f, 1.5f, position, stageNumber) {
+        
         missileLaunched = false;
-        // À§¿¡ ´Ù ½ºÀ§Ä¡·Î Ã³¸®
+        // ìœ„ì— ë‹¤ ìŠ¤ìœ„ì¹˜ë¡œ ì²˜ë¦¬
        switch (stageNumber) {
        case 1:
+           image("sky_elite_unit.png");  // ì´ë¯¸ì§€ íŒŒì¼ì„ ì´ˆê¸°í™”
            missileDirection = sf::Vector2f(0, 1);
            break;
        case 2:
+           image("sea_elite_unit.png");  // ì´ë¯¸ì§€ íŒŒì¼ì„ ì´ˆê¸°í™”
            missileDirection = sf::Vector2f(-1, 0);
            break;
        case 3:
+           image("land_elite_unit.png");  // ì´ë¯¸ì§€ íŒŒì¼ì„ ì´ˆê¸°í™”
            missileDirection = sf::Vector2f(-1, 1);
            break;
        default:
-           std::cout << "Àû±º »ı¼ºÀÚ ¿À·ù" << std::endl;
+           std::cout << "ì êµ° ìƒì„±ì ì˜¤ë¥˜" << std::endl;
+           missileDirection = sf::Vector2f(0, 0);
            break;
        }
     }
    
 
-    // - °ø°İ
-    // »ı¼º
+    // - ê³µê²©
+    // ìƒì„±
     void special_attack();
-    // ¾÷µ¥ÀÌÆ®
+    // ì—…ë°ì´íŠ¸
     void updateAttack();
-    // ±×¸®±â
+    // ê·¸ë¦¬ê¸°
     void renderAttack(sf::RenderWindow& window);
     
     
