@@ -143,6 +143,7 @@ void Game::update() { // 게임 상태 업데이트
         attackClock.restart(); // 타이머 초기화
     }
 
+    // 플레이어 공격 업데이트
     player.updateAttack(enemies);
 
 
