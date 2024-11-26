@@ -144,7 +144,7 @@ void Game::update() { // 게임 상태 업데이트
     // 플레이어 쿨타임 업데이트
     player.updateCooldowns(dt); // 쿨타임 업데이트 추가
 
-    float speed = player.get_speed();
+    float speed = player.getSpeed();
     float dx = 0.0f, dy = 0.0f;
     
     // 플레이어 움직임 업데이트
@@ -190,7 +190,7 @@ void Game::update() { // 게임 상태 업데이트
         }
     }
 
-    player.updateAttack();
+    player.updateAttack(enemies);
     player.updateAllies(dt);
 
     // 적 생성 및 업데이트

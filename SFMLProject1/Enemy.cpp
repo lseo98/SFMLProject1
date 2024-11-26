@@ -6,7 +6,7 @@ Enemy::Enemy(float health, float speed, sf::Vector2f position, int stageNumber)
     : Character(health, speed, position), stageNumber(stageNumber){
 }
 
-void Enemy::take_damage(float amount) {
+void Enemy::takeDamage(float amount) {
     health -= amount;
     if (health < 0) health = 0;
 }
@@ -158,7 +158,7 @@ void EliteUnit::special_attack() {
         sf::Vector2f missileStartPosition = this->position;
         missileStartPosition.x += width / 2.0f; // 플레이어의 중심 x 좌표
         missileStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
-        missiles.emplace_back(missileStartPosition, missileDirection, 1.0f);
+        missiles.emplace_back(new Missile(missileStartPosition, missileDirection, 1.0f));
         // missileLaunched = true;
 
     }
@@ -166,15 +166,15 @@ void EliteUnit::special_attack() {
 
 void EliteUnit::updateAttack() {
     
-    for (Missile missile : missiles) {
-        missile.update(); // 발사체 상태 업데이트
+    for (Missile *missile : missiles) {
+        missile->update(); // 발사체 상태 업데이트
     }
 }
 
 void EliteUnit::renderAttack(sf::RenderWindow& window) {
 
-    for (Missile missile : missiles) {
-        missile.draw(window); // 발사체 상태 업데이트
+    for (Missile *missile : missiles) {
+        missile->draw(window); // 발사체 상태 업데이트
     }
 
 }

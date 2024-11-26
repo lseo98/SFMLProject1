@@ -4,7 +4,7 @@
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
                          // health,  speed, sf::Vector2f position
-Player::Player() : Character(3, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f - width / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f)) { 
+Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f - width / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f)) { 
     //missileLaunched = false; 
 
     // 특수 공격 관련 변수 초기화
@@ -30,7 +30,7 @@ void Player::move(sf::Vector2f updatePosition) {
 
 }
 
-void Player::take_damage(float amount) {
+void Player::takeDamage(float amount) {
     this->health -= 1;
     if (this->health < 0) this->health = 0;
     std::cout << "플레이어 체력 : " << this->health << std::endl;
@@ -42,7 +42,7 @@ void Player::draw(sf::RenderWindow& window) {
 }
 
 //방향에 따라서 사진 업로드
-void Player::updateDirection(char direction,int stageNumber) {
+void Player::updateDirection(char direction, int stageNumber) {
     if (direction != this->direction) { //버벅거림 막기
         this->direction = direction;
         if (stageNumber == 2) { // Only change image in stage 3
@@ -78,7 +78,6 @@ void Player::image(std::string textureFile) {
 
 void Player::setPlayer(int stageNumber){
     std::string textureFile;
-    sf::Vector2f bulletDirection, missileDirection;
     
     // 기존 공격체 삭제
     bullets.clear();
@@ -115,8 +114,10 @@ void Player::setPlayer(int stageNumber){
     }
     
     // 공격체 방향 초기화
-    this->bulletDirection = bulletDirection;
-    this->missileDirection = missileDirection;
+    //this->bulletDirection = bulletDirection;
+    //this->missileDirection = missileDirection;
+    bulletDirection = bulletDirection;
+    missileDirection = missileDirection;
 
     // 플레이어 이미지 처리
     if (!texture.loadFromFile(textureFile)) {
@@ -138,8 +139,7 @@ void Player::basicAttack() {
     sf::Vector2f bulletStartPosition = this->position;
     bulletStartPosition.x += width / 2.0f; // 플레이어의 중심 x 좌표
     bulletStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
-
-    bullets.emplace_back(bulletStartPosition, bulletDirection, 10.0f);
+    bullets.emplace_back(new Bullet(bulletStartPosition, bulletDirection, 10.0f));
     //bullets.push_back(Bullet(bulletStartPosition, bulletDirection, 1.0f));
 }
 
@@ -153,8 +153,8 @@ void Player::specialAttack() {
         missileStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
 
         // 미사일 생성 및 설정
-        Missile missile(missileStartPosition, missileDirection, 1.0f);
-        missile.isAlly = false;
+        Missile* missile = new Missile(missileStartPosition, missileDirection, 1.0f);
+        missile->isAlly = false;
         missiles.push_back(missile);
 
         // 특수 공격 상태 갱신
@@ -199,7 +199,7 @@ void Player::ultimateAttack() {
 
                 // 아군 유닛 생성
                 allyUnits.clear(); // 기존 아군 유닛 제거
-                for (const auto& allyPosition : allyPositions) {
+                for (const auto allyPosition : allyPositions) {
                     sf::Sprite allySprite;
                     allySprite.setTexture(allyTexture);
                     allySprite.setPosition(allyPosition);
@@ -249,7 +249,8 @@ void Player::ultimateAttack() {
                 float missileSpeed = 3.0f;  // 발사 속도 (바다 스테이지)
 
                 // 설정된 방향과 속도로 발사체 생성
-                allyMissiles.emplace_back(missileStartPosition, missileDirection, missileSpeed);
+                allyMissiles.emplace_back(new Missile(missileStartPosition, missileDirection, missileSpeed));
+
 
                 // 필살기 상태 갱신
                 timeSinceLastUltimate = 0.0f;  // 쿨타임 초기화
@@ -319,8 +320,8 @@ void Player::allyAttack() {
         }
 
         // 설정된 방향과 속도로 발사체 생성
-        Missile missile(missileStartPosition, missileDirection, missileSpeed);
-        missile.isAlly = true;  // 아군 미사일로 설정
+        Missile* missile = new Missile(missileStartPosition, missileDirection, 1.0f);
+        missile->isAlly = true;  // 아군 미사일로 설정
         allyMissiles.push_back(missile);
     }
 }
@@ -457,25 +458,104 @@ void Player::updateAllies(float dt) {
     }
 }
 
+void Player::updateAttack(std::vector<Enemy*> &enemies) {
 
-void Player::updateAttack() {
-    for (Bullet &bullet: bullets) {
-        bullet.update(); // 발사체 상태 업데이트
+    // 플레이어의 공격과 적군의 충돌 처리
+    for (auto enemyIt = enemies.begin(); enemyIt != enemies.end(); ) {
+        bool enemyDestroyed = false;
+
+        if (*enemyIt == nullptr) {  // nullptr 체크
+            enemyIt = enemies.erase(enemyIt);
+           continue;
+        }
+
+        // Bullet 처리
+        for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
+          
+            if ((*bulletIt)->shape.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
+
+                /*std::cout << "Bullet Global Bounds: " << (*bulletIt)->shape.getGlobalBounds().left << ", "
+                    << (*bulletIt)->shape.getGlobalBounds().top << ", "
+                    << (*bulletIt)->shape.getGlobalBounds().width << ", "
+                    << (*bulletIt)->shape.getGlobalBounds().height << std::endl;
+
+                std::cout << "Enemy Global Bounds: " << (*enemyIt)->sprite.getGlobalBounds().left << ", "
+                    << (*enemyIt)->sprite.getGlobalBounds().top << ", "
+                    << (*enemyIt)->sprite.getGlobalBounds().width << ", "
+                    << (*enemyIt)->sprite.getGlobalBounds().height << std::endl;*/
+
+                (*enemyIt)->takeDamage((*bulletIt)->getDamage());   // Enemy의 체력 감소
+                delete* bulletIt;                                   // 동적 메모리 해제
+                bulletIt = bullets.erase(bulletIt);                 // Bullet 삭제 후 다음 요소를 가리킴
+                
+
+                if ((*enemyIt)->getHealth() <= 0) {
+                    delete* enemyIt;                                // 동적 메모리 해제
+                    enemyIt = enemies.erase(enemyIt);               // Enemy 삭제
+                   
+                    enemyDestroyed = true;
+                    break;                                          // Enemy가 삭제되었으므로 현재 Enemy와 더 이상의 충돌 검사 불필요
+                }
+            }
+            else {                                                  // 충돌이 발생하지 않은 경우 총알 업데이트
+               // 매우 중요
+               // (*bulletIt)->update(); // Bullet 상태를 충돌 처리 내부에서 업데이트 할 경우 적군이 없을 경우 업데이트가 되지 않을 수 있다
+                ++bulletIt;
+            }
+        }
+        if (enemyDestroyed) {
+            continue; // Enemy가 삭제되었으므로 다음 Enemy로 이동
+        }
+
+        // Missile 처리
+        for (auto missileIt = missiles.begin(); missileIt != missiles.end();) {
+
+            if ((*missileIt)->shape.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
+
+                (*enemyIt)->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
+                delete* missileIt;                                   // 동적 메모리 해제
+                missileIt = missiles.erase(missileIt);                 // Bullet 삭제 후 다음 요소를 가리킴
+
+
+                if ((*enemyIt)->getHealth() <= 0) {
+                    delete* enemyIt;                                // 동적 메모리 해제
+                    enemyIt = enemies.erase(enemyIt);               // Enemy 삭제
+
+                    enemyDestroyed = true;
+                    break;                                          // Enemy가 삭제되었으므로 현재 Enemy와 더 이상의 충돌 검사 불필요
+                }
+            }
+            else {                                                  // 충돌이 발생하지 않은 경우 총알 업데이트
+                // 매우 중요
+                // (*missileIt)->update(); // Missile 상태를 충돌 처리 내부에서 업데이트 할 경우 적군이 없을 경우 업데이트가 되지 않을 수 있다
+                ++missileIt;
+            }
+        }
+        if (enemyDestroyed) {
+            continue; // Enemy가 삭제되었으므로 다음 Enemy로 이동
+        }
+        ++enemyIt; // 다음 Enemy로 이동
+ 
     }
-    for (Missile &missile : missiles) {
-        missile.update(); // 발사체 상태 업데이트
+
+    // 총알과 미사일의 상태 업데이트
+    for (Bullet* bullet : bullets) {
+        bullet->update(); // 발사체 상태 업데이트
+    }
+    for (Missile* missile : missiles) {
+        missile->update(); // 발사체 상태 업데이트
     }
 
     // 아군 유닛의 발사체 업데이트
-    for (Missile& Missile : allyMissiles) {
-        Missile.update();
+    for (Missile* Missile : allyMissiles) {
+        Missile->update();
     }
 
     if (stageNumber == 2) {
         allyMissiles.erase(
             std::remove_if(allyMissiles.begin(), allyMissiles.end(),
-                [](Missile& missile) {
-                    return missile.position.x >= WINDOWWIDTH / 2.0f + 100;
+                [](Missile* missile) {
+                    return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
                 }),
             allyMissiles.end()
         );
@@ -484,39 +564,40 @@ void Player::updateAttack() {
     // 화면 밖으로 나간 발사체 제거
     bullets.erase(
         std::remove_if(bullets.begin(), bullets.end(),
-            [](Bullet& bullet) {
-                return bullet.isOffScreen();
+            [](Bullet* bullet) {
+                return bullet->isOffScreen();
             }),
         bullets.end()
     );
 
     missiles.erase(
         std::remove_if(missiles.begin(), missiles.end(),
-            [](Missile& missile) {
-                return missile.isOffScreen();
+            [](Missile* missile) {
+                return missile->isOffScreen();
             }),
         missiles.end()
     );
 
     allyMissiles.erase(
         std::remove_if(allyMissiles.begin(), allyMissiles.end(),
-            [](Missile& Missile) {
-                return Missile.isOffScreen();
+            [](Missile* Missile) {
+                return Missile->isOffScreen();
             }),
         allyMissiles.end()
     );
 }
 
+
 void Player::renderAttack(sf::RenderWindow& window) {
-    for (Bullet bullet : bullets) {
-        bullet.draw(window); // 발사체 상태 업데이트
+    for (Bullet *bullet : bullets) {
+        bullet->draw(window); // 발사체 상태 업데이트
     }
-    for (Missile missile : missiles) {
-        missile.draw(window); // 발사체 상태 업데이트
+    for (Missile *missile : missiles) {
+        missile->draw(window); // 발사체 상태 업데이트
     }
 
     // 아군 유닛의 발사체 그리기
-    for (Missile& Missile : allyMissiles) {
-        Missile.draw(window);
+    for (Missile *Missile : allyMissiles) {
+        Missile->draw(window);
     }
 }
