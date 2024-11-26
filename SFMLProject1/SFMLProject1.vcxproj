@@ -152,26 +152,16 @@
     <ClCompile Include="stage.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AntiTankMissile.h" />
-    <ClInclude Include="LandEnemyAttack.h" />
-    <ClInclude Include="PlayerAttack.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyAttack.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputKeyUpdate.h" />
-    <ClInclude Include="LandPlayerAttack.h" />
     <ClInclude Include="Missile.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
-    <ClInclude Include="SeaEnemyAttack.h" />
-    <ClInclude Include="SeaPlayerAttack.h" />
-    <ClInclude Include="SkyPlayerAttack.h" />
     <ClInclude Include="stage.h" />
-    <ClInclude Include="Torpedo.h" />
-    <ClInclude Include="SkyEnemyAttack.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="land.png" />

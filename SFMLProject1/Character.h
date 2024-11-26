@@ -7,12 +7,12 @@ public:
     Character(float health, float speed, sf::Vector2f position);
     virtual ~Character() = default;
 
-    virtual void take_damage(float amount);
+    virtual void takeDamage(float amount);
     virtual void draw(sf::RenderWindow& window);
     void setPosition(sf::Vector2f postion); // 위치 초기화
 
-    float get_health() const;
-    float get_speed() const;
+    float getHealth() const;
+    float getSpeed() const;
 
 
     void updateAttack();

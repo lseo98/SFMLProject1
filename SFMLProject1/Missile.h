@@ -7,4 +7,7 @@ public:
 
     void update() override;
     void draw(sf::RenderWindow& window) override;
+
+    sf::CircleShape shape;   // SFML에서 사용할 기본 도형 (예: 원형 모양)
+
 };

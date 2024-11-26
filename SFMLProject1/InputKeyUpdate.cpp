@@ -3,7 +3,7 @@
 //void playerMoveKey(Player &player, sf::Keyboard::Key keyCode) {
 void InputKeyUpdate(Player &player, sf::Event event) {
 	
-	float speed = player.get_speed();
+	float speed = player.getSpeed();
 	float dx = 0.0f, dy = 0.0f;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {

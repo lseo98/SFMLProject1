@@ -120,7 +120,7 @@ void Game::handleEvents() {
 void Game::update() { // 게임 상태 업데이트
     static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
 
-    float speed = player.get_speed();
+    float speed = player.getSpeed();
     float dx = 0.0f, dy = 0.0f;
     
     // 플레이어 움직임 업데이트
@@ -143,7 +143,8 @@ void Game::update() { // 게임 상태 업데이트
         attackClock.restart(); // 타이머 초기화
     }
 
-    player.updateAttack();
+    // 플레이어 공격 업데이트
+    player.updateAttack(enemies);
 
 
 
