@@ -16,8 +16,11 @@ public:
 
     float getDamage() { return damage; }
 
-protected:
+    
+    bool isAlly; // 아군 유닛 발사체 여부
+
     sf::Vector2f position;   // 현재 위치
+protected:
     sf::Vector2f direction;  // 이동 방향
     float speed;             // 이동 속도
     sf::CircleShape shape;   // SFML에서 사용할 기본 도형 (예: 원형 모양)
