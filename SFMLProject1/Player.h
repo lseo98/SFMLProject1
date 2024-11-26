@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "Enemy.h"
 
 //#include <memory>
 #include <iostream>
@@ -15,7 +16,7 @@ public:
     float power = 150.0f;
 
     void move(sf::Vector2f updatePosition);
-    void take_damage(float amount) override;
+    void takeDamage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
     void updateDirection(char direction,int stageNum); // 유닛 방향 설정
     void image(std::string textureFile);
@@ -31,7 +32,7 @@ public:
     void special_attack();
     void ultimate_attack();
     // 업데이트
-    void updateAttack();
+    void updateAttack(std::vector<Enemy*> &enemies);
     // 그리기
     void renderAttack(sf::RenderWindow& window);
     
@@ -43,8 +44,8 @@ public:
 
 private:
 
-    std::vector<Bullet> bullets;
-    std::vector<Missile> missiles;
+    std::vector<Bullet*> bullets;
+    std::vector<Missile*> missiles;
     sf::Vector2f bulletDirection; // 기본 공격 방향  
     sf::Vector2f missileDirection;
     char direction;

@@ -12,7 +12,6 @@ bool Projectile::isOffScreen() const {
     int centerY = WINDOWHEIGHT / 2;
     int rangeX = 450;
     int rangeY = 450;
-
     return (position.x < centerX - rangeX || position.x > centerX + rangeX ||
         position.y < centerY - rangeY || position.y > centerY + rangeY);
 }

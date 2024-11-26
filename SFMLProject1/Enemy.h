@@ -1,7 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "Missile.h"
-#include <memory>
+//#include <memory>
 #include <iostream>
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
@@ -11,7 +11,7 @@ public:
     Enemy(float health, float speed, sf::Vector2f position, int stageNumber);
 
 
-    void take_damage(float amount) override;
+    void takeDamage(float amount) override;
     void draw(sf::RenderWindow& window);
 
     void update(float deltaTime);
@@ -93,7 +93,7 @@ public:
 
 
 private:
-    std::vector<Missile> missiles;
+    std::vector<Missile*> missiles;
     sf::Vector2f missileDirection;
 
 };

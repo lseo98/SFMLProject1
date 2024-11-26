@@ -18,7 +18,7 @@ void Character::setPosition(sf::Vector2f postion) {
     this->position = postion;
 }
 
-void Character::take_damage(float amount) {
+void Character::takeDamage(float amount) {
     this->health -= amount;
     if (this->health < 0) this->health = 0;
 }
@@ -28,10 +28,10 @@ void Character::draw(sf::RenderWindow& window) {
     window.draw(sprite);
 }
 
-float Character::get_health() const {
+float Character::getHealth() const {
     return health;
 }
 
-float Character::get_speed() const {
+float Character::getSpeed() const {
     return speed;
 }
