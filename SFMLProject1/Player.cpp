@@ -4,7 +4,7 @@
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
                          // health,  speed, sf::Vector2f position
-Player::Player() : Character(3, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f)) { 
+Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f)) { 
     missileLaunched = false; 
 }
 
@@ -23,6 +23,9 @@ void Player::take_damage(float amount) {
     this->health -= 1;
     if (this->health < 0) this->health = 0;
     std::cout << "플레이어 체력 : " << this->health << std::endl;
+
+
+
 }
 
 void Player::draw(sf::RenderWindow& window) {

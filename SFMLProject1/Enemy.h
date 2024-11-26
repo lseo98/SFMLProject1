@@ -9,6 +9,7 @@ extern int WINDOWWIDTH, WINDOWHEIGHT;
 class Enemy : public Character {
 public:
     Enemy(float health, float speed, sf::Vector2f position, int stageNumber);
+    float getHealth() const;
 
 
     void take_damage(float amount) override;
@@ -25,6 +26,7 @@ public:
 
     sf::Texture texture;      // 이미지 텍스처
     sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
+
 
 protected:
     int stageNumber;  // 스테이지 번호

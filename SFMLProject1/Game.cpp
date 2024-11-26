@@ -41,6 +41,27 @@ void Game::initVariables() {
 
 
     currentStage.setStage(stageNumber, enemies);    // 현재 스테이지 초기화
+    
+    // 왼쪽 입력 상자 설정
+    inputBoxl.setSize(sf::Vector2f(450, 900));
+    inputBoxl.setPosition(0, 0);             
+    inputBoxl.setFillColor(sf::Color::Black);
+    inputBoxl.setOutlineColor(sf::Color::Green);
+    inputBoxl.setOutlineThickness(2);
+
+    // 오른쪽 입력 상자 설정
+    inputBoxr.setSize(sf::Vector2f(450, 900));
+    inputBoxr.setPosition(1350, 0);
+    inputBoxr.setFillColor(sf::Color::Black);
+    inputBoxr.setOutlineColor(sf::Color::Green);
+    inputBoxr.setOutlineThickness(2);
+
+    // 오른쪽 작은 상자 설정
+    smallBoxr.setSize(sf::Vector2f(400, 300));
+    smallBoxr.setPosition(1375, 200);
+    smallBoxr.setFillColor(sf::Color::Black);
+    smallBoxr.setOutlineColor(sf::Color::White);
+    smallBoxr.setOutlineThickness(5);
 
 }
 
@@ -166,26 +187,6 @@ void Game::handleEvents() {
 
 void Game::update() { // 게임 상태 업데이트
 
-    // 왼쪽 입력 상자 설정
-    inputBoxl.setSize(sf::Vector2f(450, 900));
-    inputBoxl.setPosition(0, 0);             
-    inputBoxl.setFillColor(sf::Color::Black);
-    inputBoxl.setOutlineColor(sf::Color::Green);
-    inputBoxl.setOutlineThickness(2);
-
-    // 오른쪽 입력 상자 설정
-    inputBoxr.setSize(sf::Vector2f(450, 900));
-    inputBoxr.setPosition(1350, 0);
-    inputBoxr.setFillColor(sf::Color::Black);
-    inputBoxr.setOutlineColor(sf::Color::Green);
-    inputBoxr.setOutlineThickness(2);
-
-    // 오른쪽 작은 상자 설정
-    smallBoxr.setSize(sf::Vector2f(400, 300));
-    smallBoxr.setPosition(1375, 200);
-    smallBoxr.setFillColor(sf::Color::Black);
-    smallBoxr.setOutlineColor(sf::Color::White);
-    smallBoxr.setOutlineThickness(5);
 
     // 폰트 로드
     if (!font.loadFromFile("R2.ttc")){
@@ -196,7 +197,7 @@ void Game::update() { // 게임 상태 업데이트
     inputText.setFont(font);
     inputText.setString(userInput);
     inputText.setCharacterSize(24);
-    inputText.setFillColor(sf::Color::Red);
+    inputText.setFillColor(sf::Color::Yellow);
     inputText.setPosition(5,20);
 
     text.setFont(font);
@@ -208,28 +209,29 @@ void Game::update() { // 게임 상태 업데이트
     skytext.setFont(font);
     skytext.setString("AIR FORCE");
     skytext.setCharacterSize(38);
-    skytext.setFillColor(sf::Color::White);
-    if (stageNumber == 1)skytext.setFillColor(sf::Color(100, 100, 100, 250));
+    skytext.setFillColor(sf::Color(100, 100, 100, 250));
+    if (stageNumber == 1)skytext.setFillColor(sf::Color::White);
     skytext.setPosition(1410, 290);
 
     seatext.setFont(font);
     seatext.setString("NAVY");
     seatext.setCharacterSize(38);
-    seatext.setFillColor(sf::Color::White);
-    if (stageNumber == 2)seatext.setFillColor(sf::Color(100, 100, 100, 250));
+    seatext.setFillColor(sf::Color(100, 100, 100, 250));
+    if (stageNumber == 2)seatext.setFillColor(sf::Color::White);
     seatext.setPosition(1410, 340);
 
     landtext.setFont(font);
     landtext.setString("ARMY");
     landtext.setCharacterSize(38);
-    landtext.setFillColor(sf::Color::White);
-    if (stageNumber == 3)landtext.setFillColor(sf::Color(100, 100, 100, 250));
+    landtext.setFillColor(sf::Color(100, 100, 100, 250));
+    if (stageNumber == 3)landtext.setFillColor(sf::Color::White);
     landtext.setPosition(1410, 390);
 
 
 
 
-    static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
+
+    static sf::Clock attackClock; // 자동 발사 간격을 위한 시계 
 
     float speed = player.get_speed();
     float dx = 0.0f, dy = 0.0f;
@@ -258,8 +260,10 @@ void Game::update() { // 게임 상태 업데이트
     }
 
     player.updateAttack();
-
-
+    texture.loadFromFile("heart.png");
+    sprite.setScale(0.1f, 0.1f);
+    sprite.setTexture(texture);
+    sprite.setPosition(1700, 0);
 
     // 적 생성 및 업데이트
     currentStage.spawnEnemies(enemies, dt);

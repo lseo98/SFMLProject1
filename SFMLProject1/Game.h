@@ -66,4 +66,9 @@ private:
     sf::Text landtext;
     int ty = 0, tx = 0;
 
+
+    sf::Texture texture;      // 이미지 텍스처
+    sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
+
+
 };

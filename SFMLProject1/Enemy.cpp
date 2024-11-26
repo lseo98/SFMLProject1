@@ -11,9 +11,26 @@ void Enemy::take_damage(float amount) {
     if (health < 0) health = 0;
 }
 
+float Enemy::getHealth() const {
+    return health;
+}
+
 void Enemy::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
     window.draw(this->sprite);
+
+    sf::RectangleShape rectangle(sf::Vector2f(100.0f, 13.0f));
+    rectangle.setFillColor(sf::Color::White);   
+    rectangle.setPosition(this->position.x  , this->position.y - 10.0f);
+    window.draw(rectangle);
+    //printf("%d", health);
+    //체력에 따른 체력량 표시
+    float a = this->getHealth() / 300.0f * 96.0f;
+    sf::RectangleShape rectangle1(sf::Vector2f(a , 9.0f));
+    rectangle1.setFillColor(sf::Color::Red);
+    rectangle1.setPosition(this->position.x + width/ 2.0f+2, this->position.y -8.0f);
+    window.draw(rectangle1);
+    
 }
 
 void Enemy::image(const std::string& textureFile) {
@@ -24,6 +41,8 @@ void Enemy::image(const std::string& textureFile) {
         sprite.setScale(0.15f, 0.15f);  // 필요에 따라 스케일 조정
         sprite.setTexture(texture);   // 텍스처를 스프라이트에 적용
     }
+ 
+
 }
 
 

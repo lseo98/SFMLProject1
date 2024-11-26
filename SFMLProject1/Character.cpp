@@ -21,6 +21,7 @@ void Character::setPosition(sf::Vector2f postion) {
 void Character::take_damage(float amount) {
     this->health -= amount;
     if (this->health < 0) this->health = 0;
+
 }
 
 void Character::draw(sf::RenderWindow& window) {
