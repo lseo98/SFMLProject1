@@ -152,15 +152,15 @@ void Player::ultimate_attack() {
 }
 
 void Player::updateAttack(std::vector<Enemy*> &enemies) {
+
+    // 플레이어의 공격과 적군의 충돌 처리
     for (auto enemyIt = enemies.begin(); enemyIt != enemies.end(); ) {
         bool enemyDestroyed = false;
 
         if (*enemyIt == nullptr) {  // nullptr 체크
             enemyIt = enemies.erase(enemyIt);
-            //if (enemyIt == enemies.end()) break;
            continue;
         }
-        //if (enemyIt == enemies.end()) break;
 
         // Bullet 처리
         for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
@@ -185,15 +185,13 @@ void Player::updateAttack(std::vector<Enemy*> &enemies) {
                 if ((*enemyIt)->getHealth() <= 0) {
                     delete* enemyIt;                                // 동적 메모리 해제
                     enemyIt = enemies.erase(enemyIt);               // Enemy 삭제
-                   // enemies.erase(enemyIt);                       // Enemy 삭제
-                    //if (enemyIt != enemies.end()) enemyIt++;
-                    //else break;
                    
                     enemyDestroyed = true;
-                    break;//continue;                                       // Enemy가 삭제되었으므로 더 이상의 충돌 검사 불필요
+                    break;                                          // Enemy가 삭제되었으므로 현재 Enemy와 더 이상의 충돌 검사 불필요
                 }
             }
             else {                                                  // 충돌이 발생하지 않은 경우 총알 업데이트
+               // 매우 중요
                // (*bulletIt)->update(); // Bullet 상태를 충돌 처리 내부에서 업데이트 할 경우 적군이 없을 경우 업데이트가 되지 않을 수 있다
                 ++bulletIt;
             }
@@ -203,36 +201,43 @@ void Player::updateAttack(std::vector<Enemy*> &enemies) {
         }
 
         // Missile 처리
-        //for (auto missileIt = missiles.begin(); missileIt != missiles.end();) {
-        //    if ((*missileIt)->shape.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) {
-        //        // 충돌 발생 시
-        //        (*enemyIt)->takeDamage((*missileIt)->getDamage()); // Enemy의 체력 감소
-        //        delete* missileIt; // 동적 메모리 해제
-        //        missileIt = missiles.erase(missileIt); // Missile 삭제 후 다음 요소를 가리킴
+        for (auto missileIt = missiles.begin(); missileIt != missiles.end();) {
 
-        //        if ((*enemyIt)->getHealth() <= 0) {
-        //            delete* enemyIt; // 동적 메모리 해제
-        //            enemyIt = enemies.erase(enemyIt); // Enemy 삭제
-        //            enemyDestroyed = true;
-        //           //break; // Enemy가 삭제되었으므로 더 이상의 충돌 검사 불필요
-        //        }
-        //    }
-        //    else {
-        //        (*missileIt)->update(); // Missile 상태 업데이트
-        //        ++missileIt;
-        //    }
-        //}
+            if ((*missileIt)->shape.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
 
-        if (!enemyDestroyed) {
-            ++enemyIt; // 다음 Enemy로 이동
+                (*enemyIt)->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
+                delete* missileIt;                                   // 동적 메모리 해제
+                missileIt = missiles.erase(missileIt);                 // Bullet 삭제 후 다음 요소를 가리킴
+
+
+                if ((*enemyIt)->getHealth() <= 0) {
+                    delete* enemyIt;                                // 동적 메모리 해제
+                    enemyIt = enemies.erase(enemyIt);               // Enemy 삭제
+
+                    enemyDestroyed = true;
+                    break;                                          // Enemy가 삭제되었으므로 현재 Enemy와 더 이상의 충돌 검사 불필요
+                }
+            }
+            else {                                                  // 충돌이 발생하지 않은 경우 총알 업데이트
+                // 매우 중요
+                // (*missileIt)->update(); // Missile 상태를 충돌 처리 내부에서 업데이트 할 경우 적군이 없을 경우 업데이트가 되지 않을 수 있다
+                ++missileIt;
+            }
         }
+        if (enemyDestroyed) {
+            continue; // Enemy가 삭제되었으므로 다음 Enemy로 이동
+        }
+        ++enemyIt; // 다음 Enemy로 이동
+ 
     }
+
+    // 총알과 미사일의 상태 업데이트
     for (Bullet* bullet : bullets) {
         bullet->update(); // 발사체 상태 업데이트
     }
-    //for (Missile* missile : missiles) {
-    //    missile->update(); // 발사체 상태 업데이트
-    //}
+    for (Missile* missile : missiles) {
+        missile->update(); // 발사체 상태 업데이트
+    }
 
 }
 
