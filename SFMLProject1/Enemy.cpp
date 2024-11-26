@@ -9,11 +9,27 @@ Enemy::Enemy(float health, float speed, sf::Vector2f position, int stageNumber)
 void Enemy::takeDamage(float amount) {
     health -= amount;
     if (health < 0) health = 0;
+    // EliteUnit인지 확인하고 카운트 증가
+    if (dynamic_cast<EliteUnit*>(this)) {
+        eliteUnitKillCounts[stageNumber]++; // 현재 스테이지의 카운트 증가
+    }
 }
 
 void Enemy::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
     window.draw(this->sprite);
+
+    sf::RectangleShape rectangle(sf::Vector2f(100.0f, 13.0f));
+    rectangle.setFillColor(sf::Color::White);
+    rectangle.setPosition(this->position.x, this->position.y - 10.0f);
+    window.draw(rectangle);
+    //printf("%d", health);
+    //체력에 따른 체력량 표시
+    float a = this->getHealth() / 300.0f * 96.0f;
+    sf::RectangleShape rectangle1(sf::Vector2f(a, 9.0f));
+    rectangle1.setFillColor(sf::Color::Red);
+    rectangle1.setPosition(this->position.x +2, this->position.y - 8.0f);
+    window.draw(rectangle1);
 }
 
 void Enemy::image(const std::string& textureFile) {
@@ -158,7 +174,7 @@ void EliteUnit::special_attack() {
         sf::Vector2f missileStartPosition = this->position;
         missileStartPosition.x += width / 2.0f; // 플레이어의 중심 x 좌표
         missileStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
-        missiles.emplace_back(new Missile(missileStartPosition, missileDirection, 1.0f));
+        missiles.emplace_back(new Missile(missileStartPosition, missileDirection, 1.0f)); 
         // missileLaunched = true;
 
     }

@@ -50,6 +50,7 @@ void Stage::setStage(int stageNumber, std::vector<Enemy*>& enemies) {
     backgroundSprite.setPosition(450, 0);  // 화면 중앙 영역에 배경 설정  
     backgroundSprite1.setPosition(450, -(float)backgroundTexture.getSize().y);
 
+   
 
     //setEnemyAttack(stageNumber, enemies);   // 수정해야
 }

@@ -2,6 +2,7 @@
 #include "Character.h"
 #include "Missile.h"
 #include <iostream>
+#include <map>
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
@@ -24,6 +25,8 @@ public:
 
     sf::Texture texture;      // 이미지 텍스처
     sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
+    std::map<int, int> eliteUnitKillCounts; // 스테이지 번호를 키로 하는 카운터
+
 
 protected:
     int stageNumber;  // 스테이지 번호
@@ -33,6 +36,8 @@ protected:
     float targetY = 0.0f; // 목표 Y 좌표
     float nextTargetY = 0.0f; // 하늘 스테이지: 다음 Y 목표값
     float nextTargetX = 1350.0f; // 바다 스테이지: 다음 X 목표값
+
+
 
 };
 

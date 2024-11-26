@@ -4,6 +4,7 @@
 #include "Stage.h"
 #include <vector>
 #include <iostream>
+#include <map>
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
@@ -15,6 +16,7 @@ public:
 
     // 게임 실행
     void run();
+   
 
 private:
     // 초기화 함수
@@ -50,4 +52,32 @@ private:
     std::vector<Enemy*> enemies;
     Stage currentStage;
     int stageNumber;        // 1: 하늘, 2: 바다, 3: 땅
+
+
+    // 입력 상자 관련 변수
+    sf::RectangleShape inputBoxl;
+    sf::RectangleShape inputBoxr;
+    sf::RectangleShape smallBoxr;
+
+    bool isInputActive;
+
+    // 텍스트 관련 변수
+    sf::Text inputText;
+    sf::Text text;
+    sf::Font font;
+    std::string userInput;
+    sf::Text skytext;
+    sf::Text seatext;
+    sf::Text landtext;
+    int ty = 0, tx = 0;
+
+
+    sf::Texture texture;      // 이미지 텍스처
+    sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
+
+    sf::Text eliteUnitKillText; // 엘리트 유닛 사망 횟수를 표시하는 텍스트
+    std::map<int, int> eliteUnitKillCounts; // 스테이지별 엘리트 유닛 사망 횟수
+    std::string killInfo;
+
+
 };
