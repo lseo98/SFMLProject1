@@ -15,6 +15,11 @@ void Bullet::update() {
     //std::cout << "bullet update : "<< position.x << " "<<  position.y << std::endl;
     //std::cout << "bullet update direction, speed: " << direction.x  << " "<< direction.y << " " << speed << std::endl;
     shape.setPosition(position);
+    //texture.loadFromFile("sky_my_unit_bullet.png");
+  
+    //    sprite.setScale(0.1f, 0.1f);
+    //    sprite.setTexture(texture);
+    //    sprite.setPosition(position);
 }
 
 void Bullet::draw(sf::RenderWindow& window) {

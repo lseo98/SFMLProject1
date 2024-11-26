@@ -4,8 +4,9 @@
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
                          // health,  speed, sf::Vector2f position
-Player::Player() : Character(3, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f)) { 
+Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f)) { 
     missileLaunched = false; 
+    initializeHearts();
 }
 
 void Player::move(sf::Vector2f updatePosition) {
@@ -23,11 +24,38 @@ void Player::takeDamage(float amount) {
     this->health -= 1;
     if (this->health < 0) this->health = 0;
     std::cout << "플레이어 체력 : " << this->health << std::endl;
+    // 하트 갱신
+    if (!hearts.empty()) {
+        hearts.pop_back(); // 하트 하나 제거
+    }
+
 }
+void Player::initializeHearts() {
+    if (!heartTexture.loadFromFile("heart.png")) {
+        std::cerr << "Error loading heart texture!" << std::endl;
+        return;
+    }
+
+    // 플레이어 체력만큼 하트를 추가
+    hearts.clear();
+    for (int i = 0; i < static_cast<int>(this->health); i++) {
+        sf::Sprite heartSprite;
+        heartSprite.setTexture(heartTexture);
+        heartSprite.setScale(0.05f, 0.05f); // 하트 크기 조정
+        heartSprite.setPosition(1400.0f + i * 70.0f, 10.0f); // 하트 위치 설정 (x축 간격 조정)
+        hearts.push_back(heartSprite);
+    }
+}
+
 
 void Player::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
     window.draw(this->sprite);
+    // 하트 스프라이트 그리기
+    for (const sf::Sprite& heart : hearts) {
+    
+        window.draw(heart);
+    }
 }
 //방향에 따라서 사진 업로드
 void Player::updateDirection(char direction, int stageNumber) {
