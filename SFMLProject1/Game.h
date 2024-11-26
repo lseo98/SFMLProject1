@@ -32,6 +32,10 @@ private:
     sf::Event event;
     sf::Clock clock;
 
+    // 게임과 UI 뷰 
+    sf::View gameView;
+    sf::View uiView;
+
     // 게임 변수
     bool isRunning;
     bool isMaingameRunning;

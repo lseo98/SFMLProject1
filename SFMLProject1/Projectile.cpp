@@ -10,14 +10,18 @@ Projectile::Projectile(sf::Vector2f startPosition, sf::Vector2f direction, float
 bool Projectile::isOffScreen() const {
     int centerX = WINDOWWIDTH / 2;
     int centerY = WINDOWHEIGHT / 2;
-    int rangeX = 450;
-    int rangeY = 450;
+    int rangeX = 600;
+    int rangeY = 600;
 
     return (position.x < centerX - rangeX || position.x > centerX + rangeX ||
         position.y < centerY - rangeY || position.y > centerY + rangeY);
 }
 
 void Projectile::adjustDirection(){
+    if (isAlly) {
+        // 아군 유닛 발사체인 경우 회전하지 않음
+        return;
+    }
     float angle = 0.0f; // 초기 각도 설정
 
     // 화살표 입력 확인

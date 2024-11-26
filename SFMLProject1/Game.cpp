@@ -50,6 +50,22 @@ void Game::initWindow() {
     //sf::RenderWindow window(desktopMode, "Game Stages", sf::Style::Fullscreen);
     
     window->setFramerateLimit(60);  // 프레임 속도 제한, 초당 60프레임
+
+    // 중앙 정사각형 영역을 위한 게임 뷰 초기화
+    gameView.setCenter(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 2.0f); // 화면의 중앙 설정
+    gameView.setSize(900, 900); // 전체 화면 크기를 사용해 정사각형 부분만을 볼 수 있게 설정
+
+    // Viewport 설정으로 중앙 900x900 영역만 차지하도록 설정 (창 크기 비율 맞추기)
+    float viewportX = (WINDOWWIDTH - 900) / (2.0f * WINDOWWIDTH); // 좌우 여백 비율
+    float viewportY = 0.f; // 상하 여백 없음
+    float viewportWidth = 900.0f / WINDOWWIDTH; // 중앙 영역 너비 비율
+    float viewportHeight = 1.0f; // 전체 높이 사용
+
+    // Viewport 설정
+    gameView.setViewport(sf::FloatRect(viewportX, viewportY, viewportWidth, viewportHeight));
+
+    // 전체 화면을 위한 UI 뷰 초기화
+    uiView = window->getDefaultView(); // 기본 화면 전체 뷰
 }
 
 
@@ -65,7 +81,11 @@ void Game::handleEvents() {
         if(event.type == sf::Event::KeyPressed) {   // 한 번 눌렀을 때 한 개만 생성되도록 키를 새로 눌렀을 경우에만 실행
             //  특수 공격 : E 키를 눌렀을 때 수행
             if (event.key.code == sf::Keyboard::E) {
-                player.special_attack(); // E 키를 눌렀을 때 한 번만 호출
+                player.specialAttack(); // E 키를 눌렀을 때 한 번만 호출
+            }
+            // 필살기 : Q 키를 눌렀을 때 수행
+            if (event.key.code == sf::Keyboard::Q) {
+                player.ultimateAttack(); // Q 키를 눌렀을 때 한 번만 호출
             }
             // 플레이어 좌우 반전
             if (stageNumber == 2) {
@@ -119,6 +139,10 @@ void Game::handleEvents() {
 
 void Game::update() { // 게임 상태 업데이트
     static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
+    static sf::Clock allyAttackClock; 
+
+    // 플레이어 쿨타임 업데이트
+    player.updateCooldowns(dt); // 쿨타임 업데이트 추가
 
     float speed = player.get_speed();
     float dx = 0.0f, dy = 0.0f;
@@ -139,13 +163,35 @@ void Game::update() { // 게임 상태 업데이트
 
     // 200ms 간격으로 기본 공격 발사
     if (attackClock.getElapsedTime().asMilliseconds() >= 100) {
-        player.basic_attack(); // 기본 공격 발사
+        player.basicAttack(); // 기본 공격 발사
         attackClock.restart(); // 타이머 초기화
     }
 
+    // 스테이지에 따른 아군 유닛 발사 속도 조절
+    if (stageNumber == 1) {
+        // 하늘 스테이지: 100ms 간격으로 발사
+        if (allyAttackClock.getElapsedTime().asMilliseconds() >= 100) {
+            player.allyAttack(); // 아군 유닛 기본 공격 발사
+            allyAttackClock.restart(); // 타이머 초기화
+        }
+    }
+    //else if (stageNumber == 2) {
+    //    // 바다 스테이지: 500ms 간격으로 발사
+    //    if (allyAttackClock.getElapsedTime().asMilliseconds() >= 500) {
+    //        player.allyAttack(); // 아군 유닛 기본 공격 발사
+    //        allyAttackClock.restart(); // 타이머 초기화
+    //    }
+    //}
+    else if (stageNumber == 3) {
+        // 땅 스테이지: 500ms 간격으로 발사
+        if (allyAttackClock.getElapsedTime().asMilliseconds() >= 500) {
+            player.allyAttack(); // 아군 유닛 기본 공격 발사
+            allyAttackClock.restart(); // 타이머 초기화
+        }
+    }
+
     player.updateAttack();
-
-
+    player.updateAllies(dt);
 
     // 적 생성 및 업데이트
     currentStage.spawnEnemies(enemies, dt);
@@ -170,19 +216,24 @@ void Game::update() { // 게임 상태 업데이트
 void Game::render() {
     window->clear(); // 화면 지우기
 
+    // (1) 게임 뷰를 설정하고 게임 관련 요소 그리기
+    window->setView(gameView); // 게임 뷰 설정 (중앙 정사각형 영역)
+
     // 배경 그리기
     currentStage.drawBackground(*window);
 
     // 플레이어 관련 그리기
     player.draw(*window);
+    player.drawAllies(*window);  // 아군 유닛 그리기 추가
     player.renderAttack(*window);
-
-
 
     // 적 관련 그리기
     for (auto* enemy : enemies) {
         enemy->draw(*window);     // 적을 화면에 그리기
     }
+
+    // (2) UI 뷰를 설정하고 UI 관련 요소 그리기
+    window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
     window->display(); // 화면에 그린 내용을 표시
 }
