@@ -27,7 +27,7 @@ public:
     
     sf::Texture heartTexture; // 하트 텍스처
     std::vector<sf::Sprite> hearts; // 하트를 표시할 스프라이트 배열
-
+    void changeHeartSprite();
 
     // - 공격
     // 생성

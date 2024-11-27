@@ -21,6 +21,8 @@ Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f - width /
     initializeHearts();
 }
 
+
+
 void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
 
@@ -33,7 +35,6 @@ void Player::move(sf::Vector2f updatePosition) {
 }
 
 
-
 void Player::initializeHearts() {
     if (!heartTexture.loadFromFile("heart.png")) {
         std::cerr << "Error loading heart texture!" << std::endl;
@@ -42,8 +43,12 @@ void Player::initializeHearts() {
     loadProjectileTextures(); // 텍스처 로드 추가
 
     // 플레이어 체력만큼 하트를 추가
+    changeHeartSprite();
+}
+
+void Player::changeHeartSprite() {
     hearts.clear();
-    for (int i = 0; i < static_cast<int>(this->health); i++) {
+    for (int i = 0; i < this->health; i++) {
         sf::Sprite heartSprite;
         heartSprite.setTexture(heartTexture);
         heartSprite.setScale(0.05f, 0.05f); // 하트 크기 조정
@@ -52,8 +57,6 @@ void Player::initializeHearts() {
 
     }
 }
-
-
 void Player::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
     window.draw(this->sprite);

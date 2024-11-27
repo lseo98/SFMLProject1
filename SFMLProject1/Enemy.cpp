@@ -58,15 +58,15 @@ void Enemy::updateDirection(int newDirection) {
     }
 }
 
-void Enemy::collision(Player &player) {
+void Enemy::collision(Player& player) {
 
     if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds()) && !collisionFlag) { // 충돌 발생 시
         player.takeDamage(1);
-        std::cout << player.getHealth() << std::endl;
+        player.changeHeartSprite();
+        std::cout << "플레이어 목숨 : " << player.getHealth() << std::endl;
         collisionFlag = true;
     }
 }
-
 
 void Enemy::update(float deltaTime) {
     if (stageNumber == 1) { // 하늘 스테이지
