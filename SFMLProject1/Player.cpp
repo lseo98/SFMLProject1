@@ -56,6 +56,7 @@ void Player::initializeHearts() {
         heartSprite.setScale(0.05f, 0.05f); // 하트 크기 조정
         heartSprite.setPosition(1400.0f + i * 70.0f, 10.0f); // 하트 위치 설정 (x축 간격 조정)
         hearts.push_back(heartSprite);
+
     }
 }
 

@@ -370,27 +370,23 @@ void Game::render() {
     // 배경 그리기
     currentStage.drawBackground(*window);
 
-    // 플레이어 관련 그리기
-    player.draw(*window);
-    player.drawAllies(*window);  // 아군 유닛 그리기 추가
-    player.renderAttack(*window);
+   
 
     // 적 관련 그리기
     for (auto* enemy : enemies) {
         enemy->draw(*window);     // 적을 화면에 그리기
     }
 
-    // 플레이어 관련 그리기
-    player.draw(*window);
-    player.renderAttack(*window);
     window->draw(eliteUnitKillText);
 
 
-
+    player.renderAttack(*window);
+ 
 
     // (2) UI 뷰를 설정하고 UI 관련 요소 그리기
     window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
+  
     //입력상좌가 텍스트 그리기
     window->draw(inputBoxl);
     window->draw(inputBoxr);
@@ -401,6 +397,11 @@ void Game::render() {
     window->draw(skytext);
     window->draw(seatext);
     window->draw(landtext);
+
+    // 플레이어 관련 그리기
+    player.draw(*window);
+    player.drawAllies(*window);  // 아군 유닛 그리기 추가
+
 
     window->display(); // 화면에 그린 내용을 표시
 }
