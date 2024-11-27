@@ -65,25 +65,7 @@
     <ClInclude Include="stage.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyPlayerAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SeaPlayerAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="LandPlayerAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="InputKeyUpdate.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="AntiTankMissile.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
@@ -95,19 +77,7 @@
     <ClInclude Include="Projectile.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Torpedo.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Game.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyEnemyAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SeaEnemyAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="LandEnemyAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -139,9 +109,6 @@
     <Image Include="land.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="land_elite_unit.png">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="land_enemy_unit.png">
       <Filter>리소스 파일</Filter>
     </Image>
@@ -151,5 +118,41 @@
     <Image Include="land_my_unit_right.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="bullet_land.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="bullet_left_land.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="bullet_left_sea.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="bullet_sea.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="bullet_sky.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="heart.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="land_elite_unit_left.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="land_elite_unit_right.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="land_enemy_unit_right.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sea_my_unit_left.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sea_my_unit_right.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="R2.ttc" />
   </ItemGroup>
 </Project>

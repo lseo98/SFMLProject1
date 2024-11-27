@@ -384,6 +384,7 @@ void Game::render() {
 
 
     player.renderAttack(*window);
+    player.drawAllies(*window);  // 아군 유닛 그리기 추가
  
 
     // (2) UI 뷰를 설정하고 UI 관련 요소 그리기
@@ -403,7 +404,6 @@ void Game::render() {
 
     // 플레이어 관련 그리기
     player.draw(*window);
-    player.drawAllies(*window);  // 아군 유닛 그리기 추가
 
 
     window->display(); // 화면에 그린 내용을 표시
