@@ -405,6 +405,5 @@ void Game::render() {
     // 플레이어 관련 그리기
     player.draw(*window);
 
-
     window->display(); // 화면에 그린 내용을 표시
 }
