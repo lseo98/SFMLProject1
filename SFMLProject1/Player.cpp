@@ -316,7 +316,7 @@ void Player::ultimateAttack() {
                 std::cout << "Land ultimate attack activated!" << std::endl;
 
                 // 공격기 텍스처 로드
-                if (!allyTexture.loadFromFile("land_my_unit_left.png")) { // 공격기 이미지 텍스처 로드
+                if (!allyTexture.loadFromFile("land_elite_unit_left.png")) { // 공격기 이미지 텍스처 로드
                     std::cerr << "Error loading texture for aircraft units." << std::endl;
                     return; // 텍스처 로드 실패 시 함수 종료
                 }
@@ -326,7 +326,7 @@ void Player::ultimateAttack() {
                 sf::Sprite aircraftSprite;
                 aircraftSprite.setTexture(allyTexture);
                 aircraftSprite.setPosition(aircraftStartPosition);
-                aircraftSprite.setScale(0.1f, 0.1f);
+                aircraftSprite.setScale(0.2f, 0.2f);
 
                 // 아군 유닛 벡터에 추가
                 allyUnits.clear(); // 기존 아군 유닛 제거
@@ -367,7 +367,7 @@ void Player::allyAttack() {
         //}
         else if (stageNumber == 3) {  // 땅 스테이지에서 발사체 아래쪽으로 발사
             missileStartPosition.x += ally.getGlobalBounds().width / 2.0f;  // 아군 유닛의 중앙 위치에서 발사
-            missileStartPosition.y += ally.getGlobalBounds().height + 10.0f;  // 약간 아래쪽에서 발사
+            missileStartPosition.y += ally.getGlobalBounds().height - 120.0f;  // 약간 아래쪽에서 발사
             missileDirection = sf::Vector2f(0.0f, 1.0f);  // 아래쪽 방향
             missileSpeed = 3.0f;  // 발사 속도 (땅 스테이지)
         }
