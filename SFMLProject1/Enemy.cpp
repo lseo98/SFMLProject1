@@ -28,7 +28,7 @@ void Enemy::draw(sf::RenderWindow& window) {
     float a = this->getHealth() / 300.0f * 96.0f;
     sf::RectangleShape rectangle1(sf::Vector2f(a, 9.0f));
     rectangle1.setFillColor(sf::Color::Red);
-    rectangle1.setPosition(this->position.x +2, this->position.y - 8.0f);
+    rectangle1.setPosition(this->position.x + 2, this->position.y - 8.0f);
     window.draw(rectangle1);
 }
 
