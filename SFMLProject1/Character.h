@@ -15,7 +15,6 @@ public:
     float getSpeed() const;
 
 
-    void updateAttack();
     void renderAttack();
 
     void setTexture(const std::string& textureFile); // 텍스처 설정 함수

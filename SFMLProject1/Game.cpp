@@ -144,7 +144,8 @@ void Game::update() { // 게임 상태 업데이트
     }
 
     // 플레이어 공격 업데이트
-    player.updateAttack(enemies);
+    player.collision(enemies);
+    player.updateAttack();
 
 
 

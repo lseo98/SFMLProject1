@@ -15,7 +15,7 @@ public:
     void draw(sf::RenderWindow& window);
 
     void update(float deltaTime);
-
+    void collision();
 
     void image(const std::string& textureFile);
 
