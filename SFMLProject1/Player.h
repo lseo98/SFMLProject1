@@ -56,7 +56,7 @@ private:
 
     std::vector<Bullet*> bullets;
     std::vector<Missile*> missiles;
-    std::vector<Missile*> allyMissiles;    // 아군 유닛들이 발사한 미사일 벡터
+    std::vector<Missile*> allyMissiles;    // 아군 유닛들이 발사한 미사일 벡터 
 
     sf::Vector2f bulletDirection; // 기본 공격 방향  
     sf::Vector2f missileDirection;
@@ -78,7 +78,7 @@ private:
 
     float waitTime;  // 하늘 스테이지에서 아군 유닛의 대기 시간
 
-    sf::Texture bulletTextures[3];   // 스테이지별 발사체 이미지 (1: 하늘, 2: 바다, 3: 땅)
+    sf::Texture bulletTextures[3];   // 스테이지별 발사체 이미지 (1: 하늘, 2: 바다, 3: 땅) 
     int stageNumber;                 // 현재 스테이지 번호
     void loadProjectileTextures();
 

@@ -62,6 +62,7 @@ private:
     bool isInputActive;
 
     // 텍스트 관련 변수
+    sf::Text gameover;
     sf::Text inputText;
     sf::Text text;
     sf::Font font;
@@ -69,6 +70,8 @@ private:
     sf::Text skytext;
     sf::Text seatext;
     sf::Text landtext;
+    sf::Text textbox;
+
     int ty = 0, tx = 0;
 
 
@@ -78,6 +81,7 @@ private:
     sf::Text eliteUnitKillText; // 엘리트 유닛 사망 횟수를 표시하는 텍스트
     std::map<int, int> eliteUnitKillCounts; // 스테이지별 엘리트 유닛 사망 횟수
     std::string killInfo;
+
 
 
 };

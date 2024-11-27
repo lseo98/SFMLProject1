@@ -17,10 +17,10 @@ Character::Character(float health, float speed, sf::Vector2f position) : health(
 void Character::setPosition(sf::Vector2f postion) {
     this->position = postion;
 }
-
 void Character::takeDamage(float amount) {
     this->health -= amount;
-    if (this->health < 0) this->health = 0;
+    
+    if (this->health < 0)  this->health=0;
 }
 
 void Character::draw(sf::RenderWindow& window) {

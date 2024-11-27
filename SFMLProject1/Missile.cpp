@@ -4,8 +4,8 @@ Missile::Missile(const sf::Vector2f& startPosition, const sf::Vector2f& directio
     : Projectile(startPosition, direction, 8.0f) { // ¼Óµµ 8.0f 
     damage = 200.0f;
     range = 200.0f;
-    shape.setRadius(7.0f);
-    shape.setFillColor(sf::Color::Blue);
+    shape.setRadius(10.0f);
+    shape.setFillColor(sf::Color::Yellow);
     shape.setPosition(position);
 }
 
@@ -15,7 +15,7 @@ void Missile::update() {
     shape.setPosition(position);
 }
 
-void Missile::draw(sf::RenderWindow& window) {
+void Missile::draw(sf::RenderWindow& window) { 
     window.draw(shape);
 }
 

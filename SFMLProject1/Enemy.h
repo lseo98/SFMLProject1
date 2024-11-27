@@ -10,8 +10,7 @@ class Enemy : public Character {
 public:
     Enemy(float health, float speed, sf::Vector2f position, int stageNumber);
 
-
-    //void takeDamage(float amount) override;
+   
     void draw(sf::RenderWindow& window);
 
     void update(float deltaTime);
