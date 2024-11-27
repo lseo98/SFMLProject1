@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 #include "Game.h"
-
+#include <ctime> // time() 함수 사용
 
 int WINDOWWIDTH = 1800;    // 맵 너비
 int WINDOWHEIGHT = 900;    // 맵 높이
@@ -12,41 +12,10 @@ int WINDOWHEIGHT = 900;    // 맵 높이
 
 int main() {   
 
-  
-   
+    srand(static_cast<unsigned>(time(0))); // 난수 생성기의 seed를 현재 시간으로 설정
 
-    //window.setVerticalSyncEnabled(true); // V-Sync 활성화
-   
-    
-   
-
-    Game game;
-    game.run();
-
-    // 게임 루프
-    //while (window.isOpen()) {
-    //    sf::Event event;
-
-    //    while (window.pollEvent(event)) {
-    //        
-
-    //        //if (event.type == sf::Event::KeyPressed) playerMoveKey(player, event.key.code);
-    //        playerMoveKey(player, event);
-
-    //        
-    //    }
-
-    //    // 화면 지우기
-    //    window.clear();
-
-    //    // stage의 update 메서드를 통해 자동 공격 수행
-    //    currentStage.update(player, enemies, window);
-    //    
-    //    //sf::sleep(sf::milliseconds(30));  // 시간 딜레이 함수 0.03초 delay
-    
-    //}
-
-   
+    Game game; 
+    game.run();   
 
     return 0;
 }

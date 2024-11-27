@@ -1,6 +1,6 @@
 #include "Projectile.h"
 
-Projectile::Projectile(const sf::Vector2f& startPosition, const sf::Vector2f& direction, float speed)
+Projectile::Projectile(sf::Vector2f startPosition, sf::Vector2f direction, float speed)
     : position(startPosition), direction(direction), speed(speed) {
     shape.setRadius(5.0f);
     shape.setFillColor(sf::Color::White);
@@ -10,14 +10,18 @@ Projectile::Projectile(const sf::Vector2f& startPosition, const sf::Vector2f& di
 bool Projectile::isOffScreen() const {
     int centerX = WINDOWWIDTH / 2;
     int centerY = WINDOWHEIGHT / 2;
-    int rangeX = 450;
-    int rangeY = 450;
+    int rangeX = 600;
+    int rangeY = 600;
 
     return (position.x < centerX - rangeX || position.x > centerX + rangeX ||
         position.y < centerY - rangeY || position.y > centerY + rangeY);
 }
 
 void Projectile::adjustDirection(){
+    if (isAlly) {
+        // 아군 유닛 발사체인 경우 회전하지 않음
+        return;
+    }
     float angle = 0.0f; // 초기 각도 설정
 
     // 화살표 입력 확인
