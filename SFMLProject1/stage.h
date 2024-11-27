@@ -18,7 +18,7 @@ private:
     bool bossSpawned;
     float timeSinceLastAttack = 0.0f; // 델타 타임 기반 공격 간격을 위한 변수
     float attackCooldown = 0.2f;      // 공격 간격을 200ms로 설정
-    
+    int direction;
 
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;

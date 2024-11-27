@@ -47,6 +47,7 @@ void Player::initializeHearts() {
         std::cerr << "Error loading heart texture!" << std::endl;
         return;
     }
+    loadProjectileTextures(); // 텍스처 로드 추가
 
     // 플레이어 체력만큼 하트를 추가
     hearts.clear();
@@ -78,17 +79,25 @@ void Player::updateDirection(char direction, int stageNumber) {
         if (stageNumber == 2) { // Only change image in stage 3
             if (direction == 'A') {
                 image("sea_my_unit_left.png");
+                bulletTextures[1].loadFromFile("bullet_left_sea.png");
+
             }
             else if (direction == 'D') {
                 image("sea_my_unit_right.png");
+                bulletTextures[1].loadFromFile("bullet_sea.png");
+
             }
         }
         if (stageNumber == 3) { // Only change image in stage 3
             if (direction == 'A') {
                 image("land_my_unit_left.png");
+                bulletTextures[2].loadFromFile("bullet_left_land.png");
+
             }
             else if (direction == 'D') {
                 image("land_my_unit_right.png");
+                bulletTextures[2].loadFromFile("bullet_land.png");
+
             }
         }
         bulletDirection.x *= -1.0f;    // 총알 방향 전환 - 추후 이걸로 가능하도록 변경해야. 
@@ -167,11 +176,30 @@ void Player::basicAttack() {
 
     // 플레이어의 중앙 위치를 계산하여 총알의 시작 위치로 사용
     sf::Vector2f bulletStartPosition = this->position;
-    bulletStartPosition.x += width / 2.0f; // 플레이어의 중심 x 좌표
-    bulletStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
-    bullets.emplace_back(new Bullet(bulletStartPosition, bulletDirection, 10.0f));
+  
+  //  bullets.emplace_back(new Bullet(bulletStartPosition, bulletDirection, 10.0f));
     //bullets.push_back(Bullet(bulletStartPosition, bulletDirection, 1.0f));
+
+      // 현재 스테이지에 맞는 텍스처를 발사체에 전달
+    Bullet* bullet = new Bullet(bulletStartPosition, bulletDirection, 10.0f);
+    bullet->setTexture(bulletTextures[stageNumber - 1]); // 텍스처 설정
+    bullets.emplace_back(bullet);
+  //  std::cout << "Bullet created at position: " << bulletStartPosition.x << ", " << bulletStartPosition.y << std::endl;
+
 }
+void Player::loadProjectileTextures() {
+
+    if (!bulletTextures[0].loadFromFile("bullet_sky.png")) {
+        std::cerr << "Error loading bullet_sky.png!" << std::endl;
+    }
+    if (!bulletTextures[1].loadFromFile("bullet_sea.png")) {
+        std::cerr << "Error loading bullet_sea.png!" << std::endl;
+    }
+    if (!bulletTextures[2].loadFromFile("bullet_land.png")) {
+        std::cerr << "Error loading bullet_land.png!" << std::endl;
+    }
+}
+
 
 
 void Player::specialAttack() {
@@ -283,7 +311,7 @@ void Player::ultimateAttack() {
 
 
                 // 필살기 상태 갱신
-                timeSinceLastUltimate = 0.0f;  // 쿨타임 초기화
+                timeSinceLastUltimate = 0.0f;  // 쿨타임 초기화 
                 canUltimateAttack = false;     // 쿨타임 시작
             }
         break;
@@ -503,7 +531,7 @@ void Player::updateAttack(std::vector<Enemy*> &enemies) {
         // Bullet 처리
         for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
           
-            if ((*bulletIt)->shape.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
+            if ((*bulletIt)->sprite.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
 
                 /*std::cout << "Bullet Global Bounds: " << (*bulletIt)->shape.getGlobalBounds().left << ", "
                     << (*bulletIt)->shape.getGlobalBounds().top << ", "
@@ -572,6 +600,8 @@ void Player::updateAttack(std::vector<Enemy*> &enemies) {
     // 총알과 미사일의 상태 업데이트
     for (Bullet* bullet : bullets) {
         bullet->update(); // 발사체 상태 업데이트
+     //   std::cout << "Bullet update called. Position: " << bullet->position.x << ", " << bullet->position.y << std::endl;
+
     }
     for (Missile* missile : missiles) {
         missile->update(); // 발사체 상태 업데이트
@@ -622,6 +652,8 @@ void Player::updateAttack(std::vector<Enemy*> &enemies) {
 void Player::renderAttack(sf::RenderWindow& window) {
     for (Bullet *bullet : bullets) {
         bullet->draw(window); // 발사체 상태 업데이트
+      //  std::cout << "Drawing bullet at position: " << bullet->position.x << ", " << bullet->position.y << std::endl;
+
     }
     for (Missile *missile : missiles) {
         missile->draw(window); // 발사체 상태 업데이트

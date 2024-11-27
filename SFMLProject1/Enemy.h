@@ -39,16 +39,27 @@ protected:
 
 
 
+
 };
 
 class NormalUnit : public Enemy {
 
 public:
-    NormalUnit(int stageNumber, sf::Vector2f position)
+    NormalUnit(int stageNumber, sf::Vector2f position,int direction)
         : Enemy(100.0f, 1.0f, position, stageNumber) {
-        image(stageNumber == 1 ? "sky_enemy_unit.png" :
-              stageNumber == 2 ? "sea_enemy_unit_b.png" :
-                                 "land_enemy_unit.png"); // 이미지 설정
+        this->direction = direction; // 방향 설정
+
+        if (stageNumber == 3) { // 땅 스테이지
+            if(direction==-1)
+                image("land_enemy_unit.png"); 
+            if(direction==1)
+                image("land_enemy_unit_right.png");
+        }
+        else {
+            image(stageNumber == 1 ? "sky_enemy_unit.png" :
+                stageNumber == 2 ? "sea_enemy_unit_b.png" :
+                "land_enemy_unit.png");
+        }
     }
 
 
@@ -58,29 +69,44 @@ public:
 class EliteUnit : public Enemy {
 
 public:
-    EliteUnit(int stageNumber, sf::Vector2f position)
+    EliteUnit(int stageNumber, sf::Vector2f position,int direction)
         : Enemy(300.0f, 1.5f, position, stageNumber) {
         
         missileLaunched = false;
+        this->direction = direction; // 방향 설정
+        if (stageNumber == 3) { // 땅 스테이지
+            if (direction == -1)
+                image("land_elite_unit_left.png");
+            else if (direction == 1)
+                image("land_elite_unit_right.png");
+        }
+        else {
+            image(stageNumber == 1 ? "sky_elite_unit.png" :
+                stageNumber == 2 ? "sea_elite_unit.png" :
+                "land_elite_unit.png");
+        }
         // 위에 다 스위치로 처리
-       switch (stageNumber) {
-       case 1:
-           image("sky_elite_unit.png");  // 이미지 파일을 초기화
-           missileDirection = sf::Vector2f(0, 1);
-           break;
-       case 2:
-           image("sea_elite_unit.png");  // 이미지 파일을 초기화
-           missileDirection = sf::Vector2f(-1, 0);
-           break;
-       case 3:
-           image("land_elite_unit.png");  // 이미지 파일을 초기화
-           missileDirection = sf::Vector2f(-1, 1);
-           break;
-       default:
-           std::cout << "적군 생성자 오류" << std::endl;
-           missileDirection = sf::Vector2f(0, 0);
-           break;
-       }
+    //   switch (stageNumber) {
+    //   case 1:
+    //       image("sky_elite_unit.png");  // 이미지 파일을 초기화
+    //       missileDirection = sf::Vector2f(0, 1);
+    //       break;
+    //   case 2:
+    //       image("sea_elite_unit.png");  // 이미지 파일을 초기화
+    //       missileDirection = sf::Vector2f(-1, 0);
+    //       break;
+    //   case 3:
+    //       if(direction==1)
+    //       image("land_elite_unit_right.png");  // 이미지 파일을 초기화
+    //       if (direction == -1)
+    //           image("land_elite_unit_left.png");  // 이미지 파일을 초기화
+    //       missileDirection = sf::Vector2f(-1, 1);
+    //       break;
+    //   default:
+    //       std::cout << "적군 생성자 오류" << std::endl;
+    //       missileDirection = sf::Vector2f(0, 0);
+    //       break;
+    //   }
     }
    
 

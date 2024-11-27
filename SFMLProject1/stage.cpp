@@ -114,6 +114,29 @@ void Stage::spawnEnemies(std::vector<Enemy*>& enemies, float deltaTime) {
             eliteUnitStartX = 1400;                         // 정예 유닛 X 좌표: 화면 오른쪽 끝
             eliteUnitStartY = rand() % 600 + 200;                 // 정예 유닛 Y 좌표: 화면 전체 높이
         }
+        //else if (stageNumber == 3) { // 땅 스테이지: 양 옆에서 적 생성
+        //    // 방향을 결정
+        //    direction = (rand() % 2 == 0) ? 1 : -1;
+        //  
+
+        //    // 일반 유닛 생성
+        //    NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(
+        //        direction == 1 ? 400 : 1400, // X 좌표
+        //        700 // Y 좌표
+        //    ), direction); // 방향 전달
+        //  //  enemies.push_back(normalUnit);
+
+        //    // 정예 유닛 생성
+        //    EliteUnit* eliteUnit = new EliteUnit(stageNumber, sf::Vector2f(
+        //        direction == 1 ? 400 : 1400, // X 좌표
+        //        200 // Y 좌표
+        //    ), direction); // 방향 전달
+        //  //  enemies.push_back(eliteUnit);
+
+        //    normalUnit->updateDirection(direction);
+        //    eliteUnit->updateDirection(direction);
+        //}
+
         else if (stageNumber == 3) { // 땅 스테이지: 양 옆 맨 아래
             if (rand() % 2 == 0) {
                 normalUnitStartX = 400; // 일반 유닛 왼쪽 시작
@@ -133,20 +156,26 @@ void Stage::spawnEnemies(std::vector<Enemy*>& enemies, float deltaTime) {
         }
 
         // 일반 유닛 생성
-        NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY));
+       // NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY), direction);
         if (stageNumber == 3) {
-            int direction = (normalUnitStartX == 400) ? 1 : -1; // 왼쪽에서 시작하면 오른쪽으로, 오른쪽에서 시작하면 왼쪽으로
-            normalUnit->updateDirection(direction);
+            direction = (normalUnitStartX == 400) ? 1 : -1; // 왼쪽에서 시작하면 오른쪽으로, 오른쪽에서 시작하면 왼쪽으로
+          //  NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY), direction);
+
+          //  normalUnit->updateDirection(direction);
         }
+        NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY), direction);
+
         enemies.push_back(normalUnit);
 
         // 정예 유닛 생성
-        EliteUnit* eliteUnit = new EliteUnit(stageNumber, sf::Vector2f(eliteUnitStartX, eliteUnitStartY));
+     //   EliteUnit* eliteUnit = new EliteUnit(stageNumber, sf::Vector2f(eliteUnitStartX, eliteUnitStartY),direction);
         if (stageNumber == 3) {
-            int direction = (eliteUnitStartX == 400) ? 1 : -1; // 왼쪽에서 시작하면 오른쪽으로, 오른쪽에서 시작하면 왼쪽으로
-            eliteUnit->updateDirection(direction);
+            direction = (eliteUnitStartX == 400) ? 1 : -1; // 왼쪽에서 시작하면 오른쪽으로, 오른쪽에서 시작하면 왼쪽으로
+          //  eliteUnit->updateDirection(direction);
         }
         //eliteUnit->initializeRandomSpeeds(); // 정예 유닛의 랜덤 속도 초기화
+        EliteUnit* eliteUnit = new EliteUnit(stageNumber, sf::Vector2f(eliteUnitStartX, eliteUnitStartY), direction);
+
         enemies.push_back(eliteUnit);
 
         // 타이머 초기화

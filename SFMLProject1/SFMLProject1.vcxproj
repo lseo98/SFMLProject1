@@ -76,12 +76,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\SFML-2.6.2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SFML-2.6.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SFML-2.6.2\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\SFML-2.6.1\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-main-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -164,9 +164,15 @@
     <ClInclude Include="stage.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="bullet_land.png" />
+    <Image Include="bullet_left_land.png" />
+    <Image Include="bullet_left_sea.png" />
+    <Image Include="bullet_sea.png" />
+    <Image Include="bullet_sky.png" />
     <Image Include="heart.png" />
     <Image Include="land.png" />
-    <Image Include="land_elite_unit.png" />
+    <Image Include="land_elite_unit_left.png" />
+    <Image Include="land_elite_unit_right.png" />
     <Image Include="land_enemy_unit.png" />
     <Image Include="land_enemy_unit_right.png" />
     <Image Include="land_my_unit_left.png" />
@@ -175,11 +181,12 @@
     <Image Include="sea_elite_unit.png" />
     <Image Include="sea_enemy_unit.png" />
     <Image Include="sea_my_unit.png" />
+    <Image Include="sea_my_unit_left.png" />
+    <Image Include="sea_my_unit_right.png" />
     <Image Include="sky.PNG" />
     <Image Include="sky_elite_unit.png" />
     <Image Include="sky_enemy_unit.PNG" />
     <Image Include="sky_my_unit.PNG" />
-    <Image Include="sky_my_unit_bullet.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="R2.ttc" />
