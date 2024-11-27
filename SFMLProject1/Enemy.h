@@ -1,8 +1,9 @@
 #pragma once
 #include "Character.h"
 #include "Missile.h"
-//#include <memory>
+//#include "Player.h"
 #include <iostream>
+class Player;
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
@@ -11,11 +12,11 @@ public:
     Enemy(float health, float speed, sf::Vector2f position, int stageNumber);
 
 
-    void takeDamage(float amount) override;
+    //void takeDamage(float amount) override;
     void draw(sf::RenderWindow& window);
 
     void update(float deltaTime);
-    void collision();
+    void collision(Player &player);
 
     void image(const std::string& textureFile);
 
@@ -35,6 +36,8 @@ protected:
     float nextTargetY = 0.0f; // 하늘 스테이지: 다음 Y 목표값
     float nextTargetX = 1350.0f; // 바다 스테이지: 다음 X 목표값
 
+    bool collisionFlag;
+
 };
 
 class NormalUnit : public Enemy {
@@ -46,6 +49,10 @@ public:
               stageNumber == 2 ? "sea_enemy_unit_b.png" :
                                  "land_enemy_unit.png"); // 이미지 설정
     }
+
+    /*void collision() {
+
+    }*/
 
 
 
@@ -84,6 +91,9 @@ public:
     // 생성
     void special_attack();
     // 업데이트
+   /* void collision() {
+
+    }*/
     void updateAttack();
     // 그리기
     void renderAttack(sf::RenderWindow& window);

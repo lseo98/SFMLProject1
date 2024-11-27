@@ -16,7 +16,7 @@ public:
     float power = 150.0f;
 
     void move(sf::Vector2f updatePosition);
-    void takeDamage(float amount) override;
+    //void takeDamage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
     void updateDirection(char direction,int stageNum); // 유닛 방향 설정
     void image(std::string textureFile);

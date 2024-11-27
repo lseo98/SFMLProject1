@@ -19,11 +19,6 @@ void Player::move(sf::Vector2f updatePosition) {
 
 }
 
-void Player::takeDamage(float amount) {
-    this->health -= 1;
-    if (this->health < 0) this->health = 0;
-    std::cout << "플레이어 체력 : " << this->health << std::endl;
-}
 
 void Player::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
