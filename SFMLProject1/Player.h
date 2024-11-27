@@ -16,7 +16,7 @@ public:
     float power = 150.0f;
 
     void move(sf::Vector2f updatePosition);
-    void takeDamage(float amount) override;
+    //void takeDamage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
     void updateDirection(char direction,int stageNum); // 유닛 방향 설정
     void image(std::string textureFile);
@@ -35,7 +35,8 @@ public:
     void specialAttack();
     void ultimateAttack();
     // 업데이트
-    void updateAttack(std::vector<Enemy*>& enemies);
+    void collision(std::vector<Enemy*>& enemies);    // 공격체-적 충돌 처리
+    void updateAttack();                             // 공격체 업데이트
     void updateAllies(float delatime);
     // 그리기
     void renderAttack(sf::RenderWindow& window);

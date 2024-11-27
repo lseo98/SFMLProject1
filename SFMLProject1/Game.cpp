@@ -341,15 +341,26 @@ void Game::update() { // 게임 상태 업데이트
         }
     }
 
-    player.updateAttack(enemies);
     player.updateAllies(dt);
+    // 플레이어 공격 업데이트
+    player.collision(enemies);
+    player.updateAttack();
+
+    
 
     // 적 생성 및 업데이트
     currentStage.spawnEnemies(enemies, dt);
     for (auto* enemy : enemies) {
+        enemy->collision(player);
         enemy->update(dt);  // 적 상태 업데이트 (필요 시)
         // 적의 공격 수행 (공격 타입에 따라)
     }
+   /* if (attackClock.getElapsedTime().asMilliseconds() >= 500) {
+        for (auto* enemy : enemies) {
+            enemy->collision(player);
+        }
+    }*/
+
     // 화면 밖 적 제거
     enemies.erase(
         std::remove_if(enemies.begin(), enemies.end(),

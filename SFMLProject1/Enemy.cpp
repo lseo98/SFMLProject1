@@ -1,19 +1,14 @@
 #include "Enemy.h"
+#include "Player.h"
 #include <cmath>
 #include <iostream>
 
+
 Enemy::Enemy(float health, float speed, sf::Vector2f position, int stageNumber) 
     : Character(health, speed, position), stageNumber(stageNumber){
+    collisionFlag = false;
 }
 
-void Enemy::takeDamage(float amount) {
-    health -= amount;
-    if (health < 0) health = 0;
-    // EliteUnit인지 확인하고 카운트 증가
-    if (dynamic_cast<EliteUnit*>(this)) {
-        eliteUnitKillCounts[stageNumber]++; // 현재 스테이지의 카운트 증가
-    }
-}
 
 void Enemy::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
@@ -63,6 +58,16 @@ void Enemy::updateDirection(int newDirection) {
     }
 }
 
+void Enemy::collision(Player &player) {
+
+    if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds()) && !collisionFlag) { // 충돌 발생 시
+        player.takeDamage(1);
+        std::cout << player.getHealth() << std::endl;
+        collisionFlag = true;
+    }
+}
+
+
 void Enemy::update(float deltaTime) {
     if (stageNumber == 1) { // 하늘 스테이지
         if (dynamic_cast<NormalUnit*>(this)) {
@@ -89,7 +94,7 @@ void Enemy::update(float deltaTime) {
             float ySpeed = deltaY / 0.6f; // Y축 속도 
 
             // 최소 속도 유지
-            float minSpeed = 50.0f; // 최소 속도
+            float minSpeed = 60.0f; // 최소 속도                                                                                                                                                                
             if (fabs(xSpeed) < minSpeed) {
                 xSpeed = (xSpeed > 0 ? 1 : -1) * minSpeed; // 속도를 최소값 이상으로 유지
             }
@@ -99,7 +104,7 @@ void Enemy::update(float deltaTime) {
 
             if (position.x <= 450 || position.x >= 1350) { // 벽 범위
                 xSpeed = -xSpeed; // X축 속도 반전
-                targetX = rand() % 900 + 450; // 새로운 랜덤 X 좌표 설정
+                targetX = rand() % (1350 - 450) + 450; // 새로운 랜덤 X 좌표 설정
             }
             // 좌표 업데이트
             position.x += xSpeed * deltaTime; // 프레임당 X축 이동
@@ -186,7 +191,7 @@ void EliteUnit::special_attack() {
         sf::Vector2f missileStartPosition = this->position;
         missileStartPosition.x += width / 2.0f; // 플레이어의 중심 x 좌표
         missileStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
-        missiles.emplace_back(new Missile(missileStartPosition, missileDirection, 1.0f)); 
+        missiles.emplace_back(new Missile(missileStartPosition, missileDirection, 1.0f));
         // missileLaunched = true;
 
     }
