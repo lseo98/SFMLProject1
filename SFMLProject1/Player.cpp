@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "Bullet.h" 
-#include <iostream>
+#include <iostream>  
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
                          // health,  speed, sf::Vector2f position

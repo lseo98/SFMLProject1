@@ -106,33 +106,7 @@ void Game::handleEvents() {
             window->close();
         }
         
-        if(event.type == sf::Event::KeyPressed) {   // 한 번 눌렀을 때 한 개만 생성되도록 키를 새로 눌렀을 경우에만 실행
-            //  특수 공격 : E 키를 눌렀을 때 수행
-            if (event.key.code == sf::Keyboard::E) {
-                player.specialAttack(); // E 키를 눌렀을 때 한 번만 호출
-            }
-            // 필살기 : Q 키를 눌렀을 때 수행
-            if (event.key.code == sf::Keyboard::Q) {
-                player.ultimateAttack(); // Q 키를 눌렀을 때 한 번만 호출
-            }
-            // 플레이어 좌우 반전
-            if (stageNumber == 2) {
-                if (event.key.code == sf::Keyboard::A) {
-                    player.updateDirection('A', 2);
-                }
-                if (event.key.code == sf::Keyboard::D) {
-                    player.updateDirection('D', 2);
-                }
-            }
-            if (stageNumber == 3) {
-                if (event.key.code == sf::Keyboard::A) {
-                    player.updateDirection('A', 3);
-                }
-                if (event.key.code == sf::Keyboard::D) {
-                    player.updateDirection('D', 3);
-                }
-            }
-        }
+  
       
         // 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
@@ -179,30 +153,30 @@ void Game::handleEvents() {
             inputText.setString(userInput);
         }
         //게임 내부 클릭시에만 플레이어 특수 공격 및 스테이지 전환 가능
-        if (isInputActive == false) {
-            if (isInputActive&&event.type == sf::Event::KeyPressed) {   // 한 번 눌렀을 때 한 개만 생성되도록 키를 새로 눌렀을 경우에만 실행
-                //  특수 공격 : E 키를 눌렀을 때 수행
-                if (event.key.code == sf::Keyboard::E) {
-                    player.specialAttack(); // E 키를 눌렀을 때 한 번만 호출
-                }
-                // 플레이어 좌우 반전
-                if (stageNumber == 2) {
-                    if (event.key.code == sf::Keyboard::A) {
-                        player.updateDirection('A', 2);
-                    }
-                    if (event.key.code == sf::Keyboard::D) {
-                        player.updateDirection('D', 2);
-                    }
-                }
-                if (stageNumber == 3) {
-                    if (event.key.code == sf::Keyboard::A) {
-                        player.updateDirection('A', 3);
-                    }
-                    if (event.key.code == sf::Keyboard::D) {
-                        player.updateDirection('D', 3);
-                    }
-                }
-            }
+        if (!isInputActive) {
+            //if (isInputActive && event.type == sf::Event::KeyPressed) {   // 한 번 눌렀을 때 한 개만 생성되도록 키를 새로 눌렀을 경우에만 실행
+            //    //  특수 공격 : E 키를 눌렀을 때 수행
+            //    if (event.key.code == sf::Keyboard::E) {
+            //        player.specialAttack(); // E 키를 눌렀을 때 한 번만 호출
+            //    }
+            //    // 플레이어 좌우 반전
+            //    if (stageNumber == 2) {
+            //        if (event.key.code == sf::Keyboard::A) {
+            //            player.updateDirection('A', 2);
+            //        }
+            //        if (event.key.code == sf::Keyboard::D) {
+            //            player.updateDirection('D', 2);
+            //        }
+            //    }
+            //    if (stageNumber == 3) {
+            //        if (event.key.code == sf::Keyboard::A) {
+            //            player.updateDirection('A', 3);
+            //        }
+            //        if (event.key.code == sf::Keyboard::D) {
+            //            player.updateDirection('D', 3);
+            //        }
+            //    }
+            //}
 
 
             // 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
@@ -232,6 +206,35 @@ void Game::handleEvents() {
 
                 currentStage.setStage(stageNumber, enemies);
 
+            }
+
+
+            if (event.type == sf::Event::KeyPressed) {   // 한 번 눌렀을 때 한 개만 생성되도록 키를 새로 눌렀을 경우에만 실행
+                //  특수 공격 : E 키를 눌렀을 때 수행
+                if (event.key.code == sf::Keyboard::E) {
+                    player.specialAttack(); // E 키를 눌렀을 때 한 번만 호출
+                }
+                // 필살기 : Q 키를 눌렀을 때 수행
+                if (event.key.code == sf::Keyboard::Q) {
+                    player.ultimateAttack(); // Q 키를 눌렀을 때 한 번만 호출
+                }
+                // 플레이어 좌우 반전
+                if (stageNumber == 2) {
+                    if (event.key.code == sf::Keyboard::A) {
+                        player.updateDirection('A', 2);
+                    }
+                    if (event.key.code == sf::Keyboard::D) {
+                        player.updateDirection('D', 2);
+                    }
+                }
+                if (stageNumber == 3) {
+                    if (event.key.code == sf::Keyboard::A) {
+                        player.updateDirection('A', 3);
+                    }
+                    if (event.key.code == sf::Keyboard::D) {
+                        player.updateDirection('D', 3);
+                    }
+                }
             }
         }
 
@@ -291,23 +294,23 @@ void Game::update() { // 게임 상태 업데이트
 
     // 플레이어 쿨타임 업데이트
     player.updateCooldowns(dt); // 쿨타임 업데이트 추가
+    if (!isInputActive) {
+        float speed = player.getSpeed();
+        float dx = 0.0f, dy = 0.0f;
 
-    float speed = player.getSpeed();
-    float dx = 0.0f, dy = 0.0f;
-    
-    // 플레이어 움직임 업데이트
-    dx += (sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A)) * speed;
-    dy += (sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W)) * speed;
-    
-    if (stageNumber == 3) dy = 0;
-    else if (dx * dy) {  // 대각선 이동의 경우 좌우, 상하 단일 움직임 보다 빨라지는 속도를 보정
-        dx *= 0.7;
-        dy *= 0.7;
+        // 플레이어 움직임 업데이트
+        dx += (sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A)) * speed;
+        dy += (sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W)) * speed;
+
+        if (stageNumber == 3) dy = 0;
+        else if (dx * dy) {  // 대각선 이동의 경우 좌우, 상하 단일 움직임 보다 빨라지는 속도를 보정
+            dx *= 0.7;
+            dy *= 0.7;
+        }
+
+        for (float i = 0; i < 1; i += this->dt) player.move(sf::Vector2f(dx * dt, dy * dt));
+
     }
-
-    for (float i = 0; i < 1; i += this->dt) player.move(sf::Vector2f(dx * dt, dy * dt));
-
-       
 
     // 200ms 간격으로 기본 공격 발사
     if (attackClock.getElapsedTime().asMilliseconds() >= 100) {
