@@ -8,9 +8,11 @@ Bullet::Bullet(const sf::Vector2f startPosition, const sf::Vector2f direction, f
     //shape.setFillColor(sf::Color::Magenta); // 발사체 색상 설정  
     //shape.setPosition(position);
 }
+
+
 void Bullet::setTexture(const sf::Texture& texture) {
     sprite.setTexture(texture);
-    sprite.setScale(0.1f, 0.1f); // 크기 조정
+    sprite.setScale(0.1f, 0.1f); 
     sprite.setPosition(position);
 }
 
