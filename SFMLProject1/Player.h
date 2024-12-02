@@ -36,7 +36,7 @@ public:
     void ultimateAttack();
     // 업데이트
     void collision(std::vector<Enemy*>& enemies);    // 공격체-적 충돌 처리
-    void updateAttack();                             // 공격체 업데이트
+    void updateAttack(std::vector<Enemy*>& enemies);                             // 공격체 업데이트
     void updateAllies(float delatime);
     // 그리기
     void renderAttack(sf::RenderWindow& window);

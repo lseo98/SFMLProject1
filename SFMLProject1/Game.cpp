@@ -362,7 +362,7 @@ void Game::update() { // 게임 상태 업데이트
         player.updateAllies(dt);
         // 플레이어 공격 업데이트
         player.collision(enemies);
-        player.updateAttack();
+        player.updateAttack(enemies);
 
 
 
