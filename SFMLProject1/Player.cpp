@@ -575,41 +575,43 @@ void Player::collision(std::vector<Enemy*>& enemies) {
             continue; // Enemy가 삭제되었으므로 다음 Enemy로 이동
         }
 
-        // Bullet 처리
-        for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
-          
-            if ((*bulletIt)->sprite.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
+        if (dynamic_cast<NormalUnit*>(*enemyIt) == *enemyIt) {
+            // Bullet 처리
+            for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
 
-                /*std::cout << "Bullet Global Bounds: " << (*bulletIt)->shape.getGlobalBounds().left << ", "
-                    << (*bulletIt)->shape.getGlobalBounds().top << ", "
-                    << (*bulletIt)->shape.getGlobalBounds().width << ", "
-                    << (*bulletIt)->shape.getGlobalBounds().height << std::endl;
+                if ((*bulletIt)->sprite.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
 
-                std::cout << "Enemy Global Bounds: " << (*enemyIt)->sprite.getGlobalBounds().left << ", "
-                    << (*enemyIt)->sprite.getGlobalBounds().top << ", "
-                    << (*enemyIt)->sprite.getGlobalBounds().width << ", "
-                    << (*enemyIt)->sprite.getGlobalBounds().height << std::endl;*/
+                    /*std::cout << "Bullet Global Bounds: " << (*bulletIt)->shape.getGlobalBounds().left << ", "
+                        << (*bulletIt)->shape.getGlobalBounds().top << ", "
+                        << (*bulletIt)->shape.getGlobalBounds().width << ", "
+                        << (*bulletIt)->shape.getGlobalBounds().height << std::endl;
 
-                (*enemyIt)->takeDamage((*bulletIt)->getDamage());   // Enemy의 체력 감소
-                delete* bulletIt;                                   // 동적 메모리 해제
-                bulletIt = bullets.erase(bulletIt);                 // Bullet 삭제 후 다음 요소를 가리킴
+                    std::cout << "Enemy Global Bounds: " << (*enemyIt)->sprite.getGlobalBounds().left << ", "
+                        << (*enemyIt)->sprite.getGlobalBounds().top << ", "
+                        << (*enemyIt)->sprite.getGlobalBounds().width << ", "
+                        << (*enemyIt)->sprite.getGlobalBounds().height << std::endl;*/
 
-                if ((*enemyIt)->getHealth() <= 0) {
-                    delete* enemyIt;                                // 동적 메모리 해제
-                    enemyIt = enemies.erase(enemyIt);               // Enemy 삭제
+                    (*enemyIt)->takeDamage((*bulletIt)->getDamage());   // Enemy의 체력 감소
+                    delete* bulletIt;                                   // 동적 메모리 해제
+                    bulletIt = bullets.erase(bulletIt);                 // Bullet 삭제 후 다음 요소를 가리킴
 
-                    enemyDestroyed = true;
-                    break;                                          // Enemy가 삭제되었으므로 현재 Enemy와 더 이상의 충돌 검사 불필요
+                    if ((*enemyIt)->getHealth() <= 0) {
+                        delete* enemyIt;                                // 동적 메모리 해제
+                        enemyIt = enemies.erase(enemyIt);               // Enemy 삭제
+
+                        enemyDestroyed = true;
+                        break;                                          // Enemy가 삭제되었으므로 현재 Enemy와 더 이상의 충돌 검사 불필요
+                    }
+                }
+                else {                                                  // 충돌이 발생하지 않은 경우 총알 업데이트
+                    // 매우 중요
+                    // (*bulletIt)->update(); // Bullet 상태를 충돌 처리 내부에서 업데이트 할 경우 적군이 없을 경우 업데이트가 되지 않을 수 있다
+                    ++bulletIt;
                 }
             }
-            else {                                                  // 충돌이 발생하지 않은 경우 총알 업데이트
-                // 매우 중요
-                // (*bulletIt)->update(); // Bullet 상태를 충돌 처리 내부에서 업데이트 할 경우 적군이 없을 경우 업데이트가 되지 않을 수 있다
-                ++bulletIt;
+            if (enemyDestroyed) {
+                continue; // Enemy가 삭제되었으므로 다음 Enemy로 이동
             }
-        }
-        if (enemyDestroyed) {
-            continue; // Enemy가 삭제되었으므로 다음 Enemy로 이동
         }
 
         ++enemyIt; // 다음 Enemy로 이동
