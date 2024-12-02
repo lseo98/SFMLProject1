@@ -8,6 +8,7 @@ public:
     void update() override;
     void draw(sf::RenderWindow& window) override;
     float getRange() { return range; }
+    void changeRange(float range) { this->range = range; }
 
 
     sf::CircleShape shape;   // SFML에서 사용할 기본 도형 (예: 원형 모양)

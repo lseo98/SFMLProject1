@@ -28,6 +28,9 @@ private:
     void update();
     void render();
 
+    // 게임 루프 내 필요 함수
+    void deleteEnemy();
+
 
     // SFML 멤버 변수
     sf::RenderWindow* window;

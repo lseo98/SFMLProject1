@@ -362,7 +362,7 @@ void Game::update() { // 게임 상태 업데이트
         player.updateAllies(dt);
         // 플레이어 공격 업데이트
         player.collision(enemies);
-        player.updateAttack();
+        player.updateAttack(enemies);
 
 
 
@@ -379,17 +379,8 @@ void Game::update() { // 게임 상태 업데이트
              }
          }*/
 
-         // 화면 밖 적 제거
-        enemies.erase(
-            std::remove_if(enemies.begin(), enemies.end(),
-                [](Enemy* enemy) {
-                    if (enemy->isOffScreen()) {
-                        delete enemy; // 메모리 해제
-                        return true; // 제거 대상
-                    }
-        return false; // 유지 대상
-                }),
-            enemies.end());
+        // 화면 밖 적 제거
+        deleteEnemy();
     }
 
 }
@@ -441,4 +432,19 @@ void Game::render() {
     
 
     window->display(); // 화면에 그린 내용을 표시
+}
+
+
+void Game::deleteEnemy() {
+    // 화면 밖으로 나갔거나 채력이 0 이하인 적 제거
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [](Enemy* enemy) {
+                if (enemy->isOffScreen() || enemy->getHealth() <= 0) {  
+                    delete enemy; // 메모리 해제
+                    return true; // 제거 대상
+                }
+                return false; // 유지 대상
+            }),
+        enemies.end());
 }

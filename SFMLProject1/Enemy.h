@@ -120,7 +120,7 @@ public:
     void updateAttack();
     // 그리기
     void renderAttack(sf::RenderWindow& window);
-    
+    void deleteThisProjectile();
     
     bool missileLaunched;
 

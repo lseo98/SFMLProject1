@@ -182,7 +182,6 @@ bool Enemy::isOffScreen() const {
         position.y < centerY - rangeY || position.y > centerY + rangeY);
 }
 
-
 // EliteUnit
 
 void EliteUnit::special_attack() {
