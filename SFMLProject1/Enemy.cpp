@@ -208,7 +208,6 @@ bool Enemy::isOffScreen() const {
         position.y < centerY - rangeY || position.y > centerY + rangeY);
 }
 
-
 // EliteUnit
 
 void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<Missile*>& globalMissiles) {

@@ -17,6 +17,7 @@ public:
 
     void renderAttack();
 
+
     void setTexture(const std::string& textureFile); // 텍스처 설정 함수
 
 protected:

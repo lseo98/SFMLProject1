@@ -123,7 +123,9 @@ public:
     void updateAttack(float deltaTime);
     // 그리기
     void renderAttack(sf::RenderWindow& window);
+    void deleteThisProjectile();
     
+    bool missileLaunched;
 
 
 private:

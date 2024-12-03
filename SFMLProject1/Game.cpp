@@ -156,10 +156,10 @@ void Game::handleEvents() {
         
   
       
-        //// 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
-        //if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
-        //    stageNumber = 1;
-        //}
+        // 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
+            stageNumber = 1;
+        }
         // 마우스 버튼 클릭 이벤트 처리
         if (event.type == sf::Event::MouseButtonPressed) {
             if (event.mouseButton.button == sf::Mouse::Left) {
@@ -452,29 +452,8 @@ void Game::update() { // 게임 상태 업데이트
              }
          }*/
 
-         // 화면 밖 적 제거
-        enemies.erase(
-            std::remove_if(enemies.begin(), enemies.end(),
-                [](Enemy* enemy) {
-                    if (enemy->isOffScreen()) {
-                        delete enemy; // 메모리 해제
-                        return true; // 제거 대상
-                    }
-        return false; // 유지 대상
-                }),
-            enemies.end());
-
-        /*window->clear();
-        sf::RectangleShape backW(sf::Vector2f(100, 100));
-        backW.setFillColor(sf::Color::Magenta);
-        backW.setPosition(sf::Vector2f(1650, 750));
-        window->draw(backW);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            sf::RectangleShape frontW(sf::Vector2f(100, 100));
-            frontW.setFillColor(sf::Color(0,0,0,sf::Uint8(100)));
-            frontW.setPosition(sf::Vector2f(1650, 750));
-            window->draw(frontW);
-        }*/
+        // 화면 밖 적 제거
+        deleteEnemy();
     }
 
 }
@@ -531,4 +510,19 @@ void Game::render() {
     
 
     window->display(); // 화면에 그린 내용을 표시
+}
+
+
+void Game::deleteEnemy() {
+    // 화면 밖으로 나갔거나 채력이 0 이하인 적 제거
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [](Enemy* enemy) {
+                if (enemy->isOffScreen() || enemy->getHealth() <= 0) {  
+                    delete enemy; // 메모리 해제
+                    return true; // 제거 대상
+                }
+                return false; // 유지 대상
+            }),
+        enemies.end());
 }

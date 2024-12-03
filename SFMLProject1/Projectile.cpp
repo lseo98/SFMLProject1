@@ -6,6 +6,8 @@ Projectile::Projectile(sf::Vector2f startPosition, sf::Vector2f direction, float
     shape.setRadius(5.0f);
     shape.setFillColor(sf::Color::White);
     shape.setPosition(position);
+    isCrashed = false;
+    isAlly = false;
 }
 
 bool Projectile::isOffScreen() const {

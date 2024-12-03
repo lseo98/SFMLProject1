@@ -10,6 +10,7 @@ public:
 
     void draw(sf::RenderWindow& window) override;
     float getRange() { return range; }
+    void changeRange(float range) { this->range = range; }
 
     void setTarget();
 
