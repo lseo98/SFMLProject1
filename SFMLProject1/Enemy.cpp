@@ -220,7 +220,10 @@ void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<Missile*>& 
         }
         // 추적형 미사일 생성
         Missile* newMissile = new Missile(this->position, direction, 3.0f); // 속도 3.0f
-        globalMissiles.emplace_back(newMissile); // 전역 벡터에 추가
+        newMissile->shape.setRadius(20.0f);
+        globalMissiles.push_back(newMissile); // 전역 벡터에 추가
+        //emplace_back 는 새로운 객체를 추가하는 거라 push_back이 더 적절
+        //globalMissiles.emplace_back(newMissile); // 전역 벡터에 추가
 
         // 미사일을 추적형으로 설정
         newMissile->setTarget(); // 플레이어 위치를 참조로 설정
@@ -252,6 +255,7 @@ void EliteUnit::updateAttack(float deltaTime) {
         fireClock.restart();
     }
 }
+
 
 void EliteUnit::renderAttack(sf::RenderWindow& window) {
 

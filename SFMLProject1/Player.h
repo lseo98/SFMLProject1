@@ -16,7 +16,7 @@ public:
     float power = 150.0f;
 
     void move(sf::Vector2f updatePosition);
-    //void takeDamage(float amount) override;
+   // void takeDamage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
     void updateDirection(char direction,int stageNum); // 유닛 방향 설정
     void image(std::string textureFile);
@@ -36,9 +36,10 @@ public:
     void ultimateAttack();
     // 업데이트
     void collision(std::vector<Enemy*>& enemies);    // 공격체-적 충돌 처리
+    void enemyProjectileCollision(std::vector<Missile*>& globalMissiles);    // 공격체-적 충돌 처리
     void deleteThisProjectile();                     // 충돌된 내 발사체 삭제
-    void updateAttack(std::vector<Enemy*>& enemies);                             // 공격체 업데이트
-    void updateAllies(float delatime);
+    void updateAttack();                             // 공격체 업데이트
+    void updateAllies(float delatime, std::vector<Enemy*>& enemies, std::vector<Missile*>& globalMissiles);
     // 그리기
     void renderAttack(sf::RenderWindow& window);
     void drawAllies(sf::RenderWindow& window);  // 아군 유닛 그리기 메서드 추가

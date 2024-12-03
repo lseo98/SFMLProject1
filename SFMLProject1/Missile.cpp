@@ -5,7 +5,7 @@ Missile::Missile(const sf::Vector2f& startPosition, const sf::Vector2f& directio
     damage = 200.0f;
     baseDamage = 200.0f;
     range = 200.0f;
-    shape.setRadius(10.0f);
+    shape.setRadius(15.0f);
     shape.setFillColor(sf::Color::Yellow);
     shape.setPosition(position);
 }
