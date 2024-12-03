@@ -50,6 +50,9 @@ public:
     sf::Texture texture;      // 이미지 텍스처
     sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
 
+    sf::Vector2f getPosition() const {
+        return position; // 플레이어의 현재 위치를 반환
+    }
     //bool missileLaunched;
 
 private:
@@ -81,5 +84,6 @@ private:
     sf::Texture bulletTextures[3];   // 스테이지별 발사체 이미지 (1: 하늘, 2: 바다, 3: 땅) 
     int stageNumber;                 // 현재 스테이지 번호
     void loadProjectileTextures();
+
 
 };

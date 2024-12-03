@@ -39,7 +39,7 @@ void Stage::setStage(int stageNumber, std::vector<Enemy*>& enemies) {
         scrollSpeed = 0.7f;
         backgroundXPos = 0;
     }
-    else if (stageNumber == 3) {
+    else if (stageNumber == 3 || stageNumber == 4) {
         backgroundTexture.loadFromFile("land.png");
         scrollSpeed = 0.0f;  // 땅 스테이지는 정지된 배경
     }
@@ -102,10 +102,10 @@ void Stage::spawnEnemies(std::vector<Enemy*>& enemies, float deltaTime) {
 
         if (stageNumber == 1) { // 하늘 스테이지: 맨 위에서 랜덤 X 위치
             normalUnitStartX = rand() % 750 + 450; // 일반 유닛 X 좌표: 화면의 중앙 영역
-            normalUnitStartY = -100;                           // 일반 유닛 Y 좌표: 화면 상단
+            normalUnitStartY = -50;                           // 일반 유닛 Y 좌표: 화면 상단
 
             eliteUnitStartX = rand() % 750 + 450;  // 정예 유닛 X 좌표: 화면의 중앙 영역
-            eliteUnitStartY = -100;                            // 정예 유닛 Y 좌표: 화면 상단
+            eliteUnitStartY = -50;                            // 정예 유닛 Y 좌표: 화면 상단
         }
         else if (stageNumber == 2) { // 바다 스테이지: 맨 오른쪽에서 랜덤 Y 위치
             normalUnitStartX = 1400;                        // 일반 유닛 X 좌표: 화면 오른쪽 끝
