@@ -206,7 +206,7 @@ void Player::specialAttack() {
         missileStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
 
         // 미사일 생성 및 설정
-        Missile* missile = new Missile(missileStartPosition, missileDirection, 1.0f);
+        Missile* missile = new Missile(missileStartPosition, missileDirection, 8.0f);
         missile->isAlly = false;
         missiles.push_back(missile);
 
@@ -674,7 +674,7 @@ void Player::updateAttack(std::vector<Enemy*>& enemies) {
     }
 
     if (stageNumber == 2) {
-        // 중앙에서 살짝 오른쪽 x좌표에 도달하면 적군 전체 제거
+        // 중앙에서 도달하면 적군 전체 제거
         if (std::any_of(allyMissiles.begin(), allyMissiles.end(), [](Missile* missile) {
             return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
             })) {

@@ -76,13 +76,21 @@ void Enemy::update(float deltaTime) {
         else if (dynamic_cast<EliteUnit*>(this)) {
             srand(rand());
             // 목표값 도달 시 새로운 목표값 설정
-            if (position.y >= nextTargetY) {
+            if (position.y >= nextTargetY && previousY < nextTargetY) {
                 targetX = rand() % 800 + 450; // 새로운 랜덤 X 좌표
-                if (nextTargetY == 600) nextTargetY += 350; 
+                if (nextTargetY == 600) nextTargetY += 300; 
+                else if (nextTargetY == 900)  nextTargetY -= 100;
                 else nextTargetY += 100; // 다음 Y 목표값 증가
                 //std::cout << "New targetX: " << targetX << ", nextTargetY: " << nextTargetY << std::endl; // 디버그
             }
-            else if (position.y == -100) { // 초기 스폰 위치에서 목표값 설정
+            else if (position.y <= nextTargetY && previousY > nextTargetY) {
+                targetX = rand() % 800 + 450; // 새로운 랜덤 X 좌표
+                if (nextTargetY == 300) nextTargetY -= 300;
+                else if (nextTargetY == 0)  nextTargetY += 100;
+                else nextTargetY -= 100; // 다음 Y 목표값 증가
+                //std::cout << "New targetX: " << targetX << ", nextTargetY: " << nextTargetY << std::endl; // 디버그
+            }
+            else if (position.y == -50) { // 초기 스폰 위치에서 목표값 설정
                 targetX = rand() % 700 + 550; // 새로운 랜덤 X 좌표
             }
             // X축과 Y축 남은 거리 계산
@@ -106,6 +114,10 @@ void Enemy::update(float deltaTime) {
                 xSpeed = -xSpeed; // X축 속도 반전
                 targetX = rand() % (1350 - 450) + 450; // 새로운 랜덤 X 좌표 설정
             }
+
+
+            previousY = position.y;
+
             // 좌표 업데이트
             position.x += xSpeed * deltaTime; // 프레임당 X축 이동
             position.y += ySpeed * deltaTime; // 프레임당 Y축 이동
@@ -119,10 +131,18 @@ void Enemy::update(float deltaTime) {
         else if (dynamic_cast<EliteUnit*>(this)) {
             srand(rand());
             // 목표값 도달 시 새로운 목표값 설정
-            if (position.x <= nextTargetX) {
+            if (position.x <= nextTargetX && previousX > nextTargetX){
                 targetY = rand() % 600 + 200; // 새로운 랜덤 Y 좌표
-                if (nextTargetX == 300) nextTargetX -= 350;
+                if (nextTargetX == 750) nextTargetX -= 300;
+                else if (nextTargetX == 450) nextTargetX += 100;
                 else nextTargetX -= 100; // 다음 X 목표값 
+                //std::cout << "New targetY: " << targetY << ", nextTargetX: " << nextTargetX << std::endl; // 디버그
+            }
+            else if (position.x >= nextTargetX && previousX < nextTargetX) {
+                targetY = rand() % 600 + 200; // 새로운 랜덤 Y 좌표
+                if (nextTargetX == 950) nextTargetX += 300;
+                else if (nextTargetX == 1250) nextTargetX -= 100;
+                else nextTargetX += 100; // 다음 X 목표값 
                 //std::cout << "New targetY: " << targetY << ", nextTargetX: " << nextTargetX << std::endl; // 디버그
             }
             else if (position.x == 1400) { // 초기 스폰 위치에서 목표값 설정
@@ -145,15 +165,15 @@ void Enemy::update(float deltaTime) {
                 ySpeed = (ySpeed > 0 ? 1 : -1) * minSpeed; // 속도를 최소값 이상으로 유지
             }
 
-            // 좌표 업데이트
-            position.x += xSpeed * deltaTime; // 프레임당 X축 이동
-            position.y += ySpeed * deltaTime; // 프레임당 Y축 이동
 
             // 상하 벽 충돌 처리
             if (position.y <= 0 || position.y >= 900) { // 벽 범위
                 xSpeed = -xSpeed; // X축 속도 반전
                 targetY = rand() % 600 + 200; // 새로운 랜덤 Y 좌표
             }
+
+            previousX = position.x;
+
             // 좌표 업데이트
             position.x += xSpeed * deltaTime; // 프레임당 X축 이동
             position.y += ySpeed * deltaTime; // 프레임당 Y축 이동
@@ -165,6 +185,12 @@ void Enemy::update(float deltaTime) {
             position.x += direction * 200.0f * deltaTime; // 방향에 따라 이동
         }
         else if (dynamic_cast<EliteUnit*>(this)) {
+            if (position.x <= 450) {
+                direction = 1; // 오른쪽으로 이동
+            }
+            else if (position.x >= 1250) {
+                direction = -1; // 왼쪽으로 이동
+            }
             position.x += direction * 100.0f * deltaTime; // 방향에 따라 이동
             position.y += std::cos(position.x / 50.0f) * 30.0f * deltaTime; // 위아래로 흔들리며 이동
         }
@@ -184,22 +210,46 @@ bool Enemy::isOffScreen() const {
 
 // EliteUnit
 
-void EliteUnit::special_attack() {
-    if (!missileLaunched) {                                                 // 미사일이 없는 경우
-        // 유닛의 중앙 위치를 계산하여 미사일의 시작 위치로 사용
-        sf::Vector2f missileStartPosition = this->position;
-        missileStartPosition.x += width / 2.0f; // 플레이어의 중심 x 좌표
-        missileStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
-        missiles.emplace_back(new Missile(missileStartPosition, missileDirection, 1.0f));
-        // missileLaunched = true;
+void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<Missile*>& globalMissiles) {
+    if (fireClock.getElapsedTime().asSeconds() >= 5.0f) {
+        // 초기 방향 설정
+        sf::Vector2f direction = targetPosition - this->position;
+        float magnitude = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+        if (magnitude != 0) {
+            direction /= magnitude;
+        }
+        // 추적형 미사일 생성
+        Missile* newMissile = new Missile(this->position, direction, 3.0f); // 속도 3.0f
+        globalMissiles.emplace_back(newMissile); // 전역 벡터에 추가
+
+        // 미사일을 추적형으로 설정
+        newMissile->setTarget(); // 플레이어 위치를 참조로 설정
+
+        fireClock.restart();
 
     }
 }
 
-void EliteUnit::updateAttack() {
+void EliteUnit::updateAttack(float deltaTime) {
     
     for (Missile *missile : missiles) {
         missile->update(); // 발사체 상태 업데이트
+    }
+    // 화면 밖 미사일 삭제
+    missiles.erase(
+        std::remove_if(missiles.begin(), missiles.end(),
+            [](Missile* missile) {
+                if (missile->isOffScreen()) {
+                    delete missile; // 메모리 해제
+                    return true;
+                }
+                return false;
+            }),
+        missiles.end());
+
+    // 재발사 가능 상태로 전환 (예: 1초 후)
+    if (fireClock.getElapsedTime().asSeconds() >= 5.0f) {
+        fireClock.restart();
     }
 }
 

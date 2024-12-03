@@ -33,6 +33,8 @@ protected:
     float targetY = 0.0f; // 목표 Y 좌표
     float nextTargetY = 0.0f; // 하늘 스테이지: 다음 Y 목표값
     float nextTargetX = 1350.0f; // 바다 스테이지: 다음 X 목표값
+    float previousY = 0.0f; // 이전 프레임의 Y 좌표
+    float previousX = 1400.0f; // 이전 프레임의 X 좌표
 
     bool collisionFlag;
 
@@ -72,7 +74,8 @@ public:
     EliteUnit(int stageNumber, sf::Vector2f position,int direction)
         : Enemy(300.0f, 1.5f, position, stageNumber) {
         
-        missileLaunched = false;
+        previousY = position.y;
+
         this->direction = direction; // 방향 설정
         //if (stageNumber == 3) { // 땅 스테이지
         //    if (direction == -1)
@@ -112,12 +115,12 @@ public:
 
     // - 공격
     // 생성
-    void special_attack();
+    void fireMissile(sf::Vector2f targetPosition, std::vector<Missile*>& globalMissiles);
     // 업데이트
    /* void collision() {
 
     }*/
-    void updateAttack();
+    void updateAttack(float deltaTime);
     // 그리기
     void renderAttack(sf::RenderWindow& window);
     void deleteThisProjectile();
@@ -129,4 +132,5 @@ private:
     std::vector<Missile*> missiles;
     sf::Vector2f missileDirection;
 
+    sf::Clock fireClock;           // 미사일 발사 간격 관리
 };
