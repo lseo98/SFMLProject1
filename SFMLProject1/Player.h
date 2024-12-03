@@ -86,5 +86,6 @@ private:
     int stageNumber;                 // 현재 스테이지 번호
     void loadProjectileTextures();
 
+    int killCountNomalUnit, killCountEliteUnit; // 처치한 적군 수
 
 };

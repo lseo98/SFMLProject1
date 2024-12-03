@@ -18,6 +18,10 @@ Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f - width /
 
     waitTime = 0.0f; // √ ±‚»≠
 
+    killCountNomalUnit = 0;
+    killCountEliteUnit = 0;
+
+
     initializeHearts();
 }
 
