@@ -13,6 +13,7 @@ public:
     // 생성자 및 소멸자
     Game();
     ~Game();
+    static sf::Clock globalClock; // 정적 멤버로 선언
 
     // 게임 실행
     void run();
@@ -45,6 +46,8 @@ private:
     sf::Vector2f bulletDirection;
     sf::Vector2f missileDirection;
     float dt;
+
+    std::vector<Missile*> enemyMissiles; // 적 미사일을 관리하는 전역 벡터
 
 
     // 초기 객체 생성

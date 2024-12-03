@@ -1,4 +1,5 @@
 #include "Projectile.h"
+#include "Game.h"
 
 Projectile::Projectile(sf::Vector2f startPosition, sf::Vector2f direction, float speed)
     : position(startPosition), direction(direction), speed(speed) {
@@ -10,16 +11,17 @@ Projectile::Projectile(sf::Vector2f startPosition, sf::Vector2f direction, float
 bool Projectile::isOffScreen() const {
     int centerX = WINDOWWIDTH / 2;
     int centerY = WINDOWHEIGHT / 2;
-    int rangeX = 600;
-    int rangeY = 600;
+    int rangeX = 500;
+    int rangeY = 500;
 
     return (position.x < centerX - rangeX || position.x > centerX + rangeX ||
         position.y < centerY - rangeY || position.y > centerY + rangeY);
 }
 
+
 void Projectile::adjustDirection(){
     if (isAlly) {
-        // 아군 유닛 발사체인 경우 회전하지 않음
+        // 필살기 아군 유닛 발사체인 경우 회전하지 않음
         return;
     }
     float angle = 0.0f; // 초기 각도 설정
@@ -42,4 +44,12 @@ void Projectile::adjustDirection(){
     float newX = direction.x * cos(radian) - direction.y * sin(radian);
     float newY = direction.x * sin(radian) + direction.y * cos(radian);
     direction = sf::Vector2f(newX, newY);
+}
+
+void Projectile::updateDamage() {
+    float elapsedTime = Game::globalClock.getElapsedTime().asSeconds(); // 경과 시간
+    float minDamage = baseDamage * 0.7f; // 최소 데미지 (기본 데미지의 70%)
+
+    // 데미지를 10초마다 1%씩 감소
+    damage = std::max(baseDamage * std::pow(0.99f, elapsedTime / 10.0f), minDamage);
 }

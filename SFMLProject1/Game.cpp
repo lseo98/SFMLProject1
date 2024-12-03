@@ -1,6 +1,9 @@
 #include "Game.h"
 #include <iostream>
 
+// 정적 멤버 정의
+sf::Clock Game::globalClock;
+
 Game::Game() {
     initVariables();
     initWindow();
@@ -44,6 +47,8 @@ void Game::run() {
 //}
 
 void Game::initVariables() {
+    globalClock.restart(); // 게임 시작 시 Clock 초기화
+
     window = nullptr;   // 윈도우 초기화
     isRunning = true;   
     isMaingameRunning = true;   // stage 1, 2, 3이 아닌 미니게임 혹은 화면 전환 중에는 false
@@ -54,7 +59,6 @@ void Game::initVariables() {
     currentStage.spawnEnemies(enemies, dt);             // 이전 스테이지 적군 삭제 및 초기화
 
     player.setPlayer(stageNumber);  // 아군 유닛 초기화
-
 
     currentStage.setStage(stageNumber, enemies);    // 현재 스테이지 초기화
 
@@ -152,10 +156,10 @@ void Game::handleEvents() {
         
   
       
-        // 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
-            stageNumber = 1;
-        }
+        //// 숫자 입력에 따른 맵 전환 // 1: 하늘, 2: 바다, 3: 땅
+        //if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
+        //    stageNumber = 1;
+        //}
         // 마우스 버튼 클릭 이벤트 처리
         if (event.type == sf::Event::MouseButtonPressed) {
             if (event.mouseButton.button == sf::Mouse::Left) {
@@ -206,7 +210,15 @@ void Game::handleEvents() {
                 currentStage.setStage(stageNumber, enemies);
                 player.setPlayer(stageNumber);
                 player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 9.0f / 10.0f));
+                
+                // 모든 적 미사일 제거
+                for (auto* missile : enemyMissiles) {
+                    delete missile; // 메모리 해제
+                }
+                enemyMissiles.clear(); // 벡터 비우기
+
                 currentStage.spawnEnemies(enemies, dt);
+
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) {
                 stageNumber = 2;
@@ -214,6 +226,13 @@ void Game::handleEvents() {
                 currentStage.setStage(stageNumber, enemies);
                 player.setPlayer(stageNumber);
                 player.setPosition(sf::Vector2f(WINDOWWIDTH / 4.0f, WINDOWHEIGHT / 2.0f));
+
+                // 모든 적 미사일 제거
+                for (auto* missile : enemyMissiles) {
+                    delete missile; // 메모리 해제
+                }
+                enemyMissiles.clear(); // 벡터 비우기
+
                 currentStage.spawnEnemies(enemies, dt);
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3)) {
@@ -222,11 +241,33 @@ void Game::handleEvents() {
                 currentStage.setStage(stageNumber, enemies);
                 player.setPlayer(stageNumber);
                 player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3));
+
+                // 모든 적 미사일 제거
+                for (auto* missile : enemyMissiles) {
+                    delete missile; // 메모리 해제
+                }
+                enemyMissiles.clear(); // 벡터 비우기
+
                 currentStage.spawnEnemies(enemies, dt);
+
+                currentStage.setStage(stageNumber, enemies);
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4)) {
+                stageNumber = 4;
+
+                player.setPlayer(3);
+                player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f - 200, WINDOWHEIGHT / 4.0f * 3));
+
+                // 모든 적 미사일 제거
+                for (auto* missile : enemyMissiles) {
+                    delete missile; // 메모리 해제
+                }
+                enemyMissiles.clear(); // 벡터 비우기
 
                 currentStage.setStage(stageNumber, enemies);
 
             }
+
 
 
             if (event.type == sf::Event::KeyPressed) {   // 한 번 눌렀을 때 한 개만 생성되도록 키를 새로 눌렀을 경우에만 실행
@@ -247,7 +288,7 @@ void Game::handleEvents() {
                         player.updateDirection('D', 2);
                     }
                 }
-                if (stageNumber == 3) {
+                if (stageNumber == 3 || stageNumber == 4) {
                     if (event.key.code == sf::Keyboard::A) {
                         player.updateDirection('A', 3);
                     }
@@ -263,9 +304,8 @@ void Game::handleEvents() {
 
 void Game::update() { // 게임 상태 업데이트
     if (player.getHealth() > 0) {
-
-   
         // 입력 텍스트 설정
+
         inputText.setFont(font);
         inputText.setString(userInput);
         inputText.setCharacterSize(24);
@@ -273,7 +313,7 @@ void Game::update() { // 게임 상태 업데이트
         inputText.setPosition(5, 630);
 
         text.setFont(font);
-        text.setString("Remaining Enimies");
+        text.setString("Kill Count");
         text.setCharacterSize(38);
         text.setFillColor(sf::Color::White);
         text.setPosition(1410, 210);
@@ -296,7 +336,7 @@ void Game::update() { // 게임 상태 업데이트
         landtext.setString("ARMY");
         landtext.setCharacterSize(38);
         landtext.setFillColor(sf::Color(100, 100, 100, 250));
-        if (stageNumber == 3)landtext.setFillColor(sf::Color::White);
+        if (stageNumber == 3 || stageNumber == 4)landtext.setFillColor(sf::Color::White);
         landtext.setPosition(1410, 390);
 
         for (int stage = 1; stage <= 3; ++stage) { // 스테이지 1, 2, 3 순회
@@ -320,7 +360,7 @@ void Game::update() { // 게임 상태 업데이트
             dx += (sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A)) * speed;
             dy += (sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W)) * speed;
 
-            if (stageNumber == 3) dy = 0;
+            if (stageNumber == 3 || stageNumber == 4) dy = 0;
             else if (dx * dy) {  // 대각선 이동의 경우 좌우, 상하 단일 움직임 보다 빨라지는 속도를 보정
                 dx *= 0.7;
                 dy *= 0.7;
@@ -364,15 +404,48 @@ void Game::update() { // 게임 상태 업데이트
         player.collision(enemies);
         player.updateAttack(enemies);
 
-
+        sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
 
         // 적 생성 및 업데이트
         currentStage.spawnEnemies(enemies, dt);
         for (auto* enemy : enemies) {
             enemy->collision(player);
-            enemy->update(dt);  // 적 상태 업데이트 (필요 시)
-            // 적의 공격 수행 (공격 타입에 따라)
+            enemy->update(dt);  
+
+            if (EliteUnit* elite = dynamic_cast<EliteUnit*>(enemy)) {
+                elite->fireMissile(player.getPosition(), enemyMissiles); // 플레이어를 목표로 미사일 발사
+                // 새로 생성된 미사일을 즉시 업데이트
+                /*if (!enemyMissiles.empty()) {
+                    enemyMissiles.back()->update(); // 방금 추가된 미사일을 바로 업데이트
+                }*/
+            }
         }
+
+        for (auto* enemyMissile : enemyMissiles) { 
+            enemyMissile->update(player.getPosition());
+        }
+
+        // 화면 밖 미사일 삭제
+        enemyMissiles.erase(
+            std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
+                [](Missile* missile) {
+                    return missile->isOffScreen();
+                }),
+            enemyMissiles.end()
+        );
+
+        //sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
+
+        //// 적 미사일 발사
+        //for (auto* enemy : enemies) {
+        //    enemy->fireMissile(enemyMissiles, playerPosition); // 플레이어를 목표로 미사일 발사
+        //}
+
+        //// 적 미사일 업데이트
+        //for (auto* missile : enemyMissiles) {
+        //    missile->targeting(playerPosition); // 플레이어를 향해 이동
+        //}
+
         /* if (attackClock.getElapsedTime().asMilliseconds() >= 500) {
              for (auto* enemy : enemies) {
                  enemy->collision(player);
@@ -390,12 +463,24 @@ void Game::update() { // 게임 상태 업데이트
         return false; // 유지 대상
                 }),
             enemies.end());
+
+        /*window->clear();
+        sf::RectangleShape backW(sf::Vector2f(100, 100));
+        backW.setFillColor(sf::Color::Magenta);
+        backW.setPosition(sf::Vector2f(1650, 750));
+        window->draw(backW);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            sf::RectangleShape frontW(sf::Vector2f(100, 100));
+            frontW.setFillColor(sf::Color(0,0,0,sf::Uint8(100)));
+            frontW.setPosition(sf::Vector2f(1650, 750));
+            window->draw(frontW);
+        }*/
     }
 
 }
 
 void Game::render() {
-    window->clear(); // 화면 지우기
+        window->clear(); // 화면 지우기
 
         // (1) 게임 뷰를 설정하고 게임 관련 요소 그리기
         window->setView(gameView); // 게임 뷰 설정 (중앙 정사각형 영역)
@@ -410,6 +495,11 @@ void Game::render() {
             enemy->draw(*window);     // 적을 화면에 그리기
         }
 
+        // 적 미사일 렌더링
+        for (auto* missile : enemyMissiles) {
+            missile->draw(*window);
+        }
+
         window->draw(eliteUnitKillText);
 
 
@@ -420,7 +510,7 @@ void Game::render() {
         // (2) UI 뷰를 설정하고 UI 관련 요소 그리기
         window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
-
+        
         //입력상좌가 텍스트 그리기
         window->draw(inputBoxl);
         window->draw(inputBoxr);
@@ -432,7 +522,7 @@ void Game::render() {
         window->draw(seatext);
         window->draw(landtext);
         window->draw(textbox);
-
+        
 
         // 플레이어 관련 그리기
         player.draw(*window);
