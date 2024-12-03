@@ -1,7 +1,6 @@
 #pragma once
 #include "Character.h"
-#include "Enemy.h"
-
+#include "Enemy.h" 
 //#include <memory>
 #include <iostream>
 #include "Projectile.h"
@@ -16,7 +15,7 @@ public:
     float power = 150.0f;
 
     void move(sf::Vector2f updatePosition);
-    //void takeDamage(float amount) override;
+   // void takeDamage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
     void updateDirection(char direction,int stageNum); // 유닛 방향 설정
     void image(std::string textureFile);
@@ -36,9 +35,10 @@ public:
     void ultimateAttack();
     // 업데이트
     void collision(std::vector<Enemy*>& enemies);    // 공격체-적 충돌 처리
+    void enemyProjectileCollision(std::vector<Missile*>& globalMissiles);    // 공격체-적 충돌 처리
     void deleteThisProjectile();                     // 충돌된 내 발사체 삭제
-    void updateAttack(std::vector<Enemy*>& enemies);                             // 공격체 업데이트
-    void updateAllies(float delatime);
+    void updateAttack();                             // 공격체 업데이트
+    void updateAllies(float delatime, std::vector<Enemy*>& enemies, std::vector<Missile*>& globalMissiles);
     // 그리기
     void renderAttack(sf::RenderWindow& window);
     void drawAllies(sf::RenderWindow& window);  // 아군 유닛 그리기 메서드 추가
@@ -47,6 +47,9 @@ public:
     // 쿨타임 전용 업데이트 메서드 추가
     void updateCooldowns(float dt);  // 쿨타임 업데이트 (특수공격과 필살기 모두 포함)
     
+    void countKillNormal() { this->killCountNomalUnit++; }
+    void countKillElite() { this->killCountEliteUnit++; }
+
 
     sf::Texture texture;      // 이미지 텍스처
     sf::Sprite sprite;        // 텍스처를 사용할 스프라이트

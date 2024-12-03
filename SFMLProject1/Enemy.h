@@ -58,14 +58,7 @@ public:
                 stageNumber == 2 ? "sea_enemy_unit_b.png" :
                 "land_enemy_unit.png");
         }
-    }
-
-    /*void collision() {
-
-    }*/
-
-
-
+    } 
 };
 
 class EliteUnit : public Enemy {
@@ -121,6 +114,7 @@ public:
 
     }*/
     void updateAttack(float deltaTime);
+ 
     // 그리기
     void renderAttack(sf::RenderWindow& window);
     void deleteThisProjectile();

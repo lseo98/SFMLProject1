@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Bullet.h" 
+ 
 #include <iostream>  
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
@@ -125,7 +126,7 @@ void Player::setPlayer(int stageNumber) {
     allyUnits.clear();   // 기존 아군 유닛 삭제 
 
     this->stageNumber = stageNumber;
-
+    std::cout << "Nomal Unit 처치 수 : " << killCountNomalUnit << "  Elite Unit 처치 수 : " << killCountEliteUnit << std::endl;
 
     switch (stageNumber) {
     case 1:
@@ -202,6 +203,7 @@ void Player::loadProjectileTextures() {
 
 
 void Player::specialAttack() {
+    std::cout << "Nomal Unit 처치 수 : " << killCountNomalUnit << "  Elite Unit 처치 수 : " << killCountEliteUnit << std::endl;
 
     if (canSpecialAttack) {
         // 플레이어의 중앙 위치를 계산하여 미사일의 시작 위치로 사용
@@ -416,7 +418,7 @@ void Player::updateCooldowns(float dt) {
     }
 }
 
-void Player::updateAllies(float dt) {
+void Player::updateAllies(float dt, std::vector<Enemy*>& enemies, std::vector<Missile*>& globalMissiles) {
     switch (stageNumber) {
     case 1: // 하늘 스테이지
         // 하늘 스테이지에서 아군 유닛 위쪽으로 느리게 이동
@@ -481,23 +483,49 @@ void Player::updateAllies(float dt) {
     }
     break;
 
-    //case 2: // 바다 스테이지
-    //    // 바다 스테이지에서 아군 유닛은 왼쪽에서 오른쪽으로 이동
-    //    for (auto& ally : allyUnits) {
-    //        sf::Vector2f position = ally.getPosition();
-    //        position.x += 100.0f * dt; // 오른쪽으로 이동 (속도 100.0f * delta time)
-    //        ally.setPosition(position);
-    //    }
+    case 2: // 바다 스테이지
+        //// 바다 스테이지에서 아군 유닛은 왼쪽에서 오른쪽으로 이동
+        //for (auto& ally : allyUnits) {
+        //    sf::Vector2f position = ally.getPosition();
+        //    position.x += 100.0f * dt; // 오른쪽으로 이동 (속도 100.0f * delta time)
+        //    ally.setPosition(position);
+        //}
 
-    //    // 화면 밖으로 나간 아군 유닛 제거
-    //    allyUnits.erase(
-    //        std::remove_if(allyUnits.begin(), allyUnits.end(),
-    //            [](sf::Sprite& ally) {
-    //                return ally.getPosition().x > WINDOWWIDTH; // 화면 오른쪽 밖으로 나간 경우
-    //            }),
-    //        allyUnits.end()
-    //    );
-    //    break;
+        //// 화면 밖으로 나간 아군 유닛 제거
+        //allyUnits.erase(
+        //    std::remove_if(allyUnits.begin(), allyUnits.end(),
+        //        [](sf::Sprite& ally) {
+        //            return ally.getPosition().x > WINDOWWIDTH; // 화면 오른쪽 밖으로 나간 경우
+        //        }),
+        //    allyUnits.end()
+        //);
+            // 필살기 중앙에서 도달하면 적군 전체 제거
+        if (std::any_of(allyMissiles.begin(), allyMissiles.end(), [](Missile* missile) {
+            return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
+            })) {
+            // 적군 전체 삭제
+            for (auto* enemy : enemies) {
+                if (dynamic_cast<NormalUnit*>(enemy) == enemy) killCountNomalUnit++;
+                else if (dynamic_cast<EliteUnit*>(enemy) == enemy) killCountEliteUnit++;
+                delete enemy;  // 동적 메모리 해제
+            }
+            enemies.clear(); // 적군 벡터 초기화
+            for (auto* enemyMissile : globalMissiles) {
+                delete enemyMissile;  // 동적 메모리 해제
+            }
+            globalMissiles.clear(); // 적군 공격체 벡터 초기화
+        }
+
+        allyMissiles.erase(
+            std::remove_if(allyMissiles.begin(), allyMissiles.end(),
+                [](Missile* missile) {
+                    return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
+                }),
+            allyMissiles.end()
+
+        );
+    
+            break;
 
     case 3: // 땅 스테이지
         for (auto& ally : allyUnits) {
@@ -554,6 +582,8 @@ void Player::collision(std::vector<Enemy*>& enemies) {
                         (*enemyTmpIt)->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
 
                         if ((*enemyTmpIt)->getHealth() <= 0) {
+                            //if (dynamic_cast<NormalUnit*>(*enemyIt) == *enemyIt) killCountNomalUnit++;
+                           // else if (dynamic_cast<EliteUnit*>(*enemyIt) == *enemyIt) killCountEliteUnit++;
                             enemyDestroyed = true;
                         }
                     }
@@ -588,6 +618,8 @@ void Player::collision(std::vector<Enemy*>& enemies) {
                     (*bulletIt)->crashed();
 
                     if ((*enemyIt)->getHealth() <= 0) {
+                        //if (dynamic_cast<NormalUnit*>(*enemyIt) == *enemyIt) killCountNomalUnit++;
+                        //else if (dynamic_cast<EliteUnit*>(*enemyIt) == *enemyIt) killCountEliteUnit++;
                         break;                                          // Enemy가 삭제되었으므로 현재 Enemy와 더 이상의 충돌 검사 불필요
                     }
                 }
@@ -595,43 +627,103 @@ void Player::collision(std::vector<Enemy*>& enemies) {
         }
 
         // 필살기 Missile 처리   
-        for (auto missileIt = allyMissiles.begin(); missileIt != allyMissiles.end(); missileIt++) {
-            if (*missileIt == nullptr) {  // nullptr 체크
-                break;
-            }
-            if ((*missileIt)->shape.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
-                sf::FloatRect boundsMissile = (*missileIt)->shape.getGlobalBounds(); // , boundsEnemy = (*enemyIt)->sprite.getGlobalBounds();
-                sf::Vector2f missileCenter = sf::Vector2f(boundsMissile.left + boundsMissile.width / 2, boundsMissile.top + boundsMissile.height / 2);
-                //sf::Vector2f enemyCenter = sf::Vector2f(boundsEnemy.left + boundsEnemy.width / 2, boundsEnemy.top + boundsEnemy.height / 2);
+        if (stageNumber != 2) {
+            for (auto missileIt = allyMissiles.begin(); missileIt != allyMissiles.end(); missileIt++) {
+                if (*missileIt == nullptr) {  // nullptr 체크
+                    break;
+                }
+                if ((*missileIt)->shape.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
+                    sf::FloatRect boundsMissile = (*missileIt)->shape.getGlobalBounds(); // , boundsEnemy = (*enemyIt)->sprite.getGlobalBounds();
+                    sf::Vector2f missileCenter = sf::Vector2f(boundsMissile.left + boundsMissile.width / 2, boundsMissile.top + boundsMissile.height / 2);
+                    //sf::Vector2f enemyCenter = sf::Vector2f(boundsEnemy.left + boundsEnemy.width / 2, boundsEnemy.top + boundsEnemy.height / 2);
 
-                for (auto enemyTmpIt = enemies.begin(); enemyTmpIt != enemies.end(); enemyTmpIt++) {
-                    if (*enemyTmpIt == nullptr) {  // nullptr 체크
-                        break;
+                    for (auto enemyTmpIt = enemies.begin(); enemyTmpIt != enemies.end(); enemyTmpIt++) {
+                        if (*enemyTmpIt == nullptr) {  // nullptr 체크
+                            break;
+                        }
+                        sf::FloatRect boundsTmpEnemy = (*enemyTmpIt)->sprite.getGlobalBounds();
+                        sf::Vector2f tmpEnemyCenter = sf::Vector2f(boundsTmpEnemy.left + boundsTmpEnemy.width / 2, boundsTmpEnemy.top + boundsTmpEnemy.height / 2);
+                        sf::Vector2f dist = tmpEnemyCenter - missileCenter;
+                        double distance = sqrt(dist.x * dist.x + dist.y * dist.y);
+
+                        if (distance < (*missileIt)->getRange()) {
+
+                            (*enemyTmpIt)->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
+
+                            // 이 이후에 충돌처리 할 것이 없으므로 적군이 파괴 되었는지 여부는 알 필요 없음
+                            /*if ((*enemyTmpIt)->getHealth() <= 0) {
+                                if (dynamic_cast<NormalUnit*>(*enemyIt) == *enemyIt) killCountNomalUnit++;
+                                else if (dynamic_cast<EliteUnit*>(*enemyIt) == *enemyIt) killCountEliteUnit++;
+                            }*/
+                        }
+
                     }
-                    sf::FloatRect boundsTmpEnemy = (*enemyTmpIt)->sprite.getGlobalBounds();
-                    sf::Vector2f tmpEnemyCenter = sf::Vector2f(boundsTmpEnemy.left + boundsTmpEnemy.width / 2, boundsTmpEnemy.top + boundsTmpEnemy.height / 2);
-                    sf::Vector2f dist = tmpEnemyCenter - missileCenter;
-                    double distance = sqrt(dist.x * dist.x + dist.y * dist.y);
-
-                    if (distance < (*missileIt)->getRange()) {
-
-                        (*enemyTmpIt)->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
-
-                        // 이 이후에 충돌처리 할 것이 없으므로 적군이 파괴 되었는지 여부는 알 필요 없음
-                        /*if ((*enemyTmpIt)->getHealth() <= 0) {
-                            enemyDestroyed = true;
-                        }*/
-                    }
+                    (*missileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
 
                 }
-                (*missileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
-
             }
         }
 
 
     }
 
+    deleteThisProjectile();
+
+}
+
+void Player::enemyProjectileCollision(std::vector<Missile*>& globalMissiles) {   // 적군 공격체-플레이어 충돌 처리
+   
+    for (auto enemyMissileIt = globalMissiles.begin(); enemyMissileIt != globalMissiles.end(); enemyMissileIt++) {
+        bool misileDestroyed = false;
+        if (*enemyMissileIt == nullptr) {  // nullptr 체크
+            break;
+        }
+
+        // Missile 처리   // 미사일의 개수가 총알에 비해 비교적 적고 범위 공격을 인해 continue가 자주 발생할 수 있어 총알보다 우선 충돌처리
+        for (auto missileIt = missiles.begin(); missileIt != missiles.end(); missileIt++) {
+            if (*missileIt == nullptr) {  // nullptr 체크
+                break;
+            }
+            if ((*enemyMissileIt)->shape.getGlobalBounds().intersects((*missileIt)->shape.getGlobalBounds())) { // 충돌 발생 시
+                (*enemyMissileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
+                (*missileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
+                misileDestroyed = true;
+                break;
+            }
+        }
+
+        if (misileDestroyed) {
+            continue; // Enemy가 삭제되었으므로 다음 Enemy로 이동
+        }
+
+        // 필살기 Missile 처리   
+        if (stageNumber != 2) {     // 바다 스테이지가 아닌 경우
+            for (auto missileIt = allyMissiles.begin(); missileIt != allyMissiles.end(); missileIt++) {
+                if (*missileIt == nullptr) {  // nullptr 체크
+                    break;
+                }
+                if ((*missileIt)->shape.getGlobalBounds().intersects((*enemyMissileIt)->shape.getGlobalBounds())) { // 충돌 발생 시
+                    // sf::FloatRect boundsMissile = (*missileIt)->shape.getGlobalBounds(); // , boundsEnemy = (*enemyIt)->sprite.getGlobalBounds();
+                    //sf::Vector2f missileCenter = sf::Vector2f(boundsMissile.left + boundsMissile.width / 2, boundsMissile.top + boundsMissile.height / 2);
+                    ////sf::Vector2f enemyCenter = sf::Vector2f(boundsEnemy.left + boundsEnemy.width / 2, boundsEnemy.top + boundsEnemy.height / 2);
+
+                    (*enemyMissileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
+                    (*missileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
+                    misileDestroyed = true;
+                }
+            }
+            if (misileDestroyed) {
+                continue; // Enemy가 삭제되었으므로 다음 Enemy로 이동
+            }
+        }
+
+        // 플레이어와 충돌 처리
+        if ((*enemyMissileIt)->shape.getGlobalBounds().intersects(this->sprite.getGlobalBounds())) { // 충돌 발생 시
+            this->takeDamage(1.0f);
+            this->changeHeartSprite();
+            (*enemyMissileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
+        }
+    }
     deleteThisProjectile();
 
 }
@@ -662,7 +754,7 @@ void Player::deleteThisProjectile() {
     );
 }
 
-void Player::updateAttack(std::vector<Enemy*>& enemies) {
+void Player::updateAttack() {
 
     // 총알과 미사일의 상태 업데이트
     for (Bullet* bullet : bullets) {
@@ -677,28 +769,28 @@ void Player::updateAttack(std::vector<Enemy*>& enemies) {
         Missile->update();
     }
 
-    if (stageNumber == 2) {
-        // 중앙에서 도달하면 적군 전체 제거
-        if (std::any_of(allyMissiles.begin(), allyMissiles.end(), [](Missile* missile) {
-            return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
-            })) {
-            // 적군 전체 삭제
-            for (auto* enemy : enemies) {
-                delete enemy;  // 동적 메모리 해제
-            }
-            enemies.clear(); // 적군 벡터 초기화
-        }
+    //if (stageNumber == 2) {
+    //    // 필살기 중앙에서 도달하면 적군 전체 제거
+    //    if (std::any_of(allyMissiles.begin(), allyMissiles.end(), [](Missile* missile) {
+    //        return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
+    //        })) {
+    //        // 적군 전체 삭제
+    //        for (auto* enemy : enemies) {
+    //            delete enemy;  // 동적 메모리 해제
+    //        }
+    //        enemies.clear(); // 적군 벡터 초기화
+    //    }
 
-        allyMissiles.erase(
-            std::remove_if(allyMissiles.begin(), allyMissiles.end(),
-                [](Missile* missile) {
-                    return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
-                }),
-            allyMissiles.end()
+    //    allyMissiles.erase(
+    //        std::remove_if(allyMissiles.begin(), allyMissiles.end(),
+    //            [](Missile* missile) {
+    //                return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
+    //            }),
+    //        allyMissiles.end()
 
-        );
-        
-    }
+    //    );
+    //    
+    //}
 
     // 화면 밖으로 나간 발사체 제거
     bullets.erase(

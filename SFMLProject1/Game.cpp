@@ -399,10 +399,10 @@ void Game::update() { // 게임 상태 업데이트
             }
         }
 
-        player.updateAllies(dt);
+        player.updateAllies(dt, enemies, enemyMissiles);
         // 플레이어 공격 업데이트
         player.collision(enemies);
-        player.updateAttack(enemies);
+        player.updateAttack();
 
         sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
 
@@ -421,18 +421,28 @@ void Game::update() { // 게임 상태 업데이트
             }
         }
 
+        player.enemyProjectileCollision(enemyMissiles); // 적군 공격체와 플레이어, 플레이어 공격체 간 충동 처리
+        enemyMissiles.erase(                            // 충돌 된 적군 공격체 삭제
+            std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
+                [](Missile* missile) {
+                    return missile->checkCrashed();
+                }),
+            enemyMissiles.end()
+        );
+
+
         for (auto* enemyMissile : enemyMissiles) { 
             enemyMissile->update(player.getPosition());
         }
 
-        // 화면 밖 미사일 삭제
-        enemyMissiles.erase(
-            std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
-                [](Missile* missile) {
-                    return missile->isOffScreen();
-                }),
-            enemyMissiles.end()
-        );
+        //// 화면 밖 미사일 삭제
+        //enemyMissiles.erase(
+        //    std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
+        //        [](Missile* missile) {
+        //            return missile->isOffScreen();
+        //        }),
+        //    enemyMissiles.end()
+        //);
 
         //sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
 
@@ -514,15 +524,32 @@ void Game::render() {
 
 
 void Game::deleteEnemy() {
+    
     // 화면 밖으로 나갔거나 채력이 0 이하인 적 제거
     enemies.erase(
         std::remove_if(enemies.begin(), enemies.end(),
-            [](Enemy* enemy) {
-                if (enemy->isOffScreen() || enemy->getHealth() <= 0) {  
+            [this](Enemy* enemy) {
+                if (enemy->isOffScreen()) {  
+                    delete enemy; // 메모리 해제
+                    return true; // 제거 대상
+                }
+                else if(enemy->getHealth() <= 0) {
+                    
+                    if (dynamic_cast<NormalUnit*>(enemy) == enemy) this->player.countKillNormal();
+                    else if (dynamic_cast<EliteUnit*>(enemy) == enemy) this->player.countKillElite();
                     delete enemy; // 메모리 해제
                     return true; // 제거 대상
                 }
                 return false; // 유지 대상
             }),
         enemies.end());
+    
+    // 화면 밖 미사일 삭제
+    enemyMissiles.erase(
+        std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
+            [](Missile* missile) {
+                return missile->isOffScreen();
+            }),
+        enemyMissiles.end()
+    );
 }
