@@ -164,7 +164,6 @@
     <ClInclude Include="stage.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\문서\카카오톡 받은 파일\explosion pack 1\explosion pack 1\Explosions pack\explosion-1-e\sea_ultimate_effect.png" />
     <Image Include="bullet_land.png" />
     <Image Include="bullet_left_land.png" />
     <Image Include="bullet_left_sea.png" />
@@ -184,6 +183,7 @@
     <Image Include="sea_my_unit.png" />
     <Image Include="sea_my_unit_left.png" />
     <Image Include="sea_my_unit_right.png" />
+    <Image Include="sea_ultimate_effect.png" />
     <Image Include="sky.PNG" />
     <Image Include="sky_elite_unit.png" />
     <Image Include="sky_enemy_unit.PNG" />
