@@ -28,6 +28,18 @@ void Game::run() {
         //sf::Time deltaTime = clock.restart(); // 프레임 간 경과 시간 측정  
       //  std::cout << player.getHealth() << std::endl;
         if (player.getHealth() <= 0) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+                player.restart();
+                for (Enemy* enemy : enemies) {
+                    delete enemy;
+                }
+                enemies.clear();
+                for (Missile* enemyMissile : enemyMissiles) {
+                    delete enemyMissile;
+                }
+                enemyMissiles.clear();
+                currentStage.setStage(1, enemies);
+            }
         }
         else update();
    
@@ -533,8 +545,7 @@ void Game::deleteEnemy() {
                     delete enemy; // 메모리 해제
                     return true; // 제거 대상
                 }
-                else if(enemy->getHealth() <= 0) {
-                    
+                else if(enemy->getHealth() <= 0) {  // 격추 당한 적군 수 
                     if (dynamic_cast<NormalUnit*>(enemy) == enemy) this->player.countKillNormal();
                     else if (dynamic_cast<EliteUnit*>(enemy) == enemy) this->player.countKillElite();
                     delete enemy; // 메모리 해제

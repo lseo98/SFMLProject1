@@ -22,7 +22,9 @@ public:
     void initializeHearts();
 
     // 스테이지 전환시 플레이어 세팅
-    void setPlayer(int stageNumber);  
+    void setPlayer(int stageNumber); 
+
+    void restart();
     
     sf::Texture heartTexture; // 하트 텍스처
     std::vector<sf::Sprite> hearts; // 하트를 표시할 스프라이트 배열

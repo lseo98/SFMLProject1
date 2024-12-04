@@ -170,6 +170,14 @@ void Player::setPlayer(int stageNumber) {
     width = sprite.getTexture()->getSize().x * sprite.getScale().x;
     height = sprite.getTexture()->getSize().y * sprite.getScale().y;
 }
+void Player::restart() {
+    health = 5;
+    changeHeartSprite();
+    setPlayer(1);
+    stageNumber = 1;
+    killCountNomalUnit = 0;
+    killCountEliteUnit = 0;
+}
 
 
 void Player::basicAttack() {
