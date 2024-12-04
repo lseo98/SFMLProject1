@@ -4,11 +4,31 @@
 
 class Boss : public Enemy {
 public:
-    Boss();
-    void attack();            // 보스의 공격 패턴
+    Boss(); 
     void change_phase();               // 체력에 따라 페이즈를 변경하는 메서드
-    void execute_special_attack();     // 보스의 특수 공격
+ 
+
+    void updateAttack(float deltaTime);
+
+  
+
+
 
 private:
     int phase;                         // 보스의 페이즈 상태를 나타내는 변수
+    float dt;
+    float time;
+    float pattern1;
+    float pattern2;
+    float pattern3;
+    float pattern4;
+    float pattern5;
+
+    // 패턴별 함수 5개
+
+
+
+
+
+
 };

@@ -22,7 +22,7 @@ public:
     void initializeHearts();
 
     // 스테이지 전환시 플레이어 세팅
-    void setPlayer(int stageNumber); 
+    void setPlayer(int stageNumber);  
 
     void restart();
     
@@ -59,6 +59,11 @@ public:
     sf::Vector2f getPosition() const {
         return position; // 플레이어의 현재 위치를 반환
     }
+    void takeDamage(float amount) override;
+    // 깜빡임
+    void triggerBlink();             // 깜빡임 시작
+    void updateBlink();              // 깜빡임 상태 업데이트
+
     //bool missileLaunched;
 
 private:
@@ -92,5 +97,14 @@ private:
     void loadProjectileTextures();
 
     int killCountNomalUnit, killCountEliteUnit; // 처치한 적군 수
+
+    // 깜빡임
+    bool isBlinking = false;         // 깜빡임 상태
+    sf::Clock blinkClock;            // 깜빡임 타이머
+    float blinkDuration = 1.0f;      // 깜빡임 지속 시간 (초)
+    float blinkInterval = 0.1f;      // 깜빡이는 간격 (0.1초마다 토글)
+    bool isVisible = true;           // 현재 보이는 상태
+
+    bool isOnGround = false; // 바닥 충돌 상태 플래그
 
 };

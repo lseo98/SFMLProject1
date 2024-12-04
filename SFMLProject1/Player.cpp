@@ -31,11 +31,40 @@ Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f - width /
 void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
 
-    // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
-    if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
-    if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width;
-    if (this->position.y < 0)  this->position.y = 0;
-    if (this->position.y + height > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - height;
+    if (stageNumber == 1 || stageNumber == 3 || stageNumber == 4) {
+        // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
+        if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
+        if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width;
+        if (this->position.y < 0)  this->position.y = 0;
+        if (this->position.y + height > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - height;
+    }
+    else if (stageNumber == 2) {
+        // 플레이어가 점점 가라앉음
+        this->position.y += 0.01f;
+        // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
+        if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
+        if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width;
+        if (this->position.y < 240)  this->position.y = 240;
+        if (this->position.y + height > WINDOWHEIGHT + 40) {
+            this->position.y = WINDOWHEIGHT - height - 100;
+            if (!isOnGround) { // 체력 감소가 중복 호출되지 않도록
+                takeDamage(1.0f);
+                isOnGround = true; // 이미 처리된 상태로 설정
+                // 체력 감소에 따라 하트 상태를 즉시 업데이트
+                hearts.clear();
+                for (int i = 0; i < this->health; i++) {
+                    sf::Sprite heartSprite;
+                    heartSprite.setTexture(heartTexture);
+                    heartSprite.setScale(0.05f, 0.05f); // 하트 크기 조정
+                    heartSprite.setPosition(1400.0f + i * 70.0f, 15.0f); // 하트 위치 설정 (x축 간격 조정)
+                    hearts.push_back(heartSprite);
+                }
+            }
+        }
+        else {
+            isOnGround = false; // 공중으로 나가면 다시 초기화
+        }
+    }
 
 }
 
@@ -63,12 +92,51 @@ void Player::changeHeartSprite() {
     }
 }
 void Player::draw(sf::RenderWindow& window) {
-    this->sprite.setPosition(this->position);
-    window.draw(this->sprite);
     // 하트 스프라이트 그리기
     for (const sf::Sprite& heart : hearts) {
 
         window.draw(heart);
+    }
+
+    if (isBlinking && !isVisible) {
+        return; // 깜빡임 상태에서 숨겨진 경우 아무것도 그리지 않음
+    }
+
+    this->sprite.setPosition(this->position);
+    window.draw(this->sprite);
+}
+
+void Player::triggerBlink() {
+    isBlinking = true;         // 깜빡임 활성화
+    isVisible = true;          // 처음엔 보이는 상태
+    blinkClock.restart();      // 타이머 초기화
+}
+
+void Player::updateBlink() {
+    if (isBlinking) {
+        float elapsed = blinkClock.getElapsedTime().asSeconds();
+        // 깜빡임 종료
+        if (elapsed > blinkDuration) {
+            isBlinking = false; // 깜빡임 비활성화
+            isVisible = true;   // 항상 보이는 상태로 복원
+            return;
+        }
+        // 깜빡이는 간격에 따라 가시성 토글
+        if (static_cast<int>(elapsed / blinkInterval) % 2 == 0) {
+            isVisible = true;  // 보이는 상태
+        }
+        else {
+            isVisible = false; // 숨겨진 상태
+        }
+    }
+}
+
+void Player::takeDamage(float amount) {
+    // 부모 클래스의 takeDamage 호출
+    Character::takeDamage(amount);
+    // 체력이 감소했을 때 추가 동작 수행
+    if (getHealth() > 0) {
+        triggerBlink(); // 깜빡임 효과 활성화
     }
 }
 
@@ -179,7 +247,6 @@ void Player::restart() {
     killCountEliteUnit = 0;
 }
 
-
 void Player::basicAttack() {
 
     // 플레이어의 중앙 위치를 계산하여 총알의 시작 위치로 사용
@@ -187,6 +254,7 @@ void Player::basicAttack() {
 
     //  bullets.emplace_back(new Bullet(bulletStartPosition, bulletDirection, 10.0f));
       //bullets.push_back(Bullet(bulletStartPosition, bulletDirection, 1.0f));
+   
 
         // 현재 스테이지에 맞는 텍스처를 발사체에 전달
     Bullet* bullet = new Bullet(bulletStartPosition, bulletDirection, 10.0f);
@@ -507,7 +575,7 @@ void Player::updateAllies(float dt, std::vector<Enemy*>& enemies, std::vector<Mi
         //        }),
         //    allyUnits.end()
         //);
-            // 필살기 중앙에서 도달하면 적군 전체 제거
+            // 필살기 중앙에 도달하면 적군 전체 제거
         if (std::any_of(allyMissiles.begin(), allyMissiles.end(), [](Missile* missile) {
             return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
             })) {
@@ -842,3 +910,4 @@ void Player::renderAttack(sf::RenderWindow& window) {
         Missile->draw(window);
     }
 }
+
