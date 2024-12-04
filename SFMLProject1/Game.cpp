@@ -28,9 +28,21 @@ void Game::run() {
         //sf::Time deltaTime = clock.restart(); // 프레임 간 경과 시간 측정  
       //  std::cout << player.getHealth() << std::endl;
         if (player.getHealth() <= 0) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+                player.restart();
+                for (Enemy* enemy : enemies) {
+                    delete enemy;
+                }
+                enemies.clear();
+                for (Missile* enemyMissile : enemyMissiles) {
+                    delete enemyMissile;
+                }
+                enemyMissiles.clear();
+                currentStage.setStage(1, enemies);
+            }
         }
         else update();
-   
+
         render();
     }
 }

@@ -239,6 +239,14 @@ void Player::setPlayer(int stageNumber) {
     height = sprite.getTexture()->getSize().y * sprite.getScale().y;
 }
 
+void Player::restart() {
+    health = 5;
+    changeHeartSprite();
+    setPlayer(1);
+    stageNumber = 1;
+    killCountNomalUnit = 0;
+    killCountEliteUnit = 0;
+}
 
 void Player::basicAttack() {
 
@@ -567,7 +575,7 @@ void Player::updateAllies(float dt, std::vector<Enemy*>& enemies, std::vector<Mi
         //        }),
         //    allyUnits.end()
         //);
-            // 필살기 중앙에서 도달하면 적군 전체 제거
+            // 필살기 중앙에 도달하면 적군 전체 제거
         if (std::any_of(allyMissiles.begin(), allyMissiles.end(), [](Missile* missile) {
             return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
             })) {
@@ -902,3 +910,4 @@ void Player::renderAttack(sf::RenderWindow& window) {
         Missile->draw(window);
     }
 }
+
