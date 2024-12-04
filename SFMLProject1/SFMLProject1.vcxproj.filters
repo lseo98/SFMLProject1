@@ -48,6 +48,9 @@
     <ClCompile Include="Game.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -78,6 +81,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,6 +155,45 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="sea_my_unit_right.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="sky_p_unit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\Q_sky.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\E_land.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\E_sea.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\E_sky.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\Q_land.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\Q_sea.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\missile_sky.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\missile_land.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\missile_sea.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="keybord.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\land_p_unit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="kkeybord.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

@@ -16,7 +16,7 @@ void Enemy::draw(sf::RenderWindow& window) {
 
     sf::RectangleShape rectangle(sf::Vector2f(100.0f, 13.0f));
     rectangle.setFillColor(sf::Color::White);
-    rectangle.setPosition(this->position.x, this->position.y - 10.0f);
+    rectangle.setPosition(this->position.x+3, this->position.y - 14.0f);
     window.draw(rectangle);
     ////printf("%d", health);
     ////체력에 따른 체력량 표시
@@ -34,18 +34,22 @@ void Enemy::draw(sf::RenderWindow& window) {
     // 체력바 (빨간색)
     sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth+2, 11.0f));
     healthBar.setFillColor(sf::Color::Red);
-    healthBar.setPosition(this->position.x + 1, this->position.y - 9.0f);
+    healthBar.setPosition(this->position.x + 4, this->position.y - 13.0f);
     window.draw(healthBar);
 
 }
 
-void Enemy::image(const std::string& textureFile) {
+void Enemy::image(const std::string& textureFile, const sf::IntRect& textureRect) {
     if (!texture.loadFromFile(textureFile)) {
         std::cerr << "Error loading texture: " << textureFile << std::endl;
     }
     else {
-        sprite.setScale(0.13f, 0.13f);  // 필요에 따라 스케일 조정
         sprite.setTexture(texture);   // 텍스처를 스프라이트에 적용
+        // 텍스처 영역이 지정된 경우 해당 영역만 사용
+        if (textureRect != sf::IntRect()) {
+            sprite.setTextureRect(textureRect);
+        }
+        sprite.setScale(0.13f, 0.13f);  // 필요에 따라 스케일 조정
     }
 }
 

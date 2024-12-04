@@ -42,4 +42,5 @@ void Projectile::adjustDirection(){
     float newX = direction.x * cos(radian) - direction.y * sin(radian);
     float newY = direction.x * sin(radian) + direction.y * cos(radian);
     direction = sf::Vector2f(newX, newY);
+
 }

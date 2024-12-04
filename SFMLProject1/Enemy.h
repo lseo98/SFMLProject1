@@ -16,7 +16,7 @@ public:
     void update(float deltaTime);
     void collision(Player &player);
 
-    void image(const std::string& textureFile);
+    void image(const std::string& textureFile, const sf::IntRect& textureRect = sf::IntRect());
 
     void updateDirection(int newDirection = 0); // 방향 가져오기 
 
@@ -44,17 +44,24 @@ public:
     NormalUnit(int stageNumber, sf::Vector2f position,int direction)
         : Enemy(100.0f, 1.0f, position, stageNumber) {
         this->direction = direction; // 방향 설정
+        sf::IntRect textureRect;  // 표시할 텍스처 영역
 
         if (stageNumber == 3) { // 땅 스테이지
-            if(direction==-1)
-                image("land_enemy_unit.png"); 
-            if(direction==1)
-                image("land_enemy_unit_right.png");
+            if (direction == -1) {
+                textureRect = sf::IntRect(133, 0, 935, 530);
+                image("land_enemy_unit.png", textureRect);
+            }
+            if (direction == 1) {
+                textureRect = sf::IntRect(0, 0, 804, 530);
+                image("land_enemy_unit_right.png", textureRect);
+            }
         }
         else {
+            textureRect=(stageNumber == 1 ? sf::IntRect(190, 220, 747, 656) :
+                sf::IntRect(145, 213, 700, 515));
+
             image(stageNumber == 1 ? "sky_enemy_unit.png" :
-                stageNumber == 2 ? "sea_enemy_unit_b.png" :
-                "land_enemy_unit.png");
+                 "sea_enemy_unit_b.png" , textureRect);
         }
     }
 
@@ -86,20 +93,30 @@ public:
         //        "land_elite_unit.png");
         //}
         // 위에 다 스위치로 처리
+        sf::IntRect textureRect;  // 표시할 텍스처 영역
+
        switch (stageNumber) {
        case 1:
-           image("sky_elite_unit.png");  // 이미지 파일을 초기화
+           // 이미지 전체 사용
+           textureRect = sf::IntRect(5, 75, 650, 650);
+           image("sky_elite_unit.png", textureRect);  // 이미지 파일을 초기화
            missileDirection = sf::Vector2f(0, 1);
            break;
        case 2:
-           image("sea_elite_unit.png");  // 이미지 파일을 초기화
+           // 이미지의 특정 부분 사용
+           textureRect = sf::IntRect(76, 292, 990, 630);
+           image("sea_elite_unit.png", textureRect);  // 이미지 파일을 초기화
            missileDirection = sf::Vector2f(-1, 0);
            break;
        case 3:
-           if(direction==1)
-           image("land_elite_unit_right.png");  // 이미지 파일을 초기화
-           if (direction == -1)
-               image("land_elite_unit_left.png");  // 이미지 파일을 초기화
+           if (direction == 1) {
+               textureRect = sf::IntRect(200, 0, 800, 435);
+               image("land_elite_unit_right.png", textureRect);  // 이미지 파일을 초기화
+           }
+           if (direction == -1) {
+               textureRect = sf::IntRect(0, 0, 800, 435);
+               image("land_elite_unit_left.png", textureRect);  // 이미지 파일을 초기화
+           }
            missileDirection = sf::Vector2f(-1, 1);
            break;
        default:

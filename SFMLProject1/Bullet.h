@@ -11,6 +11,6 @@ public:
     sf::CircleShape shape;   // SFML에서 사용할 기본 도형 (예: 원형 모양)
     sf::Texture texture;      // 이미지 텍스처
     sf::Sprite sprite;
-    void setTexture(const sf::Texture& texture);
+    void setTexture(const sf::Texture& texture, const sf::IntRect& textureRect);
 
 };

@@ -31,7 +31,6 @@ private:
     void update();
     void render();
 
-
     // SFML 멤버 변수
     sf::RenderWindow* window;
     sf::Event event;
@@ -44,7 +43,7 @@ private:
     // 게임 변수
     bool isRunning;
     bool isMaingameRunning;
-    float playerSpeed;  // 예시로 플레이어 이동 속도 변수
+    float playerSpeed;  // 예시로 플레이어 이동 속도 변수 
     sf::Vector2f bulletDirection;
     sf::Vector2f missileDirection;
     float dt;

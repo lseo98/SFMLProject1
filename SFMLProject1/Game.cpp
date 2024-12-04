@@ -78,7 +78,7 @@ void Game::handleEvents() {
             window->close();
         }
         // UIManager에 이벤트 전달
-        uiManager.handleEvent(event);
+        uiManager.handleEvent(event,*window);
 
         // UI에 포커스가 있을 때는 게임 입력을 처리하지 않음
         if (!uiManager.isInputFocused()) {
@@ -103,7 +103,7 @@ void Game::handleEvents() {
                     stageNumber = 3;
                     currentStage.setStage(stageNumber, enemies);
                     player.setPlayer(stageNumber);
-                    player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3));
+                    player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3.0f + 18.0f));
                     currentStage.spawnEnemies(enemies, dt);
                 }
 
@@ -160,6 +160,14 @@ void Game::update() { // 게임 상태 업데이트
 
         // 플레이어 쿨타임 업데이트
         player.updateCooldowns(dt);
+        // 궁극기 쿨타임 정보 얻기
+        float remainingUltimateCooldown = player.getUltimateAttackRemainingCooldown();
+        float ultimateCooldownRatio = remainingUltimateCooldown / 20.0f;
+
+        // 특수 공격 쿨타임 정보 얻기
+        float remainingSpecialCooldown = player.getSpecialAttackRemainingCooldown();
+        float specialCooldownRatio = remainingSpecialCooldown / 5.0f;
+        uiManager.setCooldownRatios(ultimateCooldownRatio, specialCooldownRatio);
 
         if (!uiManager.isInputFocused()) {
             float speed = player.getSpeed();
@@ -234,8 +242,34 @@ void Game::update() { // 게임 상태 업데이트
     }
     else {
         // 게임 오버 상태 처리
-        uiManager.update(stageNumber, true);
+        uiManager.update(stageNumber, true); 
     }
+    //// UI에서 입력된 스테이지 번호를 게임에 반영 //실패
+    //if (stageNumber != uiManager.currentStageNumber) {
+    //    stageNumber = uiManager.currentStageNumber;
+
+    //    // 스테이지 변경 로직
+    //    currentStage.setStage(stageNumber, enemies);
+    //    player.setPlayer(stageNumber);
+
+    //    if (stageNumber == 1) {
+    //        player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 9.0f / 10.0f));
+    //    }
+    //    else if (stageNumber == 2) {
+    //        player.setPosition(sf::Vector2f(WINDOWWIDTH / 4.0f, WINDOWHEIGHT / 2.0f));
+    //    }
+    //    else if (stageNumber == 3) {
+    //        player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3));
+    //    }
+
+    //    currentStage.spawnEnemies(enemies, dt);
+    //}
+
+    //// 기존 업데이트 로직 유지
+    //player.updateCooldowns(dt);
+    //player.updateAttack();
+    //player.updateAllies(dt);
+    //currentStage.spawnEnemies(enemies, dt);
 }
 
 void Game::render() {
@@ -267,3 +301,6 @@ void Game::render() {
 
     window->display(); // 화면에 그린 내용을 표시
 }
+
+
+

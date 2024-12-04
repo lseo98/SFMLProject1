@@ -10,27 +10,29 @@ Bullet::Bullet(const sf::Vector2f startPosition, const sf::Vector2f direction, f
 }
 
 
-void Bullet::setTexture(const sf::Texture& texture) {
+void Bullet::setTexture(const sf::Texture& texture,const sf::IntRect& textureRect) {
     sprite.setTexture(texture);
+    // 텍스처 영역 설정
+    if (textureRect != sf::IntRect()) {
+        sprite.setTextureRect(textureRect);
+    }
+  //  sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
+
     sprite.setScale(0.1f, 0.1f); 
+    //sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
+    
     sprite.setPosition(position);
 }
 
 
-void Bullet::update() {
-    
+void Bullet::update() {   
     position += direction * speed;
     //std::cout << "bullet update : "<< position.x << " "<<  position.y << std::endl;
     //std::cout << "bullet update direction, speed: " << direction.x  << " "<< direction.y << " " << speed << std::endl;
     sprite.setPosition(position);
-    //texture.loadFromFile("sky_my_unit_bullet.png");
-  
-    //    sprite.setScale(0.1f, 0.1f);
-    //    sprite.setTexture(texture);
-    //    sprite.setPosition(position);
+
 }
 
-void Bullet::draw(sf::RenderWindow& window) {
-   
+void Bullet::draw(sf::RenderWindow& window) {  
     window.draw(sprite);
 }

@@ -166,12 +166,24 @@
     <ClInclude Include="UIManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\E_land.PNG" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\E_sea.PNG" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\E_sky.PNG" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\land_p_unit.png" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\missile_land.png" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\missile_sea.png" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\missile_sky.png" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\Q_land.png" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\Q_sea.PNG" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\Q_sky.PNG" />
     <Image Include="bullet_land.png" />
     <Image Include="bullet_left_land.png" />
     <Image Include="bullet_left_sea.png" />
     <Image Include="bullet_sea.png" />
     <Image Include="bullet_sky.png" />
     <Image Include="heart.png" />
+    <Image Include="keybord.png" />
+    <Image Include="kkeybord.png" />
     <Image Include="land.png" />
     <Image Include="land_elite_unit_left.png" />
     <Image Include="land_elite_unit_right.png" />
@@ -189,6 +201,7 @@
     <Image Include="sky_elite_unit.png" />
     <Image Include="sky_enemy_unit.PNG" />
     <Image Include="sky_my_unit.PNG" />
+    <Image Include="sky_p_unit.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="R2.ttc" />
