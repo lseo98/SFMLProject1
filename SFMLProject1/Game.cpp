@@ -404,6 +404,9 @@ void Game::update() { // 게임 상태 업데이트
         player.collision(enemies);
         player.updateAttack();
 
+        // 플레이어 업데이트
+        player.updateBlink(); // 깜빡임 상태 업데이트
+
         sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
 
         // 적 생성 및 업데이트
