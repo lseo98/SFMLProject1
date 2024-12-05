@@ -1,14 +1,13 @@
 #include "Boss.h"
 #include <iostream>
 
-Boss::Boss() : Enemy(3000.0f, 0.5f, sf::Vector2f(0, 0),3), phase(1) {
+Boss::Boss() : Enemy(3000.0f, 0.5f, sf::Vector2f(0, 0),4), phase(1) {
     // 보스의 초기 체력은 3000, 속도는 0.5로 설정
+    time = pattern1 = pattern2 = pattern3 = pattern4 = pattern5 = 0;
+
 }
 
-void Boss::attack() {
-    std::cout << "기본 공격, 현재 페이즈: " << phase << "\n";
-    // 보스의 기본 공격
-}
+ 
 
 void Boss::change_phase() {
     if (health < 1500.0f && phase == 1) {
@@ -22,6 +21,35 @@ void Boss::change_phase() {
     // 체력에 따라 보스의 페이즈 변경
 }
 
-void Boss::execute_special_attack() {
-    std::cout << "특수 공격\n";
+void Boss::attack(float deltaTime) {
+    pattern2_Laser();
+}
+void Boss::updateAttack(float deltaTime) {
+
+}
+
+void Boss::render(sf::RenderWindow& window) {
+    for (sf::RectangleShape *l : laser) {
+        window.draw(*l);
+    }
+}
+
+
+
+void Boss::pattern2_Laser() {
+    
+    pattern2 = 0;
+    for (int i = 0; i < 3; i++) {
+        sf::RectangleShape *laserRectangle = new sf::RectangleShape(sf::Vector2f(150,900));
+
+        laserRectangle->setFillColor(sf::Color(255, 0, 0, 127));
+        sf::Vector2f laserPosition(0,0);
+        srand(std::time(NULL));
+        float x = rand() % 200 - 50;
+        laserPosition.x = 200 * i + x;
+        laserRectangle->setPosition(laserPosition);
+
+        laser.push_back(laserRectangle);
+
+    }
 }

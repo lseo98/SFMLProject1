@@ -262,7 +262,7 @@ void Game::handleEvents() {
 
                 currentStage.spawnEnemies(enemies, dt);
 
-                currentStage.setStage(stageNumber, enemies);
+               // currentStage.setStage(stageNumber, enemies);
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4)) {
                 stageNumber = 4;
@@ -491,7 +491,6 @@ void Game::render() {
 
         // 배경 그리기
         currentStage.drawBackground(*window);
-
 
 
         // 적 관련 그리기
