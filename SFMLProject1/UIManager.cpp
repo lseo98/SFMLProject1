@@ -323,7 +323,7 @@ void UIManager::render(sf::RenderWindow& window) {
     window.draw(textbox); 
     window.draw(boxE);
     window.draw(boxQ);
-    window.draw(keyb);
+ //   window.draw(keyb);
     window.draw(*sprite_Q);
     window.draw(*sprite_E);
     window.draw(skeybord);

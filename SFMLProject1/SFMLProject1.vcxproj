@@ -181,6 +181,7 @@
     <Image Include="bullet_left_sea.png" />
     <Image Include="bullet_sea.png" />
     <Image Include="bullet_sky.png" />
+    <Image Include="explosion-b.png" />
     <Image Include="heart.png" />
     <Image Include="keybord.png" />
     <Image Include="kkeybord.png" />

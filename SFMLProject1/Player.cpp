@@ -285,6 +285,7 @@ void Player::specialAttack() {
 }
 
 
+
 void Player::ultimateAttack() {
     if (canUltimateAttack) {
         switch (stageNumber) {
@@ -395,6 +396,9 @@ void Player::ultimateAttack() {
                 allyUnits.clear(); // 기존 아군 유닛 제거
                 allyUnits.push_back(aircraftSprite);
 
+              //  allyMissiles.emplace_back(new Missile(missileStartPosition, missileDirection, missileSpeed));
+
+
                 // 필살기 상태 갱신
                 timeSinceLastUltimate = 0.0f;  // 쿨타임 초기화
                 canUltimateAttack = false;     // 쿨타임 시작
@@ -415,8 +419,8 @@ void Player::allyAttack() {
     for (const auto& ally : allyUnits) {
         sf::Vector2f missileStartPosition = ally.getPosition();
         sf::Vector2f missileDirection;
-        float missileSpeed;
-        sf::Texture missileTexture; // 텍스처 로드용 변수
+        float missileSpeed, missileRange, missileDamage;
+        //sf::Texture missileTexture; // 텍스처 로드용 변수
 
 
         if (stageNumber == 1) {  // 하늘 스테이지에서 발사체 위쪽으로 발사
@@ -426,7 +430,10 @@ void Player::allyAttack() {
             missileStartPosition.y -= 10.0f;  // 약간 위쪽에서 발사
             missileDirection = sf::Vector2f(0.0f, -1.0f);  // 위쪽 방향
             missileSpeed = 5.0f;  // 발사 속도 (하늘 스테이지)
-            missileTexture = bulletTextures[0]; // 하늘 스테이지용 텍스처 설정
+            missileRange = 100.0f;   // 미사일 충돌 범위
+            missileDamage = 25.0f;  // 미사일 공격력
+
+           // missileTexture = bulletTextures[0]; // 하늘 스테이지용 텍스처 설정
 
         }
         //else if (stageNumber == 2) {  // 바다 스테이지에서 발사체 오른쪽으로 발사
@@ -439,7 +446,10 @@ void Player::allyAttack() {
             missileStartPosition.y += ally.getGlobalBounds().height - 120.0f;  // 약간 아래쪽에서 발사
             missileDirection = sf::Vector2f(0.0f, 1.0f);  // 아래쪽 방향
             missileSpeed = 3.0f;  // 발사 속도 (땅 스테이지)
-            missileTexture = AllMissileTextures[2]; // 땅 스테이지용 텍스처 설정
+            missileRange = 200.0f;   // 미사일 충돌 범위
+            missileDamage = 300.0f;  // 미사일 공격력
+
+        //    missileTexture = AllMissileTextures[2]; // 땅 스테이지용 텍스처 설정
 
 
         }
@@ -449,7 +459,8 @@ void Player::allyAttack() {
 
         Missile* missile = new Missile(missileStartPosition, missileDirection, missileSpeed);
         missile->isAlly = true;  // 아군 발사체로 설정
-
+      //  missile->changeRange(missileRange);
+       // missile->changeDamage(missileDamage);
         allyMissiles.push_back(missile);  // 벡터에 추가
 
 
@@ -554,7 +565,7 @@ void Player::updateAllies(float dt) {
         }
         break;
 
-    //case 2: // 바다 스테이지
+    case 2: // 바다 스테이지
     //    // 바다 스테이지에서 아군 유닛은 왼쪽에서 오른쪽으로 이동
     //    for (auto& ally : allyUnits) {
     //        sf::Vector2f position = ally.getPosition();
@@ -571,6 +582,26 @@ void Player::updateAllies(float dt) {
     //        allyUnits.end()
     //    );
     //    break;
+                    // 필살기 중앙에 도달하면 적군 전체 제거
+        if (std::any_of(allyMissiles.begin(), allyMissiles.end(), [](Missile* missile) {
+            return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
+            })) {
+
+
+
+        }
+
+
+        allyMissiles.erase(
+            std::remove_if(allyMissiles.begin(), allyMissiles.end(),
+                [](Missile* missile) {
+                    return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
+                }),
+            allyMissiles.end()
+
+                    );
+
+        break;
 
     case 3: // 땅 스테이지
         for (auto& ally : allyUnits) {
