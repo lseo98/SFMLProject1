@@ -6,7 +6,7 @@
 #include "Projectile.h"
 #include "Missile.h"
 #include "Bullet.h"
-
+#include <vector>
 class Player : public Character {
 public:
     Player();
@@ -18,7 +18,7 @@ public:
    // void takeDamage(float amount) override;
     void draw(sf::RenderWindow& window) override; 
     void updateDirection(char direction,int stageNum); // 유닛 방향 설정
-    void image(std::string textureFile);
+    void image(std::string textureFile, const sf::IntRect& textureRect);
     void initializeHearts();
 
     // 스테이지 전환시 플레이어 세팅
@@ -37,10 +37,10 @@ public:
     void ultimateAttack();
     // 업데이트
     void collision(std::vector<Enemy*>& enemies);    // 공격체-적 충돌 처리
-    void enemyProjectileCollision(std::vector<Missile*>& globalMissiles);    // 공격체-적 충돌 처리
+    void enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles);    // 공격체-적 충돌 처리
     void deleteThisProjectile();                     // 충돌된 내 발사체 삭제
     void updateAttack();                             // 공격체 업데이트
-    void updateAllies(float delatime, std::vector<Enemy*>& enemies, std::vector<Missile*>& globalMissiles);
+    void updateAllies(float delatime, std::vector<Enemy*>& enemies, std::vector<std::unique_ptr<Missile>>& globalMissiles);
     // 그리기
     void renderAttack(sf::RenderWindow& window);
     void drawAllies(sf::RenderWindow& window);  // 아군 유닛 그리기 메서드 추가
@@ -55,6 +55,13 @@ public:
 
     sf::Texture texture;      // 이미지 텍스처
     sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
+
+    sf::Vector2f bulletStartPosition;
+
+    // 궁극기 남은 쿨타임 반환 함수
+    float getUltimateAttackRemainingCooldown() const;
+    // 특수 공격 남은 쿨타임 반환 함수
+    float getSpecialAttackRemainingCooldown() const;
 
     sf::Vector2f getPosition() const {
         return position; // 플레이어의 현재 위치를 반환
@@ -79,16 +86,18 @@ private:
     // 특수 공격 쿨타임 관련 변수
     float specialAttackCooldown;    // 특수 공격 쿨타임 (초 단위)
     float timeSinceLastSpecial;     // 마지막 특수 공격 이후 경과 시간
-    bool canSpecialAttack;          // 특수 공격 가능 여부
+    bool canSpecialAttack=true;          // 특수 공격 가능 여부
 
     // 필살기 쿨타임 관련 변수
     float ultimateAttackCooldown;   // 필살기 쿨타임 (초 단위)
     float timeSinceLastUltimate;    // 마지막 필살기 이후 경과 시간
-    bool canUltimateAttack;         // 필살기 가능 여부
+    bool canUltimateAttack=true;         // 필살기 가능 여부
 
     // 필살기 아군 유닛 멤버 변수
     std::vector<sf::Sprite> allyUnits; // 아군 유닛들을 저장하는 멤버 변수
     sf::Texture allyTexture;           // 아군 유닛의 텍스처
+    sf::Texture MissileTextures[3];   // 스테이지별 발사체 이미지 (1: 하늘, 2: 바다, 3: 땅) 
+    sf::Texture AllMissileTextures[3];   // 스테이지별 발사체 이미지 (1: 하늘, 2: 바다, 3: 땅) 
 
     float waitTime;  // 하늘 스테이지에서 아군 유닛의 대기 시간
 

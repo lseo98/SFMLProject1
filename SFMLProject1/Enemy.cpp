@@ -16,7 +16,7 @@ void Enemy::draw(sf::RenderWindow& window) {
 
     sf::RectangleShape rectangle(sf::Vector2f(100.0f, 13.0f));
     rectangle.setFillColor(sf::Color::White);
-    rectangle.setPosition(this->position.x, this->position.y - 10.0f);
+    rectangle.setPosition(this->position.x+3, this->position.y - 14.0f);
     window.draw(rectangle);
     ////printf("%d", health);
     ////체력에 따른 체력량 표시
@@ -34,18 +34,22 @@ void Enemy::draw(sf::RenderWindow& window) {
     // 체력바 (빨간색)
     sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth+2, 11.0f));
     healthBar.setFillColor(sf::Color::Red);
-    healthBar.setPosition(this->position.x + 1, this->position.y - 9.0f);
+    healthBar.setPosition(this->position.x + 4, this->position.y - 13.0f);
     window.draw(healthBar);
 
 }
 
-void Enemy::image(const std::string& textureFile) {
+void Enemy::image(const std::string& textureFile, const sf::IntRect& textureRect) {
     if (!texture.loadFromFile(textureFile)) {
         std::cerr << "Error loading texture: " << textureFile << std::endl;
     }
     else {
-        sprite.setScale(0.13f, 0.13f);  // 필요에 따라 스케일 조정
         sprite.setTexture(texture);   // 텍스처를 스프라이트에 적용
+        // 텍스처 영역이 지정된 경우 해당 영역만 사용
+        if (textureRect != sf::IntRect()) {
+            sprite.setTextureRect(textureRect);
+        }
+        sprite.setScale(0.13f, 0.13f);  // 필요에 따라 스케일 조정
     }
 }
 
@@ -210,7 +214,7 @@ bool Enemy::isOffScreen() const {
 
 // EliteUnit
 
-void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<Missile*>& globalMissiles) {
+void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique_ptr<Missile>>& globalMissiles) {
     if (fireClock.getElapsedTime().asSeconds() >= 5.0f) {
         // 초기 방향 설정
         sf::Vector2f direction = targetPosition - this->position;
@@ -219,14 +223,18 @@ void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<Missile*>& 
             direction /= magnitude;
         }
         // 추적형 미사일 생성
-        Missile* newMissile = new Missile(this->position, direction, 3.0f); // 속도 3.0f
-        newMissile->shape.setRadius(20.0f);
-        globalMissiles.push_back(newMissile); // 전역 벡터에 추가
+        auto newMissile = std::make_unique<Missile>(this->position, direction, 3.0f);
+        
+		sf::IntRect textureRect; 
+		missileTexture.loadFromFile("missile_sky.png");//여기 수정해야함 static으로 빼던가 resourceManager 싱글톤 사용
+        newMissile->setTexture(missileTexture, textureRect);
+        // 미사일을 추적형으로 설정
+        newMissile->setTarget(); // 플레이어 위치를 참조로 설정
+        globalMissiles.push_back(std::move(newMissile)); // 전역 벡터에 추가
         //emplace_back 는 새로운 객체를 추가하는 거라 push_back이 더 적절
         //globalMissiles.emplace_back(newMissile); // 전역 벡터에 추가
 
-        // 미사일을 추적형으로 설정
-        newMissile->setTarget(); // 플레이어 위치를 참조로 설정
+        
 
         fireClock.restart();
 
@@ -235,15 +243,14 @@ void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<Missile*>& 
 
 void EliteUnit::updateAttack(float deltaTime) {
     
-    for (Missile *missile : missiles) {
+    for (auto& missile : missiles) {
         missile->update(); // 발사체 상태 업데이트
     }
     // 화면 밖 미사일 삭제
     missiles.erase(
         std::remove_if(missiles.begin(), missiles.end(),
-            [](Missile* missile) {
+            [](std::unique_ptr<Missile>& missile) {
                 if (missile->isOffScreen()) {
-                    delete missile; // 메모리 해제
                     return true;
                 }
                 return false;
@@ -259,7 +266,7 @@ void EliteUnit::updateAttack(float deltaTime) {
 
 void EliteUnit::renderAttack(sf::RenderWindow& window) {
 
-    for (Missile *missile : missiles) {
+    for (auto& missile : missiles) {
         missile->draw(window); // 발사체 상태 업데이트
     }
 

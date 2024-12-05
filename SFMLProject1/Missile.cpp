@@ -5,18 +5,27 @@ Missile::Missile(const sf::Vector2f& startPosition, const sf::Vector2f& directio
     damage = 200.0f;
     baseDamage = 200.0f;
     range = 200.0f;
-    shape.setRadius(15.0f);
-    shape.setFillColor(sf::Color::Yellow);
-    shape.setPosition(position);
 }
 
 void Missile::update() {
     adjustDirection(); 
     
     position += direction * speed;
-    shape.setPosition(position);
-
+    sprite.setPosition(position);
+    float angleDegrees = atan2(direction.y, direction.x) * 180.0f / 3.14159265f + 90.0f;
+    sprite.setRotation(angleDegrees);
     updateDamage();
+}
+void Missile::setTexture(const sf::Texture& texture, const sf::IntRect& textureRect) {
+    sprite.setTexture(texture);
+    if (textureRect != sf::IntRect()) {
+        sprite.setTextureRect(textureRect);
+    }
+    //   sprite.setTextureRect(textureRect);    
+    sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
+    sprite.setScale(0.07f, 0.07f);
+    sprite.setPosition(position);
+
 }
 
 /*void Missile::update(const sf::Vector2f& targetPosition) {
@@ -79,17 +88,16 @@ void Missile::update(const sf::Vector2f& targetPosition) {
             std::abs(position.y - targetPosition.y) < 5.0f) {
             isTracking = false;
         }
+        position += direction * speed;
+        sprite.setPosition(position);
+        float angleDegrees = atan2(direction.y, direction.x) * 180.0f / 3.14159265f + 90.0f;
+        sprite.setRotation(angleDegrees);
     }
-
-    // 위치 업데이트
-    position += direction * speed;
-    shape.setPosition(position);
-    updateDamage();
 }
 
 
 void Missile::draw(sf::RenderWindow& window) { 
-    window.draw(shape);
+    window.draw(sprite);
 }
 
 void Missile::setTarget() {

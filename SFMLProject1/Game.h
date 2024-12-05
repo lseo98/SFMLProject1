@@ -5,6 +5,9 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include <string>
+#include "UIManager.h" 
+
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
@@ -50,7 +53,7 @@ private:
     sf::Vector2f missileDirection;
     float dt;
 
-    std::vector<Missile*> enemyMissiles; // 적 미사일을 관리하는 전역 벡터
+    std::vector<std::unique_ptr<Missile>> enemyMissiles; // 적 미사일을 관리하는 전역 벡터
 
 
     // 초기 객체 생성
@@ -59,34 +62,14 @@ private:
     Stage currentStage;
     int stageNumber;        // 1: 하늘, 2: 바다, 3: 땅
 
-
-    // 입력 상자 관련 변수
-    sf::RectangleShape inputBoxl;
-    sf::RectangleShape inputBoxr;
-    sf::RectangleShape smallBoxr;
-
-    bool isInputActive;
-
-    // 텍스트 관련 변수
-    sf::Text gameover;
-    sf::Text inputText;
-    sf::Text text;
-    sf::Font font;
-    std::string userInput;
-    sf::Text skytext;
-    sf::Text seatext;
-    sf::Text landtext;
-    sf::Text textbox;
-
-    int ty = 0, tx = 0;
-
-
-    sf::Texture texture;      // 이미지 텍스처
-    sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
-
-    sf::Text eliteUnitKillText; // 엘리트 유닛 사망 횟수를 표시하는 텍스트
+    UIManager uiManager; // UIManager 객체 추가
+    // 엘리트 유닛 관련 변수들
     std::map<int, int> eliteUnitKillCounts; // 스테이지별 엘리트 유닛 사망 횟수
-    std::string killInfo;
+    std::string killInfo;                   // 엘리트 유닛 킬 정보 문자열
+
+    // 폰트 및 텍스트 관련 변수들
+    sf::Font font;                // 폰트 객체
+    sf::Text eliteUnitKillText;   // 엘리트 유닛 킬 정보를 표시할 텍스트
 
 
 
