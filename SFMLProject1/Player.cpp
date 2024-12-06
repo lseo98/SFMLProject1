@@ -481,7 +481,7 @@ void Player::allyAttack() {
         missile->isAlly = true;  // 아군 미사일로 설정
         missile->changeRange(missileRange);
         missile->changeDamage(missileDamage);
-        missile->setTexture(AllMissileTextures[0], textureRect);
+        //missile->setTexture(AllMissileTextures[0], textureRect);
 
         allyMissiles.emplace_back(missile);
         //std::cout << "Texture size: " << AllMissileTextures[0].getSize().x << ", " << AllMissileTextures[0].getSize().y << std::endl;
