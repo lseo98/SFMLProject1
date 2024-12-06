@@ -179,6 +179,9 @@
     <Image Include="land_enemy_unit_right.png" />
     <Image Include="land_my_unit_left.png" />
     <Image Include="land_my_unit_right.png" />
+    <Image Include="missile_land.png" />
+    <Image Include="missile_sea.png" />
+    <Image Include="missile_sky.png" />
     <Image Include="sea.png" />
     <Image Include="sea_elite_unit.png" />
     <Image Include="sea_enemy_unit.png" />
