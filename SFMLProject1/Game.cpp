@@ -246,7 +246,7 @@ void Game::update() { // 게임 상태 업데이트
         //        allyAttackClock.restart(); // 타이머 초기화
         //    }
         //}
-        else if (stageNumber == 3) {
+        else if (stageNumber == 3 || stageNumber == 4) {
             // 땅 스테이지: 500ms 간격으로 발사
             if (allyAttackClock.getElapsedTime().asMilliseconds() >= 500) {
                 player.allyAttack(); // 아군 유닛 기본 공격 발사

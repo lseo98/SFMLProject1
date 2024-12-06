@@ -402,6 +402,7 @@ void Player::ultimateAttack() {
         break;
 
         case 3: // 땅 스테이지
+        case 4: // 보스 스테이지
         {
             std::cout << "Land ultimate attack activated!" << std::endl;
 
@@ -463,7 +464,7 @@ void Player::allyAttack() {
         //    sf::Vector2f missileDirection(1.0f, 0.0f); // 오른쪽으로 발사
         //    float missileSpeed = 3.0f;  // 발사 속도 (바다 스테이지)
         //}
-        else if (stageNumber == 3) {  // 땅 스테이지에서 발사체 아래쪽으로 발사
+        else if (stageNumber == 3 || stageNumber == 4) {  // 땅 스테이지에서 발사체 아래쪽으로 발사
             missileStartPosition.x += ally.getGlobalBounds().width / 2.0f;  // 아군 유닛의 중앙 위치에서 발사
             missileStartPosition.y += ally.getGlobalBounds().height + 30.0f;  // 약간 아래쪽에서 발사
             missileDirection = sf::Vector2f(0.0f, 1.0f);  // 아래쪽 방향
@@ -479,7 +480,8 @@ void Player::allyAttack() {
         // 설정된 방향과 속도로 발사체 생성
         Missile* missile = new Missile(missileStartPosition, missileDirection, missileSpeed);
         sf::IntRect textureRect;  // 표시할 텍스처 영역
-        missile->setTexture(AllMissileTextures[stageNumber - 1], textureRect);
+        if(stageNumber == 4) missile->setTexture(AllMissileTextures[2], textureRect);
+        else missile->setTexture(AllMissileTextures[stageNumber - 1], textureRect);
 
         missile->isAlly = true;  // 아군 미사일로 설정
         missile->changeRange(missileRange);
@@ -630,6 +632,7 @@ void Player::updateAllies(float dt, std::vector<Enemy*>& enemies, std::vector<st
             break;
 
     case 3: // 땅 스테이지
+    case 4: // 보스 스테이지
         for (auto& ally : allyUnits) {
             sf::Vector2f position = ally.getPosition();
             position.x -= 50.0f * dt; // 왼쪽으로 이동 (속도 50.0f * delta time)
