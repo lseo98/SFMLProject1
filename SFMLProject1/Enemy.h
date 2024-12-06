@@ -136,7 +136,7 @@ public:
 private:
     std::vector<std::unique_ptr<Missile>> missiles;
     sf::Vector2f missileDirection;
-    sf::Texture missileTexture;
+    static sf::Texture missileTexture;
     sf::Clock fireClock;           // 미사일 발사 간격 관리
 };
 
