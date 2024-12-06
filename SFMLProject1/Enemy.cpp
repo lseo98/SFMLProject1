@@ -13,10 +13,13 @@ Enemy::Enemy(float health, float speed, sf::Vector2f position, int stageNumber)
 void Enemy::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
     window.draw(this->sprite);
+    
+    int adj = -5;
+    if (dynamic_cast<EliteUnit*>(this)) adj = 10;
 
-    sf::RectangleShape rectangle(sf::Vector2f(100.0f, 13.0f));
+    sf::RectangleShape rectangle(sf::Vector2f(80.0f, 6.0f));
     rectangle.setFillColor(sf::Color::White);
-    rectangle.setPosition(this->position.x+3, this->position.y - 14.0f);
+    rectangle.setPosition((this->position.x + sprite.getGlobalBounds().width/2) - 50 + adj, this->position.y - 14.0f);
     window.draw(rectangle);
     ////printf("%d", health);
     ////체력에 따른 체력량 표시
@@ -33,12 +36,12 @@ void Enemy::draw(sf::RenderWindow& window) {
     else if (dynamic_cast<HealUnit*>(this)) maxHealth = maxHealth_HealUnit;
     else maxHealth = 100.0f;
 
-    float healthBarWidth = (this->getHealth() / maxHealth) * 96.0f; // 체력에 비례한 길이
+    float healthBarWidth = (this->getHealth() / maxHealth) * 76.0f; // 체력에 비례한 길이
 
     // 체력바 (빨간색)
-    sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth+2, 11.0f));
+    sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth+2, 4.0f));
     healthBar.setFillColor(sf::Color::Red);
-    healthBar.setPosition(this->position.x + 4, this->position.y - 13.0f);
+    healthBar.setPosition((this->position.x + sprite.getGlobalBounds().width / 2) - 49 + adj, this->position.y - 13.0f);
     window.draw(healthBar);
 
 }
