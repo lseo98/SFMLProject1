@@ -14,11 +14,11 @@ public:
     bool isInputFocused() const;
     void setCooldownRatios(float ultimateRatio, float specialRatio);
     void updateKeyBoxes();
-    sf::Texture texture_Q[3];
-    sf::Texture texture_E[3];
+    sf::Texture texture_Q[4];
+    sf::Texture texture_E[4];
     sf::Texture tkeybord;
-    sf::Sprite sprite_Q[3];
-    sf::Sprite sprite_E[3];
+    sf::Sprite sprite_Q[4];
+    sf::Sprite sprite_E[4];
     sf::Sprite skeybord;
     std::set<sf::Keyboard::Key> activeKeys; // 현재 눌린 키들을 추적
     std::vector<sf::RectangleShape> additionalBoxes; // 눌린 키에 해당하는 박스들을 저장

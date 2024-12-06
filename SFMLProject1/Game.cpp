@@ -28,6 +28,7 @@ void Game::run() {
         if (player.getHealth() <= 0) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
                 player.restart();
+                stageNumber = 1;
                 for (Enemy* enemy : enemies) {
                     delete enemy;
                 }
@@ -101,8 +102,6 @@ void Game::handleEvents() {
             window->close();
         }
         
-  
-      
         // UIManager에 이벤트 전달
         uiManager.handleEvent(event,*window);
         // UI에 포커스가 있을 때는 게임 입력을 처리하지 않음
@@ -115,6 +114,7 @@ void Game::handleEvents() {
                     currentStage.setStage(stageNumber, enemies);
                     player.setPlayer(stageNumber);
                     player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 9.0f / 10.0f));
+                    enemyMissiles.clear();
                     currentStage.spawnEnemies(enemies, dt);
                 }
                 // 다른 곳을 클릭하면 포커스 비활성화
@@ -124,13 +124,23 @@ void Game::handleEvents() {
                     player.setPlayer(stageNumber);
                     player.setPosition(sf::Vector2f(WINDOWWIDTH / 4.0f, WINDOWHEIGHT / 2.0f));
                     currentStage.spawnEnemies(enemies, dt);
+                    enemyMissiles.clear();
                 }
                 else if (event.key.code == sf::Keyboard::Num3 || event.key.code == sf::Keyboard::Numpad3) {
                     stageNumber = 3;
                     currentStage.setStage(stageNumber, enemies);
                     player.setPlayer(stageNumber);
-                    player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3.0f + 18.0f));
+                    player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
                     currentStage.spawnEnemies(enemies, dt);
+                    enemyMissiles.clear();
+                }
+                else if (event.key.code == sf::Keyboard::Num4 || event.key.code == sf::Keyboard::Numpad4) {
+                    stageNumber = 4;
+                    currentStage.setStage(3, enemies);
+                    player.setPlayer(3);
+                    player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f - 200, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
+                    currentStage.spawnEnemies(enemies, dt);
+                    enemyMissiles.clear();
                 }
                 // 특수 공격 및 방향 전환
                     // ...
@@ -142,6 +152,10 @@ void Game::handleEvents() {
                     // 필살기 : Q 키를 눌렀을 때 수행
                     if (event.key.code == sf::Keyboard::Q) {
                         player.ultimateAttack(); // Q 키를 눌렀을 때 한 번만 호출
+                    }
+                    // 보스 패턴 테스트용 // 이거 사용 시 game update에 가서 boss.attack 주석처리해야
+                    if (event.key.code == sf::Keyboard::T) {
+                        if (stageNumber == 4) boss.attack(dt);
                     }
                 }
                 // 플레이어 좌우 반전
@@ -201,7 +215,7 @@ void Game::update() { // 게임 상태 업데이트
             dx += (sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A)) * speed;
             dy += (sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W)) * speed;
 
-            if (stageNumber == 3) dy = 0; // 스테이지 3에서는 y축 이동 불가
+            if (stageNumber == 3 || stageNumber == 4) dy = 0; // 스테이지 3에서는 y축 이동 불가
             else if (dx != 0 && dy != 0) { // 대각선 이동 속도 보정
                 dx *= 0.7071f;
                 dy *= 0.7071f;
@@ -306,6 +320,12 @@ void Game::update() { // 게임 상태 업데이트
              }
          }*/
 
+         // stage 4 에서 보스 공격 처리
+        if (stageNumber == 4) {
+            //boss.attack(dt);
+            boss.updateAttack(dt, player);
+        }
+
         // 화면 밖 적 제거
         deleteEnemy();
         uiManager.update(stageNumber, false);
@@ -318,40 +338,40 @@ void Game::update() { // 게임 상태 업데이트
 }
 
 void Game::render() {
-        window->clear(); // 화면 지우기
+    window->clear(); // 화면 지우기
 
-        // (1) 게임 뷰를 설정하고 게임 관련 요소 그리기
-        window->setView(gameView); // 게임 뷰 설정 (중앙 정사각형 영역)
+    // (1) 게임 뷰를 설정하고 게임 관련 요소 그리기
+    window->setView(gameView); // 게임 뷰 설정 (중앙 정사각형 영역)
 
-        // 배경 그리기
-        currentStage.drawBackground(*window);
+    // 배경 그리기
+    currentStage.drawBackground(*window);
 
 
-        // 적 관련 그리기
-        for (auto* enemy : enemies) {
-            enemy->draw(*window);     // 적을 화면에 그리기
-        }
+    // 적 관련 그리기
+    for (auto* enemy : enemies) {
+        enemy->draw(*window);     // 적을 화면에 그리기
+    }
 
-        // 적 미사일 렌더링
-        for (auto& missile : enemyMissiles) {
-            missile->draw(*window);
-        }
-
-        
+    // 적 미사일 렌더링
+    for (auto& missile : enemyMissiles) {
+        missile->draw(*window);
+    }
 
         
-        //입력상좌가 텍스트 그리기
-        player.renderAttack(*window);
-        player.drawAllies(*window);
-        window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
-        // UI 그리기
-        uiManager.render(*window);
-        if (player.getHealth() <= 0) {
-            // 게임 오버 화면 그리기
-            uiManager.drawGameOverScreen(*window);
-        }
-        player.draw(*window);
+        
+    //입력상좌가 텍스트 그리기
+    player.renderAttack(*window);
+    player.drawAllies(*window);
+    window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
+
+    // UI 그리기
+    uiManager.render(*window);
+    if (player.getHealth() <= 0) {
+        // 게임 오버 화면 그리기
+        uiManager.drawGameOverScreen(*window);
+    }
+    player.draw(*window);
 
     window->display(); // 화면에 그린 내용을 표시
 }

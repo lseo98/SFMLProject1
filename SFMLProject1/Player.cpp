@@ -5,7 +5,7 @@
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 // health,  speed, sf::Vector2f position
-Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f - width / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f)) {
+Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 9.0f / 10.0f)) {
     //missileLaunched = false; 
 
     // 특수 공격 관련 변수 초기화
@@ -19,7 +19,9 @@ Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f - width /
     waitTime = 0.0f; // 초기화
 
     killCountNomalUnit = 0;
-    killCountEliteUnit = 0;
+    killCountEliteUnit1 = 0;
+    killCountEliteUnit2 = 0;
+    killCountEliteUnit3 = 0;
 
 
     initializeHearts();
@@ -200,8 +202,7 @@ void Player::setPlayer(int stageNumber) {
     allyUnits.clear();   // 기존 아군 유닛 삭제 
 
     this->stageNumber = stageNumber;
-    std::cout << "Nomal Unit 처치 수 : " << killCountNomalUnit << "  Elite Unit 처치 수 : " << killCountEliteUnit << std::endl;
-    sf::IntRect textureRect;  // 표시할 텍스처 영역
+        sf::IntRect textureRect;  // 표시할 텍스처 영역
     switch (stageNumber) {
     case 1:
         direction = 'W';
@@ -243,9 +244,12 @@ void Player::restart() {
     health = 5;
     changeHeartSprite();
     setPlayer(1);
+    setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f - width / 2.0f, WINDOWHEIGHT * 4.0f / 5.0f));
     stageNumber = 1;
     killCountNomalUnit = 0;
-    killCountEliteUnit = 0;
+    killCountEliteUnit1 = 0;
+    killCountEliteUnit2 = 0;
+    killCountEliteUnit3 = 0;
 }
 
 void Player::basicAttack() {
@@ -308,7 +312,10 @@ void Player::loadProjectileTextures() {
 
 
 void Player::specialAttack() {
-    std::cout << "Nomal Unit 처치 수 : " << killCountNomalUnit << "  Elite Unit 처치 수 : " << killCountEliteUnit << std::endl;
+    std::cout << "Nomal Unit 처치 수 : " << killCountNomalUnit << std::endl;
+    std::cout << "stage1 Elite Unit 처치 수 : " << killCountEliteUnit1 << std::endl;
+    std::cout << "stage2 Elite Unit 처치 수 : " << killCountEliteUnit2 << std::endl;
+    std::cout << "stage3 Elite Unit 처치 수 : " << killCountEliteUnit3 << std::endl << std::endl;
 
     if (canSpecialAttack) {
         // 플레이어의 중앙 위치를 계산하여 미사일의 시작 위치로 사용
@@ -619,7 +626,7 @@ void Player::updateAllies(float dt, std::vector<Enemy*>& enemies, std::vector<st
             // 적군 전체 삭제
             for (auto* enemy : enemies) {
                 if (dynamic_cast<NormalUnit*>(enemy) == enemy) killCountNomalUnit++;
-                else if (dynamic_cast<EliteUnit*>(enemy) == enemy) killCountEliteUnit++;
+                else if (dynamic_cast<EliteUnit*>(enemy) == enemy) this->countKillElite();
                 delete enemy;  // 동적 메모리 해제
             }
             enemies.clear(); // 적군 벡터 초기화
@@ -711,30 +718,30 @@ void Player::collision(std::vector<Enemy*>& enemies) {
         }
 
 
-        if (dynamic_cast<NormalUnit*>(*enemyIt) == *enemyIt) {  // 일반 유닛일 경우에만 플레이어의 기본 총알 공격의 피해를 줄 수 있음
-            // Bullet 처리
-            for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); bulletIt++) {
+        
+        // Bullet 처리
+        for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); bulletIt++) {
+            if ((*bulletIt)->sprite.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
 
-                if ((*bulletIt)->sprite.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
+                /*std::cout << "Bullet Global Bounds: " << (*bulletIt)->shape.getGlobalBounds().left << ", "
+                    << (*bulletIt)->shape.getGlobalBounds().top << ", "
+                    << (*bulletIt)->shape.getGlobalBounds().width << ", "
+                    << (*bulletIt)->shape.getGlobalBounds().height << std::endl;
 
-                    /*std::cout << "Bullet Global Bounds: " << (*bulletIt)->shape.getGlobalBounds().left << ", "
-                        << (*bulletIt)->shape.getGlobalBounds().top << ", "
-                        << (*bulletIt)->shape.getGlobalBounds().width << ", "
-                        << (*bulletIt)->shape.getGlobalBounds().height << std::endl;
+                std::cout << "Enemy Global Bounds: " << (*enemyIt)->sprite.getGlobalBounds().left << ", "
+                    << (*enemyIt)->sprite.getGlobalBounds().top << ", "
+                    << (*enemyIt)->sprite.getGlobalBounds().width << ", "
+                    << (*enemyIt)->sprite.getGlobalBounds().height << std::endl;*/
 
-                    std::cout << "Enemy Global Bounds: " << (*enemyIt)->sprite.getGlobalBounds().left << ", "
-                        << (*enemyIt)->sprite.getGlobalBounds().top << ", "
-                        << (*enemyIt)->sprite.getGlobalBounds().width << ", "
-                        << (*enemyIt)->sprite.getGlobalBounds().height << std::endl;*/
+                float damage = (*bulletIt)->getDamage();
+                if (dynamic_cast<EliteUnit*>(*enemyIt) == *enemyIt) damage /= 10;
 
-                    (*enemyIt)->takeDamage((*bulletIt)->getDamage());   // Enemy의 체력 감소
-                    (*bulletIt)->crashed();
-
-                    if ((*enemyIt)->getHealth() <= 0) {
-                        //if (dynamic_cast<NormalUnit*>(*enemyIt) == *enemyIt) killCountNomalUnit++;
-                        //else if (dynamic_cast<EliteUnit*>(*enemyIt) == *enemyIt) killCountEliteUnit++;
-                        break;                                          // Enemy가 삭제되었으므로 현재 Enemy와 더 이상의 충돌 검사 불필요
-                    }
+                (*enemyIt)->takeDamage(damage);   // Enemy의 체력 감소
+                (*bulletIt)->crashed();
+                if ((*enemyIt)->getHealth() <= 0) {
+                    //if (dynamic_cast<NormalUnit*>(*enemyIt) == *enemyIt) killCountNomalUnit++;
+                    //else if (dynamic_cast<EliteUnit*>(*enemyIt) == *enemyIt) killCountEliteUnit++;
+                    break;
                 }
             }
         }
@@ -784,25 +791,109 @@ void Player::collision(std::vector<Enemy*>& enemies) {
 
 }
 
-void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles) {   // 적군 공격체-플레이어 충돌 처리
-   
-    for (auto enemyMissileIt = globalMissiles.begin(); enemyMissileIt != globalMissiles.end(); enemyMissileIt++) {
-        bool misileDestroyed = false;
-        if (*enemyMissileIt == nullptr) {  // nullptr 체크
-            break;
+void Player::healUnitCollision(std::vector<HealUnit*> healUnits) {
+    // 플레이어의 공격과 적군의 충돌 처리
+    for (auto enemyIt = healUnits.begin(); enemyIt != healUnits.end(); enemyIt++) {
+        bool enemyDestroyed = false;
+        if (*enemyIt == nullptr) {  // nullptr 체크
+            return;
         }
-
         // Missile 처리   // 미사일의 개수가 총알에 비해 비교적 적고 범위 공격을 인해 continue가 자주 발생할 수 있어 총알보다 우선 충돌처리
         for (auto missileIt = missiles.begin(); missileIt != missiles.end(); missileIt++) {
             if (*missileIt == nullptr) {  // nullptr 체크
                 break;
             }
-            if ((*enemyMissileIt)->sprite.getGlobalBounds().intersects((*missileIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
-                (*enemyMissileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
+            if ((*missileIt)->sprite.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
+                sf::FloatRect boundsMissile = (*missileIt)->sprite.getGlobalBounds(); // , boundsEnemy = (*enemyIt)->sprite.getGlobalBounds();
+                sf::Vector2f missileCenter = sf::Vector2f(boundsMissile.left + boundsMissile.width / 2, boundsMissile.top + boundsMissile.height / 2);
+                //sf::Vector2f enemyCenter = sf::Vector2f(boundsEnemy.left + boundsEnemy.width / 2, boundsEnemy.top + boundsEnemy.height / 2);
+                for (auto enemyTmpIt = healUnits.begin(); enemyTmpIt != healUnits.end(); enemyTmpIt++) {
+                    if (*enemyTmpIt == nullptr) {  // nullptr 체크
+                        break;
+                    }
+                    sf::FloatRect boundsTmpEnemy = (*enemyTmpIt)->sprite.getGlobalBounds();
+                    sf::Vector2f tmpEnemyCenter = sf::Vector2f(boundsTmpEnemy.left + boundsTmpEnemy.width / 2, boundsTmpEnemy.top + boundsTmpEnemy.height / 2);
+                    sf::Vector2f dist = tmpEnemyCenter - missileCenter;
+                    double distance = sqrt(dist.x * dist.x + dist.y * dist.y);
+                    if (distance < (*missileIt)->getRange()) {
+                        (*enemyTmpIt)->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
+                        if ((*enemyTmpIt)->getHealth() <= 0) {
+                            //if (dynamic_cast<NormalUnit*>(*enemyIt) == *enemyIt) killCountNomalUnit++;
+                           // else if (dynamic_cast<EliteUnit*>(*enemyIt) == *enemyIt) killCountEliteUnit++;
+                            enemyDestroyed = true;
+                        }
+                    }
+                }
                 (*missileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
-                misileDestroyed = true;
+            }
+        }
+        if (enemyDestroyed) {
+            continue; // Enemy가 삭제되었으므로 다음 Enemy로 이동
+        }
+        // 필살기 Missile 처리   
+        for (auto missileIt = allyMissiles.begin(); missileIt != allyMissiles.end(); missileIt++) {
+            if (*missileIt == nullptr) {  // nullptr 체크
                 break;
             }
+            if ((*missileIt)->sprite.getGlobalBounds().intersects((*enemyIt)->sprite.getGlobalBounds())) { // 충돌 발생 시
+                sf::FloatRect boundsMissile = (*missileIt)->sprite.getGlobalBounds(); // , boundsEnemy = (*enemyIt)->sprite.getGlobalBounds();
+                sf::Vector2f missileCenter = sf::Vector2f(boundsMissile.left + boundsMissile.width / 2, boundsMissile.top + boundsMissile.height / 2);
+                //sf::Vector2f enemyCenter = sf::Vector2f(boundsEnemy.left + boundsEnemy.width / 2, boundsEnemy.top + boundsEnemy.height / 2);
+                for (auto enemyTmpIt = healUnits.begin(); enemyTmpIt != healUnits.end(); enemyTmpIt++) {
+                    if (*enemyTmpIt == nullptr) {  // nullptr 체크
+                        break;
+                    }
+                    sf::FloatRect boundsTmpEnemy = (*enemyTmpIt)->sprite.getGlobalBounds();
+                    sf::Vector2f tmpEnemyCenter = sf::Vector2f(boundsTmpEnemy.left + boundsTmpEnemy.width / 2, boundsTmpEnemy.top + boundsTmpEnemy.height / 2);
+                    sf::Vector2f dist = tmpEnemyCenter - missileCenter;
+                    double distance = sqrt(dist.x * dist.x + dist.y * dist.y);
+                    if (distance < (*missileIt)->getRange()) {
+                        (*enemyTmpIt)->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
+                    }
+                }
+                (*missileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
+            }
+        }
+
+    }
+    deleteThisProjectile();
+}
+
+
+void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles) {   // 적군 공격체-플레이어 충돌 처리
+   
+    for (auto enemyMissileIt = globalMissiles.begin(); enemyMissileIt != globalMissiles.end(); enemyMissileIt++) {
+        if ((*enemyMissileIt)->checkCrashed()) continue;        // 이미 충돌이 일어났다면 continue
+        bool misileDestroyed = false;
+        if (*enemyMissileIt == nullptr) {  // nullptr 체크
+            break;
+        }
+
+        // 플레이어 Missile 처리   
+        // 미사일의 개수가 총알에 비해 비교적 적고 범위 공격을 인해 continue가 자주 발생할 수 있어 총알보다 우선 충돌처리
+        for (auto missileIt = missiles.begin(); missileIt != missiles.end(); missileIt++) {
+            if (*missileIt == nullptr) {  // nullptr 체크
+                break;
+            }
+            if ((*enemyMissileIt)->sprite.getGlobalBounds().intersects((*missileIt)->sprite.getGlobalBounds())) { // 충돌 발생 시 
+                misileDestroyed = true;
+                (*missileIt)->crashed();    // 플레이어 미사일 충돌 됨으로 상태 수정
+                sf::Vector2f playerMissilePostion = (*missileIt)->getPosition();
+
+                for (auto enemyMissilTmpIt = globalMissiles.begin(); enemyMissilTmpIt != globalMissiles.end(); enemyMissilTmpIt++) {    // 범위 내 적군 미사일 재검사
+                    sf::Vector2f enemyMissilePostion = (*enemyMissilTmpIt)->getPosition();
+                    sf::Vector2f dist = playerMissilePostion - enemyMissilePostion;
+                    double distance = sqrt(dist.x * dist.x + dist.y * dist.y);
+
+                    /* std::cout << "player 미사일 x,y : " << playerMissilePostion.x << " " << playerMissilePostion.y << std::endl;
+                    std::cout << "enemy 미사일 x,y : " << enemyMissilePostion.x << " " << enemyMissilePostion.y << std::endl;
+                    std::cout << "미사일 distance : " << distance << std::endl;*/
+                    if (distance < (*missileIt)->getRange()) {
+                        (*enemyMissilTmpIt)->crashed();    // 적군 미사일 충돌 됨으로 상태 수정
+                    }
+                }
+            }
+            if (misileDestroyed) break;
         }
 
         if (misileDestroyed) {
@@ -865,6 +956,22 @@ void Player::deleteThisProjectile() {
             }),
         allyMissiles.end()
     );
+}
+
+void Player::countKillElite() {
+    switch (stageNumber) {
+    case 1:
+        this->killCountEliteUnit1++;
+        break;
+    case 2:
+        this->killCountEliteUnit2++;
+        break;
+    case 3:
+        this->killCountEliteUnit3++;
+        break;
+    default:
+        break;
+    }
 }
 
 void Player::updateAttack() {

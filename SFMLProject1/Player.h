@@ -37,7 +37,8 @@ public:
     void ultimateAttack();
     // 업데이트
     void collision(std::vector<Enemy*>& enemies);    // 공격체-적 충돌 처리
-    void enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles);    // 공격체-적 충돌 처리
+    void enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles); 
+    void healUnitCollision(std::vector<HealUnit*> healUnits);  // 보스 스테이지 / 공격체-힐유닛 충돌처리// 공격체-적 충돌 처리
     void deleteThisProjectile();                     // 충돌된 내 발사체 삭제
     void updateAttack();                             // 공격체 업데이트
     void updateAllies(float delatime, std::vector<Enemy*>& enemies, std::vector<std::unique_ptr<Missile>>& globalMissiles);
@@ -50,7 +51,7 @@ public:
     void updateCooldowns(float dt);  // 쿨타임 업데이트 (특수공격과 필살기 모두 포함)
     
     void countKillNormal() { this->killCountNomalUnit++; }
-    void countKillElite() { this->killCountEliteUnit++; }
+    void countKillElite();
 
 
     sf::Texture texture;      // 이미지 텍스처
@@ -67,6 +68,7 @@ public:
         return position; // 플레이어의 현재 위치를 반환
     }
     void takeDamage(float amount) override;
+
     // 깜빡임
     void triggerBlink();             // 깜빡임 시작
     void updateBlink();              // 깜빡임 상태 업데이트
@@ -105,7 +107,8 @@ private:
     int stageNumber;                 // 현재 스테이지 번호
     void loadProjectileTextures();
 
-    int killCountNomalUnit, killCountEliteUnit; // 처치한 적군 수
+    // 처치한 적군 수
+    int killCountNomalUnit, killCountEliteUnit1, killCountEliteUnit2, killCountEliteUnit3;
 
     // 깜빡임
     bool isBlinking = false;         // 깜빡임 상태

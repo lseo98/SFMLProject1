@@ -14,7 +14,7 @@ public:
     void draw(sf::RenderWindow& window);
 
     void update(float deltaTime);
-    void collision(Player &player);
+    void collision(Player& player);
 
     void image(const std::string& textureFile, const sf::IntRect& textureRect = sf::IntRect());
 
@@ -36,6 +36,12 @@ protected:
     float previousY = 0.0f; // 이전 프레임의 Y 좌표
     float previousX = 1400.0f; // 이전 프레임의 X 좌표
 
+    // 각 유닛들 생성 시 채력
+   // static constexpr는 컴파일 타임 상수, static const는 상수
+    static constexpr float maxHealth_NormalUnit = 100.0f;
+    static constexpr float maxHealth_EliteUnit = 300.0f;
+    static constexpr float maxHealth_HealUnit = 200.0f;
+
     bool collisionFlag;
 
 };
@@ -43,11 +49,12 @@ protected:
 class NormalUnit : public Enemy {
 
 public:
+    //float maxHealth_NormalUnit;
     NormalUnit(int stageNumber, sf::Vector2f position,int direction)
-        : Enemy(100.0f, 1.0f, position, stageNumber) {
+        : Enemy(maxHealth_NormalUnit, 1.0f, position, stageNumber) {
         this->direction = direction; // 방향 설정
         sf::IntRect textureRect;  // 표시할 텍스처 영역
-        if (stageNumber == 3) { // 땅 스테이지
+        if (stageNumber == 3 || stageNumber == 4) { // 땅 스테이지
             if (direction == -1) {
                 textureRect = sf::IntRect(133, 0, 935, 530);
                 image("land_enemy_unit.png", textureRect);
@@ -70,7 +77,7 @@ class EliteUnit : public Enemy {
 
 public:
     EliteUnit(int stageNumber, sf::Vector2f position,int direction)
-        : Enemy(300.0f, 1.5f, position, stageNumber) {
+        : Enemy(maxHealth_EliteUnit, 1.5f, position, stageNumber) {
         
         previousY = position.y;
 
@@ -91,6 +98,7 @@ public:
            missileDirection = sf::Vector2f(-1, 0);
            break;
        case 3:
+       case 4:
            if (direction == 1) {
                textureRect = sf::IntRect(200, 0, 800, 435);
                image("land_elite_unit_right.png", textureRect);  // 이미지 파일을 초기화
@@ -130,4 +138,15 @@ private:
     sf::Vector2f missileDirection;
     sf::Texture missileTexture;
     sf::Clock fireClock;           // 미사일 발사 간격 관리
+};
+
+// 보스 패턴 4 관련 변수
+class HealUnit : public Enemy {
+public:
+    HealUnit() : Enemy(maxHealth_HealUnit, 1.0f, sf::Vector2f(WINDOWWIDTH / 4 + 50, 200), 4) {
+        this->direction = 1;    // 우측 이동
+        image("land_elite_unit_right.png");  // 이미지 삽입
+        //this->setPosition(sf::Vector2f(WINDOWWIDTH / 4+50, 200));
+        //setPosition(sf::Vector2f(WINDOWWIDTH / 4+50, 200));
+    }
 };

@@ -27,8 +27,12 @@ void Enemy::draw(sf::RenderWindow& window) {
     //window.draw(rectangle1);
 
 
-    // 체력바의 길이 계산
-    float maxHealth = dynamic_cast<EliteUnit*>(this) ? 300.0f : 100.0f; // 엘리트 유닛: 300, 일반 유닛: 100
+    float maxHealth;// = dynamic_cast<EliteUnit*>(this) ? 300.0f : 100.0f; // 엘리트 유닛: 300, 일반 유닛: 100
+    if (dynamic_cast<NormalUnit*>(this)) maxHealth = maxHealth_NormalUnit;
+    else if (dynamic_cast<EliteUnit*>(this)) maxHealth = maxHealth_EliteUnit;
+    else if (dynamic_cast<HealUnit*>(this)) maxHealth = maxHealth_HealUnit;
+    else maxHealth = 100.0f;
+
     float healthBarWidth = (this->getHealth() / maxHealth) * 96.0f; // 체력에 비례한 길이
 
     // 체력바 (빨간색)
@@ -184,11 +188,11 @@ void Enemy::update(float deltaTime) {
 
         }
     }
-    else if (stageNumber == 3) { // 땅 스테이지
+    else if (stageNumber == 3 || stageNumber == 4) { // 땅 스테이지
         if (dynamic_cast<NormalUnit*>(this)) {
             position.x += direction * 200.0f * deltaTime; // 방향에 따라 이동
         }
-        else if (dynamic_cast<EliteUnit*>(this)) {
+        else if (dynamic_cast<EliteUnit*>(this) || dynamic_cast<HealUnit*>(this)) {
             if (position.x <= 450) {
                 direction = 1; // 오른쪽으로 이동
             }

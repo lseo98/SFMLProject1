@@ -21,7 +21,7 @@ void Missile::setTexture(const sf::Texture& texture, const sf::IntRect& textureR
     if (textureRect != sf::IntRect()) {
         sprite.setTextureRect(textureRect);
     }
-    //   sprite.setTextureRect(textureRect);    
+    //   sprite.setTextureRect(textureRect);   
     sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
     sprite.setScale(0.07f, 0.07f);
     sprite.setPosition(position);

@@ -30,10 +30,10 @@ void Projectile::adjustDirection(){
 
     // 화살표 입력 확인
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        angle = -3.0f; // 왼쪽으로 3도 회전
+        angle = -5.0f; // 왼쪽으로 5도 회전
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        angle = 3.0f; // 오른쪽으로 3도 회전
+        angle = 5.0f; // 오른쪽으로 5도 회전
     }
 
     // 화살표 키가 눌리지 않았다면 회전하지 않음
