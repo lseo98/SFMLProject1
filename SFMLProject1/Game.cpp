@@ -202,10 +202,10 @@ void Game::update() { // 게임 상태 업데이트
         player.updateCooldowns(dt);
         // 궁극기 쿨타임 정보 얻기
         float remainingUltimateCooldown = player.getUltimateAttackRemainingCooldown();
-        float ultimateCooldownRatio = remainingUltimateCooldown / 20.0f;
+        float ultimateCooldownRatio = remainingUltimateCooldown / player.getUltimateAttackCooldown();
         // 특수 공격 쿨타임 정보 얻기
         float remainingSpecialCooldown = player.getSpecialAttackRemainingCooldown();
-        float specialCooldownRatio = remainingSpecialCooldown / 5.0f;
+        float specialCooldownRatio = remainingSpecialCooldown / player.getSpecialAttackCooldown();
         uiManager.setCooldownRatios(ultimateCooldownRatio, specialCooldownRatio);
         if (!uiManager.isInputFocused()) {
             float speed = player.getSpeed();
@@ -225,7 +225,7 @@ void Game::update() { // 게임 상태 업데이트
 
         }
 
-        // 200ms 간격으로 기본 공격 발사
+        // 100ms 간격으로 기본 공격 발사
         if (attackClock.getElapsedTime().asMilliseconds() >= 100) {
             player.basicAttack(); // 기본 공격 발사
             attackClock.restart(); // 타이머 초기화
@@ -372,6 +372,7 @@ void Game::render() {
         uiManager.drawGameOverScreen(*window);
     }
     player.draw(*window);
+    if (stageNumber == 4) boss.render(*window);
 
     window->display(); // 화면에 그린 내용을 표시
 }

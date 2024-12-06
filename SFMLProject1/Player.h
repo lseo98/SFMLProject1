@@ -61,8 +61,10 @@ public:
 
     // 궁극기 남은 쿨타임 반환 함수
     float getUltimateAttackRemainingCooldown() const;
+    float getUltimateAttackCooldown() { return ultimateAttackCooldown; }
     // 특수 공격 남은 쿨타임 반환 함수
     float getSpecialAttackRemainingCooldown() const;
+    float getSpecialAttackCooldown() { return specialAttackCooldown; }
 
     sf::Vector2f getPosition() const {
         return position; // 플레이어의 현재 위치를 반환
@@ -99,7 +101,7 @@ private:
     std::vector<sf::Sprite> allyUnits; // 아군 유닛들을 저장하는 멤버 변수
     sf::Texture allyTexture;           // 아군 유닛의 텍스처
     sf::Texture MissileTextures[3];   // 스테이지별 발사체 이미지 (1: 하늘, 2: 바다, 3: 땅) 
-    sf::Texture AllMissileTextures[3];   // 스테이지별 발사체 이미지 (1: 하늘, 2: 바다, 3: 땅) 
+    sf::Texture AllMissileTextures[3];   // 스테이지별 필살기 이미지 (1: 하늘, 2: 바다, 3: 땅) 
 
     float waitTime;  // 하늘 스테이지에서 아군 유닛의 대기 시간
 
