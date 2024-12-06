@@ -1,4 +1,5 @@
 #include "Missile.h"
+#include<iostream>
 
 Missile::Missile(const sf::Vector2f& startPosition, const sf::Vector2f& direction, float speed)
     : Projectile(startPosition, direction, speed) { 
@@ -19,35 +20,14 @@ void Missile::update() {
 void Missile::setTexture(const sf::Texture& texture, const sf::IntRect& textureRect) {
     sprite.setTexture(texture);
     if (textureRect != sf::IntRect()) {
-        sprite.setTextureRect(textureRect);
+        this->sprite.setTextureRect(textureRect);
     }
-    //   sprite.setTextureRect(textureRect);   
+  
     sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
     sprite.setScale(0.07f, 0.07f);
     sprite.setPosition(position);
 
 }
-
-/*void Missile::update(const sf::Vector2f& targetPosition) {
-    if (isTracking) {
-        sf::Vector2f updatedDirection = targetPosition - position;
-        float magnitude = std::sqrt(updatedDirection.x * updatedDirection.x + updatedDirection.y * updatedDirection.y);
-        if (magnitude != 0) {
-            updatedDirection /= magnitude;
-        }
-
-        direction = direction*(0.3f)+(updatedDirection)*0.7f;
-
-        if (std::abs(position.x - targetPosition.x) < 5.0f &&
-            std::abs(position.y - targetPosition.y) < 5.0f) {
-            isTracking = false;
-        }
-    }
-
-    position += direction * speed;
-    shape.setPosition(position);
-    updateDamage();
-}*/
 
 void Missile::update(const sf::Vector2f& targetPosition) {
     if (isTracking) {
