@@ -372,6 +372,7 @@ void Game::render() {
         uiManager.drawGameOverScreen(*window);
     }
     player.draw(*window);
+    if (stageNumber == 4) boss.render(*window);
 
     window->display(); // 화면에 그린 내용을 표시
 }

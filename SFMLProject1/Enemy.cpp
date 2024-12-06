@@ -217,7 +217,7 @@ bool Enemy::isOffScreen() const {
 }
 
 // EliteUnit
-
+sf::Texture EliteUnit::missileTexture;
 void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique_ptr<Missile>>& globalMissiles) {
     if (fireClock.getElapsedTime().asSeconds() >= 5.0f) {
         // 초기 방향 설정
@@ -230,7 +230,8 @@ void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique
         auto newMissile = std::make_unique<Missile>(this->position, direction, 3.0f);
         
 		sf::IntRect textureRect; 
-		missileTexture.loadFromFile("missile_sky.png");//여기 수정해야함 static으로 빼던가 resourceManager 싱글톤 사용
+        if (!missileTexture.loadFromFile("missile_sky.png"));
+		//missileTexture.loadFromFile("missile_sky.png"); //여기 수정해야함 static으로 빼던가 resourceManager 싱글톤 사용
         newMissile->setTexture(missileTexture, textureRect);
         // 미사일을 추적형으로 설정
         newMissile->setTarget(); // 플레이어 위치를 참조로 설정
