@@ -34,6 +34,9 @@ private:
 
     // 게임 루프 내 필요 함수
     void deleteEnemy();
+    void checkStageTransition(); // 스테이지 전환 검사 함수 선언
+
+    int stageSwitchCounter = 1; // 스테이지 전환 카운터
 
 
     // SFML 멤버 변수
