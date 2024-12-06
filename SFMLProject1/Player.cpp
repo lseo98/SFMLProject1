@@ -387,9 +387,12 @@ void Player::ultimateAttack() {
             sf::Vector2f missileStartPosition(400, 600); // 왼쪽 끝에서 시작
             sf::Vector2f missileDirection(1.0f, 0.0f); // 오른쪽으로 직선 이동
             float missileSpeed = 3.0f;  // 발사 속도 (바다 스테이지)
-
+            Missile* missile = new Missile(missileStartPosition, missileDirection, missileSpeed);
+            missile->isAlly = true;
+            sf::IntRect textureRect;
+            missile->setTexture(AllMissileTextures[stageNumber - 1], textureRect);
             // 설정된 방향과 속도로 발사체 생성
-            allyMissiles.emplace_back(new Missile(missileStartPosition, missileDirection, missileSpeed));
+            allyMissiles.emplace_back(missile);
 
 
             // 필살기 상태 갱신
