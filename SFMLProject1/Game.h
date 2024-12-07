@@ -35,6 +35,8 @@ private:
     // 게임 루프 내 필요 함수
     void deleteEnemy();
     void checkStageTransition(); // 스테이지 전환 검사 함수 선언
+    void changeStage(int newStageNumber); //문자열 입력에 따라 스테이지 변경
+
 
     int stageSwitchCounter = 1; // 스테이지 전환 카운터
 

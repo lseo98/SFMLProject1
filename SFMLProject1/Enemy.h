@@ -76,6 +76,9 @@ public:
 class EliteUnit : public Enemy {
 
 public:
+
+   // void fireMissile(sf::Vector2f targetPosition, std::vector<std::unique_ptr<Missile>>& globalMissiles);
+
     EliteUnit(int stageNumber, sf::Vector2f position,int direction)
         : Enemy(maxHealth_EliteUnit, 1.5f, position, stageNumber) {
         
@@ -131,6 +134,7 @@ public:
     void deleteThisProjectile();
     
     bool missileLaunched;
+    static void initializeTextures(); // static으로 선언
 
 
 private:
@@ -138,6 +142,8 @@ private:
     sf::Vector2f missileDirection;
     static sf::Texture missileTexture;
     sf::Clock fireClock;           // 미사일 발사 간격 관리
+    static sf::Texture missileTextures[3]; // 스테이지마다 다른 텍스처를 위한 배열
+
 };
 
 // 보스 패턴 4 관련 변수

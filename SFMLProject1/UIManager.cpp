@@ -46,19 +46,19 @@ void UIManager::init() {
     text.setPosition(1410, 120);
 
     skytext.setFont(font);
-    skytext.setString("AIR FORCE");
+    skytext.setString("AIR FORCE     0 / 40");
     skytext.setCharacterSize(38);
     skytext.setFillColor(sf::Color(100, 100, 100, 250));
     skytext.setPosition(1410, 200);
 
     seatext.setFont(font);
-    seatext.setString("NAVY");
+    seatext.setString("NAVY          0 / 40");
     seatext.setCharacterSize(38);
     seatext.setFillColor(sf::Color(100, 100, 100, 250));
     seatext.setPosition(1410, 250);
 
     landtext.setFont(font);
-    landtext.setString("ARMY");
+    landtext.setString("ARMY          0 /  40");
     landtext.setCharacterSize(38);
     landtext.setFillColor(sf::Color(100, 100, 100, 250));
     landtext.setPosition(1410, 300);
@@ -200,20 +200,22 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
 
             // 입력값에 따라 스테이지 번호 설정 
             if (s2 == "skymap") {
-                currentStageNumber = 1;
+                onStageChange(1); // 스테이지 1로 변경
 
             }
             else if (s2 == "seamap") {
-                currentStageNumber = 2;
+                onStageChange(2); // 스테이지 1로 변경
+
             }
             else if (s2 == "landmap") {
-                currentStageNumber = 3;
+                onStageChange(3); // 스테이지 1로 변경
                 std::cout << "landmap = " << s2 << std::endl;
 
             }
             else {
                 std::cout << "Invalid input: " << s2 << std::endl;
             }
+
 
             // std::cout << "s2 = " << s2 << std::endl;
         }
@@ -281,7 +283,7 @@ void UIManager::updateKeyBoxes() {
 }
 
 
-void UIManager::update(int stageNumber, bool isGameOver) {
+void UIManager::update(int stageNumber, bool isGameOver,Player&player) {
     // UI 요소 업데이트 코드
     // ...
     if (currentStageNumber != stageNumber) {
@@ -303,6 +305,15 @@ void UIManager::update(int stageNumber, bool isGameOver) {
 
     sprite_Q->setTexture(texture_Q[stageNumber - 1]); // 텍스처 설정
     sprite_E->setTexture(texture_E[stageNumber - 1]); // 텍스처 설정
+
+    skytext.setString("AIR FORCE  " + std::to_string(player.killCountEliteUnit1) + " / 40");
+    seatext.setString("NAVY       " + std::to_string(player.killCountEliteUnit2) + " / 40");
+
+    landtext.setString("ARMY       " + std::to_string(player.killCountEliteUnit3) + " / 40");
+
+    //일정 노말유닛 처치시 E키 빨간색으로 변환
+    if(player.killCountNomalUnit>5) //숫자 변경
+        boxE.setOutlineColor(sf::Color::Red);
 
 }
 
@@ -398,4 +409,7 @@ void UIManager::drawGameOverScreen(sf::RenderWindow& window) {
 }
 bool UIManager::isInputFocused() const {
     return isInputActive;
+}
+void UIManager::setStageChangeCallback(std::function<void(int)> callback) {
+    onStageChange = callback; // 콜백 저장
 }

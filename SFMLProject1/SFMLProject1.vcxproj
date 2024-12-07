@@ -166,11 +166,16 @@
     <ClInclude Include="UIManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\Q_missile_land.png" />
+    <Image Include="..\..\..\..\..\OneDrive\문서\혜서폴다\2학년\SW설계기초\Q_sea_missile.png" />
     <Image Include="bullet_land.png" />
     <Image Include="bullet_left_land.png" />
     <Image Include="bullet_left_sea.png" />
     <Image Include="bullet_sea.png" />
     <Image Include="bullet_sky.png" />
+    <Image Include="enemy_missile_land.png" />
+    <Image Include="enemy_missile_sea.png" />
+    <Image Include="enemy_missile_sky.png" />
     <Image Include="explosion-3a.png" />
     <Image Include="explosion-6j.png" />
     <Image Include="explosion-b.png" />

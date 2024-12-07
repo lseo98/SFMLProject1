@@ -56,6 +56,11 @@ void Game::initVariables() {
     isMaingameRunning = true;   // stage 1, 2, 3이 아닌 미니게임 혹은 화면 전환 중에는 false
     this->clock.restart(); // 추후 미니게임 혹은 메인 게임 시작 후 시간 계산하는 것으로 변경 필요
     stageNumber = 1;        // 1: 하늘, 2: 바다, 3: 땅
+    uiManager.setStageChangeCallback([this](int stage) {
+        this->changeStage(stage); // 콜백에서 Game의 메서드를 호출
+        });
+
+    EliteUnit::initializeTextures(); // 여기서 호출
 
     currentStage.setStage(stageNumber, enemies);    // 현재 스테이지 초기화
     currentStage.spawnEnemies(enemies, dt);             // 이전 스테이지 적군 삭제 및 초기화
@@ -90,6 +95,7 @@ void Game::initWindow() {
 
     // 전체 화면을 위한 UI 뷰 초기화
     uiView = window->getDefaultView(); // 기본 화면 전체 뷰
+
 
 }
 
@@ -185,6 +191,29 @@ void Game::handleEvents() {
 
     }
 }
+void Game::changeStage(int newStageNumber) {
+    stageNumber = newStageNumber;          // 스테이지 번호 설정
+    currentStage.setStage(stageNumber, enemies); // 현재 스테이지 적 초기화
+    player.setPlayer(stageNumber);        // 플레이어 초기화
+
+    // 스테이지별 플레이어 초기 위치 설정
+    if (stageNumber == 1) {
+        player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 9.0f / 10.0f));
+    }
+    else if (stageNumber == 2) {
+        player.setPosition(sf::Vector2f(WINDOWWIDTH / 4.0f, WINDOWHEIGHT / 2.0f));
+    }
+    else if (stageNumber == 3) {
+        player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
+    }
+    else if (stageNumber == 4) {
+        player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f - 200, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
+    }
+
+    currentStage.spawnEnemies(enemies, dt); // 적군 생성
+    enemyMissiles.clear();                  // 기존 적 미사일 제거
+}
+
 
 void Game::checkStageTransition() {
     // 30초 경과 시 스테이지 이동
@@ -236,17 +265,6 @@ void Game::update() { // 게임 상태 업데이트
         // 스테이지 자동 전환 검사
         checkStageTransition();
 
-        // 입력 텍스트 설정
-
-        // 엘리트 유닛 킬 정보 업데이트
-        killInfo = ""; // 문자열 초기화
-        for (int stage = 1; stage <= 3; ++stage) {
-            killInfo += std::to_string(eliteUnitKillCounts[stage]) + "\n";
-        }
-        eliteUnitKillText.setFont(font);
-        eliteUnitKillText.setCharacterSize(38);
-        eliteUnitKillText.setFillColor(sf::Color(100, 100, 100, 250));
-        eliteUnitKillText.setPosition(1600, 290);
         eliteUnitKillText.setString(killInfo); // 텍스트 설정
         static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
         static sf::Clock allyAttackClock;
@@ -383,11 +401,11 @@ void Game::update() { // 게임 상태 업데이트
 
         // 화면 밖 적 제거
         deleteEnemy();
-        uiManager.update(stageNumber, false);
+        uiManager.update(stageNumber, false,player);
     }
     else {
         // 게임 오버 상태 처리
-        uiManager.update(stageNumber, true);
+        uiManager.update(stageNumber, true,player);
     }
 
 }
