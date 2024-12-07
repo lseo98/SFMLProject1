@@ -32,8 +32,13 @@ private:
     void update();
     void render();
 
+    void updateMissiles(float dt, Player& player);
+
     // 게임 루프 내 필요 함수
     void deleteEnemy();
+    void checkStageTransition(); // 스테이지 전환 검사 함수 선언
+
+    int stageSwitchCounter = 1; // 스테이지 전환 카운터
 
 
     // SFML 멤버 변수
@@ -54,6 +59,7 @@ private:
     float dt;
 
     std::vector<std::unique_ptr<Missile>> enemyMissiles; // 적 미사일을 관리하는 전역 벡터
+    std::vector<std::unique_ptr<Missile>> bossMissiles; // 보스 미사일
 
 
     // 초기 객체 생성

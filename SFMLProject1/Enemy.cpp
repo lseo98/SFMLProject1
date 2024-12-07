@@ -13,10 +13,13 @@ Enemy::Enemy(float health, float speed, sf::Vector2f position, int stageNumber)
 void Enemy::draw(sf::RenderWindow& window) {
     this->sprite.setPosition(this->position);
     window.draw(this->sprite);
+    
+    int adj = -5;
+    if (dynamic_cast<EliteUnit*>(this)) adj = 10;
 
-    sf::RectangleShape rectangle(sf::Vector2f(100.0f, 13.0f));
+    sf::RectangleShape rectangle(sf::Vector2f(80.0f, 6.0f));
     rectangle.setFillColor(sf::Color::White);
-    rectangle.setPosition(this->position.x+3, this->position.y - 14.0f);
+    rectangle.setPosition((this->position.x + sprite.getGlobalBounds().width/2) - 50 + adj, this->position.y - 14.0f);
     window.draw(rectangle);
     ////printf("%d", health);
     ////체력에 따른 체력량 표시
@@ -31,14 +34,15 @@ void Enemy::draw(sf::RenderWindow& window) {
     if (dynamic_cast<NormalUnit*>(this)) maxHealth = maxHealth_NormalUnit;
     else if (dynamic_cast<EliteUnit*>(this)) maxHealth = maxHealth_EliteUnit;
     else if (dynamic_cast<HealUnit*>(this)) maxHealth = maxHealth_HealUnit;
+    else if(dynamic_cast<Shield*>(this)) maxHealth = maxHealth_Shield;
     else maxHealth = 100.0f;
 
-    float healthBarWidth = (this->getHealth() / maxHealth) * 96.0f; // 체력에 비례한 길이
+    float healthBarWidth = (this->getHealth() / maxHealth) * 76.0f; // 체력에 비례한 길이
 
     // 체력바 (빨간색)
-    sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth+2, 11.0f));
+    sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth+2, 4.0f));
     healthBar.setFillColor(sf::Color::Red);
-    healthBar.setPosition(this->position.x + 4, this->position.y - 13.0f);
+    healthBar.setPosition((this->position.x + sprite.getGlobalBounds().width / 2) - 49 + adj, this->position.y - 13.0f);
     window.draw(healthBar);
 
 }
@@ -217,7 +221,7 @@ bool Enemy::isOffScreen() const {
 }
 
 // EliteUnit
-
+sf::Texture EliteUnit::missileTexture;
 void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique_ptr<Missile>>& globalMissiles) {
     if (fireClock.getElapsedTime().asSeconds() >= 5.0f) {
         // 초기 방향 설정
@@ -230,7 +234,8 @@ void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique
         auto newMissile = std::make_unique<Missile>(this->position, direction, 3.0f);
         
 		sf::IntRect textureRect; 
-		missileTexture.loadFromFile("missile_sky.png");//여기 수정해야함 static으로 빼던가 resourceManager 싱글톤 사용
+        if (!missileTexture.loadFromFile("missile_sky.png"));
+		//missileTexture.loadFromFile("missile_sky.png"); //여기 수정해야함 static으로 빼던가 resourceManager 싱글톤 사용
         newMissile->setTexture(missileTexture, textureRect);
         // 미사일을 추적형으로 설정
         newMissile->setTarget(); // 플레이어 위치를 참조로 설정

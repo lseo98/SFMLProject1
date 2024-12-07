@@ -28,6 +28,7 @@ void Game::run() {
         if (player.getHealth() <= 0) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
                 player.restart();
+                stageSwitchCounter = 1;
                 stageNumber = 1;
                 for (Enemy* enemy : enemies) {
                     delete enemy;
@@ -40,7 +41,7 @@ void Game::run() {
                 currentStage.setStage(1, enemies);
             }
         }
-        else update();
+        else if(stageNumber != 5) update();
 
         render();
     }
@@ -142,6 +143,10 @@ void Game::handleEvents() {
                     currentStage.spawnEnemies(enemies, dt);
                     enemyMissiles.clear();
                 }
+                else if (event.key.code == sf::Keyboard::Num5 || event.key.code == sf::Keyboard::Numpad5) {
+                    stageNumber = 5;
+                    enemyMissiles.clear();
+                }
                 // 특수 공격 및 방향 전환
                     // ...
                 if (event.type == sf::Event::KeyPressed) {   // 한 번 눌렀을 때 한 개만 생성되도록 키를 새로 눌렀을 경우에만 실행
@@ -155,7 +160,7 @@ void Game::handleEvents() {
                     }
                     // 보스 패턴 테스트용 // 이거 사용 시 game update에 가서 boss.attack 주석처리해야
                     if (event.key.code == sf::Keyboard::T) {
-                        if (stageNumber == 4) boss.attack(dt);
+                        if (stageNumber == 4) boss.attack(dt, player, bossMissiles);
                     }
                 }
                 // 플레이어 좌우 반전
@@ -181,8 +186,61 @@ void Game::handleEvents() {
     }
 }
 
+void Game::checkStageTransition() {
+    // 30초 경과 시 스테이지 이동
+    if (globalClock.getElapsedTime().asSeconds() > 30.0f * stageSwitchCounter) {
+        // 스테이지 이동
+        if (stageSwitchCounter < 3) {
+            stageNumber++; // 다음 스테이지로 이동
+        }
+        else {
+            if (stageNumber == 1) {
+                stageNumber = (rand() % 2 == 0) ? 2 : 3; // 2 또는 3으로 이동
+            }
+            else if (stageNumber == 2) {
+                stageNumber = (rand() % 2 == 0) ? 1 : 3; // 1 또는 3으로 이동
+            }
+            else if (stageNumber == 3) {
+                stageNumber = (rand() % 2 == 0) ? 1 : 2; // 1 또는 2로 이동
+            }
+        }
+
+        if (stageNumber == 1) {
+            currentStage.setStage(stageNumber, enemies);
+            player.setPlayer(stageNumber);
+            player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 9.0f / 10.0f));
+            enemyMissiles.clear();
+            currentStage.spawnEnemies(enemies, dt);
+        }
+        else if (stageNumber == 2) {
+            currentStage.setStage(stageNumber, enemies);
+            player.setPlayer(stageNumber);
+            player.setPosition(sf::Vector2f(WINDOWWIDTH / 4.0f, WINDOWHEIGHT / 2.0f));
+            currentStage.spawnEnemies(enemies, dt);
+            enemyMissiles.clear();
+        }
+        else if (stageNumber == 3) {
+            currentStage.setStage(stageNumber, enemies);
+            player.setPlayer(stageNumber);
+            player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
+            currentStage.spawnEnemies(enemies, dt);
+            enemyMissiles.clear();
+        }
+        stageSwitchCounter++;
+    }
+}
+
+void Game::updateMissiles(float deltaTime, Player& player) {
+    
+}
+
+
+
 void Game::update() { // 게임 상태 업데이트
     if (player.getHealth() > 0) {
+        // 스테이지 자동 전환 검사
+        checkStageTransition();
+
         // 입력 텍스트 설정
 
         // 엘리트 유닛 킬 정보 업데이트
@@ -202,10 +260,10 @@ void Game::update() { // 게임 상태 업데이트
         player.updateCooldowns(dt);
         // 궁극기 쿨타임 정보 얻기
         float remainingUltimateCooldown = player.getUltimateAttackRemainingCooldown();
-        float ultimateCooldownRatio = remainingUltimateCooldown / 20.0f;
+        float ultimateCooldownRatio = remainingUltimateCooldown / player.getUltimateAttackCooldown();
         // 특수 공격 쿨타임 정보 얻기
         float remainingSpecialCooldown = player.getSpecialAttackRemainingCooldown();
-        float specialCooldownRatio = remainingSpecialCooldown / 5.0f;
+        float specialCooldownRatio = remainingSpecialCooldown / player.getSpecialAttackCooldown();
         uiManager.setCooldownRatios(ultimateCooldownRatio, specialCooldownRatio);
         if (!uiManager.isInputFocused()) {
             float speed = player.getSpeed();
@@ -225,7 +283,7 @@ void Game::update() { // 게임 상태 업데이트
 
         }
 
-        // 200ms 간격으로 기본 공격 발사
+        // 100ms 간격으로 기본 공격 발사
         if (attackClock.getElapsedTime().asMilliseconds() >= 100) {
             player.basicAttack(); // 기본 공격 발사
             attackClock.restart(); // 타이머 초기화
@@ -246,7 +304,7 @@ void Game::update() { // 게임 상태 업데이트
         //        allyAttackClock.restart(); // 타이머 초기화
         //    }
         //}
-        else if (stageNumber == 3) {
+        else if (stageNumber == 3 || stageNumber == 4) {
             // 땅 스테이지: 500ms 간격으로 발사
             if (allyAttackClock.getElapsedTime().asMilliseconds() >= 500) {
                 player.allyAttack(); // 아군 유닛 기본 공격 발사
@@ -279,7 +337,7 @@ void Game::update() { // 게임 상태 업데이트
             }
         }
 
-        player.enemyProjectileCollision(enemyMissiles); // 적군 공격체와 플레이어, 플레이어 공격체 간 충동 처리
+        player.enemyProjectileCollision(enemyMissiles); // 적군 공격체와 플레이어, 플레이어 공격체 간 충돌 처리
         enemyMissiles.erase(                            // 충돌 된 적군 공격체 삭제
             std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
                 [](std::unique_ptr<Missile>& missile) {
@@ -292,6 +350,7 @@ void Game::update() { // 게임 상태 업데이트
         for (auto& enemyMissile : enemyMissiles) { 
             enemyMissile->update(player.getPosition());
         }
+        player.updateExplosions(dt);
 
         //// 화면 밖 미사일 삭제
         //enemyMissiles.erase(
@@ -322,8 +381,18 @@ void Game::update() { // 게임 상태 업데이트
 
          // stage 4 에서 보스 공격 처리
         if (stageNumber == 4) {
-            //boss.attack(dt);
-            boss.updateAttack(dt, player);
+            //boss.attack(dt, player, bossMissiles);
+            boss.updateAttack(dt, player, bossMissiles);
+            
+            // 플레이어, 플레이어 미사일과 보스미사일 충돌 처리
+            player.enemyProjectileCollision(bossMissiles);
+            bossMissiles.erase(                            // 충돌 된 보스 미사일 삭제
+                std::remove_if(bossMissiles.begin(), bossMissiles.end(),
+                    [](std::unique_ptr<Missile>& missile) {
+                        return missile->checkCrashed();
+                    }),
+                bossMissiles.end()
+            );
         }
 
         // 화면 밖 적 제거
@@ -344,25 +413,30 @@ void Game::render() {
     window->setView(gameView); // 게임 뷰 설정 (중앙 정사각형 영역)
 
     // 배경 그리기
-    currentStage.drawBackground(*window);
+    if (stageNumber != 5) currentStage.drawBackground(*window);
+    else {} // 미니게임 배경 삽입 필요
 
 
     // 적 관련 그리기
-    for (auto* enemy : enemies) {
-        enemy->draw(*window);     // 적을 화면에 그리기
+
+    if (stageNumber != 5){
+        for (auto* enemy : enemies) {
+            enemy->draw(*window);     // 적을 화면에 그리기
+        }
+
+        // 적 미사일 렌더링
+        for (auto& missile : enemyMissiles) {
+            missile->draw(*window);
+        }
+
+        player.renderAttack(*window);
+
+        player.drawAllies(*window);
     }
 
-    // 적 미사일 렌더링
-    for (auto& missile : enemyMissiles) {
-        missile->draw(*window);
-    }
+    if (stageNumber == 4) boss.render(*window,bossMissiles);
+    player.renderExplosions(*window);
 
-        
-
-        
-    //입력상좌가 텍스트 그리기
-    player.renderAttack(*window);
-    player.drawAllies(*window);
     window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
     // UI 그리기
@@ -371,7 +445,7 @@ void Game::render() {
         // 게임 오버 화면 그리기
         uiManager.drawGameOverScreen(*window);
     }
-    player.draw(*window);
+    if (stageNumber != 5) player.draw(*window);
 
     window->display(); // 화면에 그린 내용을 표시
 }

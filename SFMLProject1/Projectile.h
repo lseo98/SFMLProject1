@@ -38,7 +38,7 @@ public:
     float getDamage() { return damage; }
 
     
-    bool isAlly; // 아군 유닛 발사체 여부
+    bool isPlayerProjectile; // 플레이어 발사체 여부
 
     sf::Vector2f position;   // 현재 위치
 protected:
