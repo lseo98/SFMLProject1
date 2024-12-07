@@ -152,5 +152,4 @@ private:
     bool isVisible = true;           // 현재 보이는 상태
 
     bool isOnGround = false; // 바닥 충돌 상태 플래그
-
 };
