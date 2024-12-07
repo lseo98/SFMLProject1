@@ -1,7 +1,7 @@
 #include "Stage.h"
 #include <memory>
 
-Stage::Stage() : stageNumber(1), bossSpawned(false), timeSinceLastAttack(0.0f), attackCooldown(0.2f) { }
+Stage::Stage() : stageNumber(1), bossSpawned(false), attackCooldown(0.2f) { }
 
 void Stage::setStage(int stageNumber, std::vector<Enemy*>& enemies) {
     this->stageNumber = stageNumber;
@@ -90,54 +90,25 @@ void Stage::drawBackground(sf::RenderWindow& window) {
 
 void Stage::spawnEnemies(std::vector<Enemy*>& enemies, float deltaTime) {
     // 시간 누적
-    timeSinceLastAttack += deltaTime;
-
+    normalTimeSinceLastAttack += deltaTime;
+    eliteTimeSinceLastAttack += deltaTime;
 
     //enemies.push_back(new NormalUnit(stageNumber));
     //enemies.push_back(new EliteUnit(stageNumber));
 
     // 적 생성 주기
-    if (timeSinceLastAttack >= spawnInterval && enemies.size() < maxEnemies) {
+    if (normalTimeSinceLastAttack >= normalSpawnInterval && enemies.size() < maxEnemies) {
         float normalUnitStartX = 0, normalUnitStartY = 0;
-        float eliteUnitStartX = 0, eliteUnitStartY = 0;
 
 
         if (stageNumber == 1) { // 하늘 스테이지: 맨 위에서 랜덤 X 위치
             normalUnitStartX = rand() % 750 + 450; // 일반 유닛 X 좌표: 화면의 중앙 영역
             normalUnitStartY = -50;                           // 일반 유닛 Y 좌표: 화면 상단
-
-            eliteUnitStartX = rand() % 750 + 450;  // 정예 유닛 X 좌표: 화면의 중앙 영역
-            eliteUnitStartY = -50;                            // 정예 유닛 Y 좌표: 화면 상단
         }
         else if (stageNumber == 2) { // 바다 스테이지: 맨 오른쪽에서 랜덤 Y 위치
             normalUnitStartX = 1400;                        // 일반 유닛 X 좌표: 화면 오른쪽 끝
             normalUnitStartY = rand() % 600 + 200;                // 일반 유닛 Y 좌표: 화면 전체 높이
-
-            eliteUnitStartX = 1400;                         // 정예 유닛 X 좌표: 화면 오른쪽 끝
-            eliteUnitStartY = rand() % 600 + 200;                 // 정예 유닛 Y 좌표: 화면 전체 높이
         }
-        //else if (stageNumber == 3) { // 땅 스테이지: 양 옆에서 적 생성
-        //    // 방향을 결정
-        //    direction = (rand() % 2 == 0) ? 1 : -1;
-        //  
-
-        //    // 일반 유닛 생성
-        //    NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(
-        //        direction == 1 ? 400 : 1400, // X 좌표
-        //        700 // Y 좌표
-        //    ), direction); // 방향 전달
-        //  //  enemies.push_back(normalUnit);
-
-        //    // 정예 유닛 생성
-        //    EliteUnit* eliteUnit = new EliteUnit(stageNumber, sf::Vector2f(
-        //        direction == 1 ? 400 : 1400, // X 좌표
-        //        200 // Y 좌표
-        //    ), direction); // 방향 전달
-        //  //  enemies.push_back(eliteUnit);
-
-        //    normalUnit->updateDirection(direction);
-        //    eliteUnit->updateDirection(direction);
-        //}
 
         else if (stageNumber == 3 || stageNumber == 4) { // 땅 스테이지: 양 옆 맨 아래
             if (rand() % 2 == 0) {
@@ -147,7 +118,39 @@ void Stage::spawnEnemies(std::vector<Enemy*>& enemies, float deltaTime) {
                 normalUnitStartX = 1400; // 일반 유닛 오른쪽 시작
             }
             normalUnitStartY = 708; // 일반 유닛 Y 좌표: 화면 아래
+        }
 
+        // 일반 유닛 생성
+        // NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY), direction);
+        if (stageNumber == 3 || stageNumber == 4) {
+            direction = (normalUnitStartX == 400) ? 1 : -1; // 왼쪽에서 시작하면 오른쪽으로, 오른쪽에서 시작하면 왼쪽으로
+            //  NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY), direction);
+
+            //  normalUnit->updateDirection(direction);
+        }
+        NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY), direction);
+
+        enemies.push_back(normalUnit);
+
+        // 타이머 초기화
+        normalTimeSinceLastAttack = 0.0f;
+    }
+
+    // 적 생성 주기
+    if (eliteTimeSinceLastAttack >= eliteSpawnInterval && enemies.size() < maxEnemies) {
+        float eliteUnitStartX = 0, eliteUnitStartY = 0;
+
+
+        if (stageNumber == 1) { // 하늘 스테이지: 맨 위에서 랜덤 X 위치
+            eliteUnitStartX = rand() % 750 + 450;  // 정예 유닛 X 좌표: 화면의 중앙 영역
+            eliteUnitStartY = -50;                            // 정예 유닛 Y 좌표: 화면 상단
+        }
+        else if (stageNumber == 2) { // 바다 스테이지: 맨 오른쪽에서 랜덤 Y 위치
+            eliteUnitStartX = 1400;                         // 정예 유닛 X 좌표: 화면 오른쪽 끝
+            eliteUnitStartY = rand() % 600 + 200;                 // 정예 유닛 Y 좌표: 화면 전체 높이
+        }
+
+        else if (stageNumber == 3 || stageNumber == 4) { // 땅 스테이지: 양 옆 맨 아래
             if (rand() % 2 == 0) {
                 eliteUnitStartX = 400; // 정예 유닛 왼쪽 시작
             }
@@ -156,32 +159,19 @@ void Stage::spawnEnemies(std::vector<Enemy*>& enemies, float deltaTime) {
             }
             eliteUnitStartY = 200; // 정예 유닛 Y 좌표: 화면 위
         }
-
-        // 일반 유닛 생성
-       // NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY), direction);
-        if (stageNumber == 3 || stageNumber == 4) {
-            direction = (normalUnitStartX == 400) ? 1 : -1; // 왼쪽에서 시작하면 오른쪽으로, 오른쪽에서 시작하면 왼쪽으로
-          //  NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY), direction);
-
-          //  normalUnit->updateDirection(direction);
-        }
-        NormalUnit* normalUnit = new NormalUnit(stageNumber, sf::Vector2f(normalUnitStartX, normalUnitStartY), direction);
-
-        enemies.push_back(normalUnit);
-
         // 정예 유닛 생성
-     //   EliteUnit* eliteUnit = new EliteUnit(stageNumber, sf::Vector2f(eliteUnitStartX, eliteUnitStartY),direction);
+        // EliteUnit* eliteUnit = new EliteUnit(stageNumber, sf::Vector2f(eliteUnitStartX, eliteUnitStartY),direction);
         if (stageNumber == 3 || stageNumber == 4) {
             direction = (eliteUnitStartX == 400) ? 1 : -1; // 왼쪽에서 시작하면 오른쪽으로, 오른쪽에서 시작하면 왼쪽으로
-          //  eliteUnit->updateDirection(direction);
+            //  eliteUnit->updateDirection(direction);
         }
-        //eliteUnit->initializeRandomSpeeds(); // 정예 유닛의 랜덤 속도 초기화
+        // eliteUnit->initializeRandomSpeeds(); // 정예 유닛의 랜덤 속도 초기화
         EliteUnit* eliteUnit = new EliteUnit(stageNumber, sf::Vector2f(eliteUnitStartX, eliteUnitStartY), direction);
 
         enemies.push_back(eliteUnit);
 
         // 타이머 초기화
-        timeSinceLastAttack = 0.0f;
+        eliteTimeSinceLastAttack = 0.0f;
     }
 }
 

@@ -16,7 +16,8 @@ private:
     sf::RenderWindow* window;
     int stageNumber;
     bool bossSpawned;
-    float timeSinceLastAttack = 0.0f; // 델타 타임 기반 공격 간격을 위한 변수
+    float normalTimeSinceLastAttack = 0.0f; // 델타 타임 기반 공격 간격을 위한 변수
+    float eliteTimeSinceLastAttack = 0.0f; // 델타 타임 기반 공격 간격을 위한 변수
     float attackCooldown = 0.2f;      // 공격 간격을 200ms로 설정
     int direction;
 
@@ -31,6 +32,7 @@ private:
 
     // 적 생성 관리
     sf::Clock enemySpawnClock; // 적 생성 타이머
-    float spawnInterval = 2.0f; // 적 생성 간격 (초)
-    size_t maxEnemies = 10;    // 최대 적 수 제한
+    float normalSpawnInterval = 2.0f; // 일반 유닛 생성 간격 (초)
+    float eliteSpawnInterval = 4.0f; // 정예 유닛 생성 간격 (초)
+    size_t maxEnemies = 20;    // 최대 적 수 제한
 };

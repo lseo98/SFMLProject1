@@ -245,7 +245,7 @@ void Player::restart() {
     health = 5;
 
     Game::globalClock.restart();
-    printf("%lf", Game::globalClock);
+    //printf("%lf", Game::globalClock);
     canSpecialAttack = true;
     canUltimateAttack = true;
 
@@ -300,7 +300,7 @@ void Player::specialAttack() {
         sf::IntRect textureRect;  // 표시할 텍스처 영역
         // 미사일 생성 및 설정
         Missile* missile = new Missile(missileStartPosition, missileDirection, 8.0f);
-        missile->isAlly = false;
+        missile->isPlayerProjectile = true;
         missile->setTexture(MissileTextures[stageNumber - 1], textureRect); // 텍스처 설정
         missiles.push_back(missile);
 
@@ -395,7 +395,7 @@ void Player::ultimateAttack() {
             sf::Vector2f missileDirection(1.0f, 0.0f); // 오른쪽으로 직선 이동
             float missileSpeed = 3.0f;  // 발사 속도 (바다 스테이지)
             Missile* missile = new Missile(missileStartPosition, missileDirection, missileSpeed);
-            missile->isAlly = true;
+            missile->isPlayerProjectile = false;
             sf::IntRect textureRect;
             missile->setTexture(AllMissileTextures[stageNumber - 1], textureRect);
             // 설정된 방향과 속도로 발사체 생성
@@ -490,7 +490,7 @@ void Player::allyAttack() {
         if (stageNumber == 4) missile->setTexture(AllMissileTextures[2], textureRect);
         else missile->setTexture(AllMissileTextures[stageNumber - 1], textureRect);
 
-        missile->isAlly = true;  // 아군 미사일로 설정
+        missile->isPlayerProjectile = false;  // 아군 미사일로 설정
         missile->changeRange(missileRange);
         missile->changeDamage(missileDamage);
 
@@ -850,6 +850,33 @@ void Player::healUnitCollision(std::vector<HealUnit*> healUnits) {
     }
     deleteThisProjectile();
 }
+
+void Player::shieldCollision(std::vector<Shield*> shield) {
+    for (Shield* shield : shield) {
+        for (auto bullet : bullets) {
+            if (bullet->sprite.getGlobalBounds().intersects(shield->sprite.getGlobalBounds())) {
+                std::cout << "Collision detected!" << std::endl;
+                shield->takeDamage(bullet->getDamage()); // 데미지 적용
+                bullet->crashed(); // 총알 상태 변경
+            }
+        }
+        for (auto missile : missiles) {
+            if (missile->sprite.getGlobalBounds().intersects(shield->sprite.getGlobalBounds())) {
+                std::cout << "Collision detected!" << std::endl;
+                shield->takeDamage(missile->getDamage()); // 데미지 적용
+                missile->crashed(); // 총알 상태 변경
+            }
+        }
+        for (auto allyMissile : allyMissiles) {
+            if (allyMissile->sprite.getGlobalBounds().intersects(shield->sprite.getGlobalBounds())) {
+                std::cout << "Collision detected!" << std::endl;
+                shield->takeDamage(allyMissile->getDamage()); // 데미지 적용
+                allyMissile->crashed(); // 총알 상태 변경
+            }
+        }
+    }
+}
+
 
 
 void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles) {   // 적군 공격체-플레이어 충돌 처리

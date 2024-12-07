@@ -160,7 +160,7 @@ void Game::handleEvents() {
                     }
                     // 보스 패턴 테스트용 // 이거 사용 시 game update에 가서 boss.attack 주석처리해야
                     if (event.key.code == sf::Keyboard::T) {
-                        if (stageNumber == 4) boss.attack(dt);
+                        if (stageNumber == 4) boss.attack(dt, player, bossMissiles);
                     }
                 }
                 // 플레이어 좌우 반전
@@ -188,7 +188,7 @@ void Game::handleEvents() {
 
 void Game::checkStageTransition() {
     // 30초 경과 시 스테이지 이동
-    if (globalClock.getElapsedTime().asSeconds() > 10.0f * stageSwitchCounter) {
+    if (globalClock.getElapsedTime().asSeconds() > 30.0f * stageSwitchCounter) {
         // 스테이지 이동
         if (stageSwitchCounter < 3) {
             stageNumber++; // 다음 스테이지로 이동
@@ -229,6 +229,11 @@ void Game::checkStageTransition() {
         stageSwitchCounter++;
     }
 }
+
+void Game::updateMissiles(float deltaTime, Player& player) {
+    
+}
+
 
 
 void Game::update() { // 게임 상태 업데이트
@@ -332,7 +337,7 @@ void Game::update() { // 게임 상태 업데이트
             }
         }
 
-        player.enemyProjectileCollision(enemyMissiles); // 적군 공격체와 플레이어, 플레이어 공격체 간 충동 처리
+        player.enemyProjectileCollision(enemyMissiles); // 적군 공격체와 플레이어, 플레이어 공격체 간 충돌 처리
         enemyMissiles.erase(                            // 충돌 된 적군 공격체 삭제
             std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
                 [](std::unique_ptr<Missile>& missile) {
@@ -375,8 +380,18 @@ void Game::update() { // 게임 상태 업데이트
 
          // stage 4 에서 보스 공격 처리
         if (stageNumber == 4) {
-            //boss.attack(dt);
-            boss.updateAttack(dt, player);
+            //boss.attack(dt, player, bossMissiles);
+            boss.updateAttack(dt, player, bossMissiles);
+            
+            // 플레이어, 플레이어 미사일과 보스미사일 충돌 처리
+            player.enemyProjectileCollision(bossMissiles);
+            bossMissiles.erase(                            // 충돌 된 보스 미사일 삭제
+                std::remove_if(bossMissiles.begin(), bossMissiles.end(),
+                    [](std::unique_ptr<Missile>& missile) {
+                        return missile->checkCrashed();
+                    }),
+                bossMissiles.end()
+            );
         }
 
         // 화면 밖 적 제거
@@ -418,6 +433,8 @@ void Game::render() {
         player.drawAllies(*window);
     }
 
+    if (stageNumber == 4) boss.render(*window,bossMissiles);
+
     window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
     // UI 그리기
@@ -427,7 +444,6 @@ void Game::render() {
         uiManager.drawGameOverScreen(*window);
     }
     if (stageNumber != 5) player.draw(*window);
-    if (stageNumber == 4) boss.render(*window);
 
     window->display(); // 화면에 그린 내용을 표시
 }

@@ -39,6 +39,7 @@ public:
     void collision(std::vector<Enemy*>& enemies);    // 공격체-적 충돌 처리
     void enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles); 
     void healUnitCollision(std::vector<HealUnit*> healUnits);  // 보스 스테이지 / 공격체-힐유닛 충돌처리// 공격체-적 충돌 처리
+    void shieldCollision(std::vector<Shield*> shield);  // 보스 스테이지 / 공격체-융합로 충돌처리
     void deleteThisProjectile();                     // 충돌된 내 발사체 삭제
     void updateAttack();                             // 공격체 업데이트
     void updateAllies(float delatime, std::vector<Enemy*>& enemies, std::vector<std::unique_ptr<Missile>>& globalMissiles);
@@ -74,6 +75,11 @@ public:
     // 깜빡임
     void triggerBlink();             // 깜빡임 시작
     void updateBlink();              // 깜빡임 상태 업데이트
+
+    // 발사체 벡터 반환 함수
+    std::vector<Bullet*>& getBullets() { return bullets; }
+    std::vector<Missile*>& getMissiles() { return missiles; }
+    std::vector<Missile*>& getAllyMissiles() { return allyMissiles; }
 
     //bool missileLaunched;
 
