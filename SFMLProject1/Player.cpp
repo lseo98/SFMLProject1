@@ -1192,10 +1192,10 @@ void Player::updateExplosions(float dt) {
             }
         }
         ++it;
-        if (it->type == ExplosionType::Q_missileImpact && stageNumber == 2) {
-            // it->sprite.setScale(900.0f/32.0f,900.0f/32.0f); // 크기 조정
+        //if (it->type == ExplosionType::Q_missileImpact && stageNumber == 2) {
+        //    // it->sprite.setScale(900.0f/32.0f,900.0f/32.0f); // 크기 조정
 
-        }
+        //}
 
       //  it->sprite.setScale(900.0f/32.0f,900.0f/32.0f); // 크기 조정
 

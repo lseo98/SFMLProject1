@@ -76,6 +76,33 @@ public:
     void updateBlink();              // 깜빡임 상태 업데이트
 
     //bool missileLaunched;
+        // 처치한 적군 수
+    int killCountNomalUnit, killCountEliteUnit1, killCountEliteUnit2, killCountEliteUnit3;
+
+    enum class ExplosionType {
+        EnemyDestroyed,
+        MissileImpact,
+        Q_missileImpact
+    };
+    struct Explosion {
+        sf::Sprite sprite;
+        float elapsedTime;
+        float frameTime;
+        int currentFrame;
+        int totalFrames;
+        ExplosionType type; // 폭발 타입
+    };
+    std::vector<Explosion> explosions; // 폭발 리스트
+    sf::Texture enemyExplosionTextures[3]; // 스테이지별 폭발 텍스처
+    sf::Texture missileExplosionTextures[3]; // 스테이지별 폭발 텍스처
+    sf::Texture Q_missileExplosionTextures[3]; // 스테이지별 폭발 텍스처
+
+
+    void loadExplosionTextures(); // 폭발 텍스처 로드
+    void createExplosion(sf::Vector2f position, ExplosionType type); // 폭발 생성
+
+    void updateExplosions(float dt); // 폭발 애니메이션 업데이트
+    void renderExplosions(sf::RenderWindow& window); // 폭발 렌더링
 
 private:
 
@@ -109,8 +136,6 @@ private:
     int stageNumber;                 // 현재 스테이지 번호
     void loadProjectileTextures();
 
-    // 처치한 적군 수
-    int killCountNomalUnit, killCountEliteUnit1, killCountEliteUnit2, killCountEliteUnit3;
 
     // 깜빡임
     bool isBlinking = false;         // 깜빡임 상태

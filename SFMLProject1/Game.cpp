@@ -345,6 +345,8 @@ void Game::update() { // 게임 상태 업데이트
         for (auto& enemyMissile : enemyMissiles) { 
             enemyMissile->update(player.getPosition());
         }
+        player.updateExplosions(dt);
+
 
         //// 화면 밖 미사일 삭제
         //enemyMissiles.erase(
@@ -428,6 +430,8 @@ void Game::render() {
     }
     if (stageNumber != 5) player.draw(*window);
     if (stageNumber == 4) boss.render(*window);
+    player.renderExplosions(*window);
+
 
     window->display(); // 화면에 그린 내용을 표시
 }
