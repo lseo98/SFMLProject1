@@ -5,18 +5,42 @@
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
 // 보스의 초기 체력은 3000, 속도는 0.5로 설정
-Boss::Boss() : Enemy(3000.0f, 0.5f, sf::Vector2f(1300, 200), 4), attackPattern(1), beforeAttackpattern(0) {
-
+Boss::Boss() : Enemy(3000.0f, 0.5f, sf::Vector2f(1300, 200), 4) {
+    initBoss();
+}
+void Boss::initBoss() {
+    health = 3000;
     phase = 1;
     time = pattern1 = pattern2 = pattern3 = pattern4 = pattern5 = 0;
+    attackPattern = 1;
+    beforeAttackpattern = 0;
+
+    // pattern 1
+    maxMissile = 0;
+    launchedMissile = 0;
 
     // pattern 2
     pattern2LaserVisible = true;
+    for (sf::RectangleShape* l : lasers) {
+        delete l;
+    }
+    lasers.clear();
+
+    // pattern 3
+    barrierActive = false;
+    barrierVisible = false;
 
     // pattern 4 
     maxHealUnit = 0;
     spawnHealUnitCount = 0;
     killHealUnitCount = 0;
+    for (HealUnit* healUnit : healUnits) {
+        delete healUnit;
+    }
+    healUnits.clear();
+
+    // pattern 5
+    shieldActive = false;
 
     // 벽 크기, 위치, 색상 동적 설정
     barrier.setSize(sf::Vector2f(20.0f, 500.0f));  // 가로 20, 세로 500 크기
@@ -39,12 +63,12 @@ void Boss::change_phase() {
 void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<Missile>>& bossMissiles) {
     time += deltaTime;
 
-    pattern1_BossMissile(player.getPosition(),bossMissiles);
-    pattern2_Laser();
-    pattern3_Barrier();
-    pattern4_Heal();
-    pattern5_DeployShield();
-    
+    pattern1_BossMissile(player.getPosition(), bossMissiles);
+    //pattern2_Laser();
+    //pattern3_Barrier();
+    //pattern4_Heal();
+    //pattern5_DeployShield();
+
 
     /*if (time > 5) {
 
@@ -79,9 +103,11 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
     pattern1 += deltaTime;
 
     // 2초마다 보스미사일 발사
-    if (pattern1 >= 2.0f && isMissileReady) {
+    if (pattern1 >= 2.0f && maxMissile - 1 > launchedMissile) {
         pattern1_BossMissile(player.getPosition(), bossMissiles);
         pattern1 = 0.0f; // 시간 초기화
+        launchedMissile++;
+        if (maxMissile - 1 == launchedMissile) { maxMissile = 0; launchedMissile = 0; }
     }
 
     // 모든 보스 미사일 업데이트
@@ -89,7 +115,7 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
         missile->isPlayerProjectile = false;
         missile->update();
     }
-    
+
     // pattern2 레이저 공격 update
     if (!lasers.empty()) {
         pattern2 += deltaTime;
@@ -117,10 +143,14 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
 
     // pattern3 벽 설치 update
     if (barrierActive) {
+        // 벽 활성화 상태일 때 항상 보이도록 설정
+        if (pattern3 == 0.0f) { // 패턴 시작 시 초기화
+            barrierVisible = true;
+        }
         pattern3 += deltaTime; // 벽 활성 상태에서 시간 증가
 
         barrierCollision(player);
-
+        
         if (pattern3 >= 8.0f) { // 벽이 사라지기 2초 전부터 깜빡임
             if (barrierBlinkClock.getElapsedTime().asSeconds() >= blinkInterval) {
                 barrierVisible = !barrierVisible; // 보이는 상태를 토글
@@ -206,14 +236,14 @@ void Boss::render(sf::RenderWindow& window, std::vector<std::unique_ptr<Missile>
 // 보스 패턴(1 ~ 5) 함수
 // 패턴 1 관련 함수
 void Boss::pattern1_BossMissile(sf::Vector2f playerPosition, std::vector<std::unique_ptr<Missile>>& bossMissiles) {
-    isMissileReady = true; // 함수 호출 시 true로 설정
+    maxMissile = 5;
     // 목표 방향 계산
     sf::Vector2f updatedDirection = playerPosition - position;
     float magnitude = std::sqrt(updatedDirection.x * updatedDirection.x + updatedDirection.y * updatedDirection.y);
     if (magnitude != 0) {
         updatedDirection /= magnitude; // 방향 벡터를 정규화
     }
-    
+
     // 새로운 미사일 생성
     auto newMissile = std::make_unique<Missile>(position, updatedDirection, 5.0f); // 보스 위치에서 생성
 
@@ -222,7 +252,7 @@ void Boss::pattern1_BossMissile(sf::Vector2f playerPosition, std::vector<std::un
         std::cerr << "Failed to load missile_land.png!" << std::endl;
     }
 
-    newMissile->setTexture(missileTexture,sf::IntRect());
+    newMissile->setTexture(missileTexture, sf::IntRect());
 
     bossMissiles.push_back(std::move(newMissile));
 }
@@ -299,7 +329,6 @@ void Boss::barrierCollision(Player& player) {
 
 // 패턴 4 관련 함수
 void Boss::pattern4_Heal() {
-
     pattern4 = 0;
     maxHealUnit = 5;                // 생성할 힐 유닛 수 5개
     spawnHealUnitCount = 0;
@@ -341,5 +370,9 @@ void Boss::deleteCollsionHealUnit() {
 void Boss::pattern5_DeployShield() {
     if (!shieldActive) {
         shieldActive = true; // 방패 활성화
+
+        shield = Shield(); // 새 Shield 객체 생성
+        shield.image("land_elite_unit_left.png"); // 이미지를 다시 설정
+
     }
 }

@@ -6,6 +6,7 @@
 class Boss : public Enemy {
 public:
     Boss();
+    void initBoss();
     void change_phase();               // 체력에 따라 페이즈를 변경하는 메서드
 
 
@@ -30,7 +31,7 @@ private:
 
     // 패턴 1 관련 변수
     sf::Texture missileTexture;
-    bool isMissileReady = false; // 초기값 false
+    int maxMissile, launchedMissile;
 
     // 패턴 2 관련 변수
     std::vector<sf::RectangleShape*> lasers;    // 레이저 사각형 shape
@@ -39,7 +40,7 @@ private:
     // 패턴 3 관련 변수, 함수
     sf::RectangleShape barrier;  // 벽의 그래픽 및 위치를 나타내는 SFML RectangleShape
     bool barrierActive;          // 벽 활성화 여부를 나타내는 플래그
-    bool barrierVisible = true;            // 벽이 현재 보이는 상태인지 여부
+    bool barrierVisible;            // 벽이 현재 보이는 상태인지 여부
     sf::Clock barrierBlinkClock;    // 벽 깜빡임을 제어할 타이머
     float blinkInterval = 0.2f;     // 벽이 깜빡이는 간격 (초 단위)
     void barrierCollision(Player& player); // 플레이어의 발사체와의 충돌처리
@@ -51,13 +52,13 @@ private:
 
     // 패턴 5 관련 변수
     Shield shield;  // 방패 객체
-    bool shieldActive = false;  // 방패 활성 상태
+    bool shieldActive;  // 방패 활성 상태
 
     // 패턴별 함수 5개
     void pattern1_BossMissile(sf::Vector2f playerPosition, std::vector<std::unique_ptr<Missile>>& bossMissiles); // 유도미사일
     void pattern2_Laser();
     void pattern3_Barrier(); // 벽 설치
-    void pattern4_Heal(); 
+    void pattern4_Heal();
     void pattern5_DeployShield(); // 융합로 설치
 
 
