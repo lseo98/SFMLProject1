@@ -51,4 +51,7 @@ private:
     // 쿨타임 바를 그리기 위한 RectangleShape 멤버 변수
     sf::RectangleShape ultimateCooldownBar;
     sf::RectangleShape specialCooldownBar;
+
+    sf::Clock timer; // 빨간색 테두리 시간 측정
+    bool isRed = false; // E키 빨간색인 상태
 };

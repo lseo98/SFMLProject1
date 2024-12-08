@@ -10,12 +10,12 @@ Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHE
     //missileLaunched = false; 
 
     // 특수 공격 관련 변수 초기화
-    specialAttackCooldown = 1.0f; // 특수 공격 쿨타임: 1초
-    timeSinceLastSpecial = specialAttackCooldown; // 게임 시작 시 바로 사용할 수 있도록 설정
-    canSpecialAttack = true;
+    specialAttackCooldown = 2.0f; // 특수 공격 쿨타임: 2초
+    //timeSinceLastSpecial = specialAttackCooldown; // 게임 시작 시 바로 사용할 수 있도록 설정
+    canSpecialAttack = false;
 
     ultimateAttackCooldown = 20.0f; // 필살기 쿨타임 20초
-    canUltimateAttack = true;
+    canUltimateAttack = false;
 
     waitTime = 0.0f; // 초기화
 
@@ -247,8 +247,10 @@ void Player::restart() {
 
     Game::globalClock.restart();
     //printf("%lf", Game::globalClock);
-    canSpecialAttack = true;
-    canUltimateAttack = true;
+    canSpecialAttack = false;
+    timeSinceLastSpecial = 0;
+    canUltimateAttack = false;
+    timeSinceLastUltimate = 0;
 
     changeHeartSprite();
     setPlayer(1);
@@ -462,7 +464,7 @@ void Player::allyAttack() {
             missileDirection = sf::Vector2f(0.0f, -1.0f);  // 위쪽 방향
             missileSpeed = 5.0f;    // 발사 속도 (하늘 스테이지)
             missileRange = 100.0f;   // 미사일 충돌 범위
-            missileDamage = 25.0f;  // 미사일 공격력
+            missileDamage = 0.001f;  // 미사일 공격력
             //image = AllMissileTextures[0].copyToImage(); // 하늘 스테이지용 이미지 복사
             //missile->setTexture(AllMissileTextures[0], textureRect);
         }
@@ -473,9 +475,9 @@ void Player::allyAttack() {
         //}
         else if (stageNumber == 3 || stageNumber == 4) {  // 땅 스테이지에서 발사체 아래쪽으로 발사
             missileStartPosition.x += ally.getGlobalBounds().width / 2.0f;  // 아군 유닛의 중앙 위치에서 발사
-            missileStartPosition.y += ally.getGlobalBounds().height + 30.0f;  // 약간 아래쪽에서 발사
+            missileStartPosition.y += ally.getGlobalBounds().height + 20.0f;  // 약간 아래쪽에서 발사
             missileDirection = sf::Vector2f(0.0f, 1.0f);  // 아래쪽 방향
-            missileSpeed = 3.0f;  // 발사 속도 (땅 스테이지)
+            missileSpeed = 5.0f;  // 발사 속도 (땅 스테이지)
             missileRange = 200.0f;   // 미사일 충돌 범위
             missileDamage = 300.0f;  // 미사일 공격력
             //image = AllMissileTextures[2].copyToImage();; // 땅 스테이지용 이미지 복사
@@ -647,7 +649,7 @@ void Player::updateAllies(float dt, std::vector<Enemy*>& enemies, std::vector<st
     case 4: // 보스 스테이지
         for (auto& ally : allyUnits) {
             sf::Vector2f position = ally.getPosition();
-            position.x -= 50.0f * dt; // 왼쪽으로 이동 (속도 50.0f * delta time)
+            position.x -= 150.0f * dt; // 왼쪽으로 이동 (속도 50.0f * delta time)
             ally.setPosition(position);
         }
 
@@ -1172,7 +1174,7 @@ void Player::loadExplosionTextures() {
 void Player::createExplosion(sf::Vector2f position, ExplosionType type) {
     Explosion explosion;
     explosion.elapsedTime = 0.0f;
-    explosion.frameTime = 0.01f; // 각 프레임 지속 시간
+    explosion.frameTime = 0.1f; // 각 프레임 지속 시간
     explosion.currentFrame = 0;
     explosion.type = type;
 

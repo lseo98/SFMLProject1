@@ -77,6 +77,6 @@ private:
     sf::Font font;                // 폰트 객체
     sf::Text eliteUnitKillText;   // 엘리트 유닛 킬 정보를 표시할 텍스트
 
-
+    bool hasBossStageTransitioned = false; // 이미 보스 스테이지로 강제 이동했는지 여부
 
 };

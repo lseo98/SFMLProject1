@@ -63,11 +63,11 @@ void Boss::change_phase() {
 void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<Missile>>& bossMissiles) {
     time += deltaTime;
 
-    pattern1_BossMissile(player.getPosition(), bossMissiles);
+    //pattern1_BossMissile(player.getPosition(), bossMissiles);
     //pattern2_Laser();
     //pattern3_Barrier();
     //pattern4_Heal();
-    //pattern5_DeployShield();
+    pattern5_DeployShield();
 
 
     /*if (time > 5) {
@@ -191,12 +191,20 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
 
     // pattern5 융합로 설치 update
     if (shieldActive) {
+        pattern5 += deltaTime;
         std::vector<Shield*> tempEnemies;
         tempEnemies.push_back(&shield);
         player.shieldCollision(tempEnemies);
-    }
-    if (shieldActive && shield.getHealth() <= 0.0f) {
-        shieldActive = false; // 방패 비활성화
+
+        if (pattern5 > 5) {
+            shieldActive = false; // 5초 후 융합로 터져서 없어질 때 폭발 효과 넣어야 함
+            player.takeDamage(1.0f);
+            player.changeHeartSprite();
+        }
+
+        if (shield.getHealth() <= 0.0f) {
+            shieldActive = false; // 방패 비활성화
+        }
     }
 
 }
