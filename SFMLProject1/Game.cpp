@@ -217,11 +217,28 @@ void Game::changeStage(int newStageNumber) {
 
 
 void Game::checkStageTransition() {
+    // 정예 유닛 모든 맵에서 조건 충족하면 보스 스테이지로 강제 이동
+    if (player.killCountEliteUnit1 >= player.maxKillEliteCount
+        && player.killCountEliteUnit2 >= player.maxKillEliteCount
+        && player.killCountEliteUnit3 >= player.maxKillEliteCount
+        && hasBossStageTransitioned == false) {
+        stageNumber = 4;
+        currentStage.setStage(3, enemies);
+        player.setPlayer(3);
+        player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f - 200, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
+        currentStage.spawnEnemies(enemies, dt);
+        enemyMissiles.clear();
+        hasBossStageTransitioned = true;
+    }
+
     // 30초 경과 시 스테이지 이동
     if (globalClock.getElapsedTime().asSeconds() > 30.0f * stageSwitchCounter) {
         // 스테이지 이동
-        if (stageSwitchCounter < 3) {
-            stageNumber++; // 다음 스테이지로 이동
+        if (stageSwitchCounter == 1 && stageNumber == 1) {
+            stageNumber = 2; // 다음 스테이지로 이동
+        } 
+        else if (stageSwitchCounter == 2 && stageNumber == 2) {
+            stageNumber = 3; // 다음 스테이지로 이동
         }
         else {
             if (stageNumber == 1) {

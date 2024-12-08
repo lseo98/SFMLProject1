@@ -285,7 +285,6 @@ void UIManager::updateKeyBoxes() {
 
 void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
     // UI 요소 업데이트 코드
-    // ...
     if (currentStageNumber != stageNumber) {
         setBackground(stageNumber);
         currentStageNumber = stageNumber;
@@ -306,15 +305,25 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
     sprite_Q->setTexture(texture_Q[stageNumber - 1]); // 텍스처 설정
     sprite_E->setTexture(texture_E[stageNumber - 1]); // 텍스처 설정
 
-    skytext.setString("AIR FORCE  " + std::to_string(player.killCountEliteUnit1) + " / 40");
-    seatext.setString("NAVY       " + std::to_string(player.killCountEliteUnit2) + " / 40");
+    skytext.setString("AIR FORCE  " + std::to_string(player.killCountEliteUnit1) + " / " + std::to_string(player.maxKillEliteCount));
+    seatext.setString("NAVY       " + std::to_string(player.killCountEliteUnit2) + " / " + std::to_string(player.maxKillEliteCount));
 
-    landtext.setString("ARMY       " + std::to_string(player.killCountEliteUnit3) + " / 40");
+    landtext.setString("ARMY       " + std::to_string(player.killCountEliteUnit3) + " / " + std::to_string(player.maxKillEliteCount));
 
     //일정 노말유닛 처치시 E키 빨간색으로 변환
-    if (player.killCountNomalUnit > 5) //숫자 변경
+    if (player.killCountNomalUnit == 2 && !isRed) {
         boxE.setOutlineColor(sf::Color::Red);
-
+        isRed = true;
+        player.setSpecialAttackCooldown(0.2);
+        timer.restart();
+    }
+    // 3초가 지나면 테두리 색상을 원래대로 복구
+    if (isRed && timer.getElapsedTime().asSeconds() > 3) {
+        boxE.setOutlineColor(sf::Color::Green); // 기본 색상으로 복구
+        isRed = false; // 강조 상태 해제
+        player.killCountNomalUnit = 0; // 노말 유닛 처치 수 0으로 초기화
+        player.setSpecialAttackCooldown(2);
+    }
 }
 
 void UIManager::render(sf::RenderWindow& window) {
