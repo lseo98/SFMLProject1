@@ -64,7 +64,7 @@ void UIManager::init() {
     landtext.setPosition(1410, 300);
 
     textbox.setFont(font);
-    textbox.setString("Welcome to the\n<Biocommander-II> terminal.\n\n___________________________\n\n>System\n\nFrendly unit destroyed.\n\n>System\n\n*Warning\n\nMental power exhausted.\nThe interrogation begins.\n\n>System\nCommand request received.\n\nFrom friendly Navy.\nType switch to help.\n\n>[skymap]  [seamap]  [landmap]\n\nTyping Here\n->");
+    textbox.setString("Welcome to the\n<Biocommander-II> terminal.\n___________________________\n\n>System\n\nCommand request received.\n\n*Warning\nUse restart as a last resort\n\n>System\nMental power exhausted.\nThe interrogation begins.\n\n>System\nIf the E key is red, \nthe cooldown is reduced.\n\nType switch to help.\n\n>  [skymap]  [seamap]\n   [landmap]  [restart]\n\nTyping Here\n->");
     textbox.setCharacterSize(25);
     textbox.setFillColor(sf::Color::Yellow);
     textbox.setPosition(5, 5);
@@ -153,22 +153,54 @@ void UIManager::init() {
     keyb.setOutlineColor(sf::Color::Green);
     keyb.setOutlineThickness(3);
 
+    // BOSS 텍스트 
+    bossText.setFont(font);
+    bossText.setString("BOSS");
+    bossText.setCharacterSize(150);
+    bossText.setFillColor(sf::Color::Red);
+    bossText.setStyle(sf::Text::Bold);
+    bossText.setPosition(770, 900 / 2-150);
 
-    //// keybord 텍스트 설정
-    //key.setFont(font);
-    //key.setString("Q     W     E             ↑");
-    //key.setCharacterSize(24);
-    //key.setFillColor(sf::Color::Black);
-    //key.setPosition(1399, 693);
+    //미니게임 배경 이미지
+    if(!tminigame_background.loadFromFile("minigame.png"))
+    std::cerr << "Minigame texture could not be loaded!" << std::endl;
+    sminigame_background.setTexture(tminigame_background); // Q 텍스처 설정
+    sminigame_background.setPosition(450, 0);
 
-    //key2.setFont(font);
-    //key2.setString("A     S     D             ←     ↓     →");
-    //key2.setCharacterSize(24);
-    //key2.setFillColor(sf::Color::Black);
-    //key2.setPosition(1399, 763);
-    //
+    // 남은 키 텍스트 초기화
+    remainingKeysText.setFont(font);
+    remainingKeysText.setCharacterSize(50);
+    remainingKeysText.setString("  Left Keys");
+    remainingKeysText.setFillColor(sf::Color::Red);
+    remainingKeysText.setPosition(1400, 800); // 위치 조정
 
+    // 입력된 키 텍스트 초기화
+    inputKeyText.setFont(font);
+    inputKeyText.setString("w");
+    inputKeyText.setCharacterSize(38);
+    inputKeyText.setFillColor(sf::Color::Yellow);
+    inputKeyText.setPosition(5, 250);
 
+    // 목표 키 텍스트 초기화
+    targetKeyText.setFont(font);
+    targetKeyText.setString("t");
+    targetKeyText.setCharacterSize(160);
+    targetKeyText.setFillColor(sf::Color::Red);
+    targetKeyText.setPosition(1530, 300);
+
+    // 목표 키 텍스트 초기화
+    pressText.setFont(font);
+    pressText.setString("PRESS");
+    pressText.setCharacterSize(50);
+    pressText.setFillColor(sf::Color::Red);
+    pressText.setPosition(1500, 530);
+
+    // 키 강조 박스 초기화
+    keyBox.setSize(sf::Vector2f(200, 200));
+    keyBox.setFillColor(sf::Color(200,50,50,100));
+    keyBox.setOutlineColor(sf::Color::Red);
+    keyBox.setOutlineThickness(5);
+    keyBox.setPosition(1470, 300);
 }
 
 void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
@@ -212,6 +244,12 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
                 std::cout << "landmap = " << s2 << std::endl;
 
             }
+            else if (s2 == "restart") {
+                if (onRestart) onRestart(); // restart 콜백 호출
+
+
+            }
+
             else {
                 std::cout << "Invalid input: " << s2 << std::endl;
             }
@@ -237,9 +275,7 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
     // 눌린 키에 따라 박스 업데이트
     updateKeyBoxes();
 }
-//1375 670
-//11 17ad
-//71 72
+
 void UIManager::updateKeyBoxes() {
     additionalBoxes.clear(); // 기존 박스 제거
 
@@ -283,6 +319,7 @@ void UIManager::updateKeyBoxes() {
 }
 
 
+
 void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
     // UI 요소 업데이트 코드
     if (currentStageNumber != stageNumber) {
@@ -301,6 +338,17 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
         seatext.setFillColor(sf::Color::White);
     else if (stageNumber == 3)
         landtext.setFillColor(sf::Color::White);
+
+    if (stageNumber == 4 && !bossTextDisplayed) {
+        showBossText = true;       // 텍스트 표시 활성화
+        bossTextDisplayed = true; // 텍스트가 이미 표시되었음 기록
+        bossTextTimer.restart();  // 타이머 초기화
+    }
+
+    // 2초 후 BOSS 텍스트 숨기기
+    if (showBossText && bossTextTimer.getElapsedTime().asSeconds() > 2.0f) {
+        showBossText = false;      // 텍스트 표시 비활성화
+    }
 
     sprite_Q->setTexture(texture_Q[stageNumber - 1]); // 텍스처 설정
     sprite_E->setTexture(texture_E[stageNumber - 1]); // 텍스처 설정
@@ -327,9 +375,7 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
 }
 
 void UIManager::render(sf::RenderWindow& window) {
-    // UI 요소 그리기 코드
-    // ...
-        // 쿨타임 바 크기 업데이트
+
     float ultimateBarHeight = 150.0f * (ultimateCooldownRatio);
     ultimateCooldownBar.setSize(sf::Vector2f(150.0f, ultimateBarHeight));
     //std::cout << ultimateBarHeight << std::endl;
@@ -337,32 +383,52 @@ void UIManager::render(sf::RenderWindow& window) {
     float specialBarHeight = 150.0f * (specialCooldownRatio);
     specialCooldownBar.setSize(sf::Vector2f(150.0f, specialBarHeight));
 
-    window.draw(inputBoxl);
-    window.draw(inputBoxr);
-    window.draw(smallBoxr);
+    if (currentStageNumber == 5) {
+        window.draw(sminigame_background);
+        window.draw(remainingKeysText);
+        window.draw(inputKeyText);
+        window.draw(targetKeyText); 
+           window.draw(pressText);
 
-    window.draw(inputText);
-    window.draw(text);
-    window.draw(skytext);
-    window.draw(seatext);
-    window.draw(landtext);
-    window.draw(textbox);
-    window.draw(boxE);
-    window.draw(boxQ);
-    //   window.draw(keyb);
-    window.draw(*sprite_Q);
-    window.draw(*sprite_E);
-    window.draw(skeybord);
+        // 키 강조 박스
+        window.draw(keyBox);
+       // window.draw(skytext);
 
-    // activeKeys에 있는 모든 박스 그리기
-    for (const auto& box : additionalBoxes) {
-        window.draw(box);
     }
-    window.draw(QE);
+    else {
+        window.draw(inputBoxl);
+        window.draw(inputBoxr);
+        window.draw(smallBoxr);
 
-    // 쿨타임 바 그리기
-    window.draw(ultimateCooldownBar);
-    window.draw(specialCooldownBar);
+        window.draw(inputText);
+        window.draw(text);
+      //
+        window.draw(skytext);
+        window.draw(seatext);
+        window.draw(landtext);
+        window.draw(textbox);
+        window.draw(boxE);
+        window.draw(boxQ);
+        //   window.draw(keyb);
+        window.draw(*sprite_Q);
+        window.draw(*sprite_E);
+        window.draw(skeybord);
+
+        // activeKeys에 있는 모든 박스 그리기
+        for (const auto& box : additionalBoxes) {
+            window.draw(box);
+        }
+        window.draw(QE);
+
+        // 쿨타임 바 그리기
+        window.draw(ultimateCooldownBar);
+        window.draw(specialCooldownBar);
+
+        // "BOSS" 텍스트 그리기
+        if (showBossText) {
+            window.draw(bossText);
+        }
+    }
 }
 void UIManager::setCooldownRatios(float ultimateRatio, float specialRatio) {
     ultimateCooldownRatio = ultimateRatio;
@@ -402,6 +468,9 @@ void UIManager::setBackground(int stageNumber) {
     case 3:
         backgroundImagePath = "land.png";
         break;
+    //case 5:
+    //    backgroundImagePath = "minigame.png";
+
     default:
         std::cout << "background" << std::endl;
         break;
@@ -422,3 +491,31 @@ bool UIManager::isInputFocused() const {
 void UIManager::setStageChangeCallback(std::function<void(int)> callback) {
     onStageChange = callback; // 콜백 저장
 }
+void UIManager::setRestartCallback(std::function<void()> callback) {
+    onRestart = callback;
+}
+
+
+void UIManager::updateMinigameInfo(int arr[3]) {
+    // 텍스트 업데이트
+    remainingKeysText.setString(std::to_string(arr[0])+"Left Keys");
+    inputKeyText.setString(std::to_string(arr[1]));
+    targetKeyText.setString(std::to_string(arr[2]));
+   //td::cout << "dsfl";
+}
+void UIManager::renderMinigame(sf::RenderWindow& window) {
+    // 텍스트 렌더링
+    window.draw(sminigame_background);
+    window.draw(pressText);
+    window.draw(remainingKeysText);
+    window.draw(inputKeyText);
+    window.draw(targetKeyText);
+
+    // 키 강조 박스
+    window.draw(keyBox);
+}
+
+
+
+
+

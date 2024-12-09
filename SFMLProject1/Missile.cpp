@@ -83,3 +83,4 @@ void Missile::draw(sf::RenderWindow& window) {
 void Missile::setTarget() {
     isTracking = true; // 추적 활성화
 }
+

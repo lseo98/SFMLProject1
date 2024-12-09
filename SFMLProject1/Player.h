@@ -112,6 +112,8 @@ public:
 
     void updateExplosions(float dt); // 폭발 애니메이션 업데이트
     void renderExplosions(sf::RenderWindow& window); // 폭발 렌더링
+    void clearExplosions(); //폭발 지우기
+
 
 private:
 

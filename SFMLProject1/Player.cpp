@@ -202,6 +202,8 @@ void Player::setPlayer(int stageNumber) {
 
     allyMissiles.clear(); // 아군 발사체도 삭제
     allyUnits.clear();   // 기존 아군 유닛 삭제 
+    clearExplosions();   // 폭발 애니메이션 삭제
+
 
     this->stageNumber = stageNumber;
         sf::IntRect textureRect;  // 표시할 텍스처 영역
@@ -917,7 +919,7 @@ void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& glo
                     sf::Vector2f dist = playerMissilePostion - enemyMissilePostion;
                     double distance = sqrt(dist.x * dist.x + dist.y * dist.y);
 
-                    createExplosion(enemyMissilePostion, ExplosionType::MissileImpact);
+                    createExplosion(playerMissilePostion, ExplosionType::MissileImpact);
 
                     /* std::cout << "player 미사일 x,y : " << playerMissilePostion.x << " " << playerMissilePostion.y << std::endl;
                     std::cout << "enemy 미사일 x,y : " << enemyMissilePostion.x << " " << enemyMissilePostion.y << std::endl;
@@ -1134,7 +1136,7 @@ void Player::loadProjectileTextures() {
     if (!MissileTextures[2].loadFromFile("missile_land.png")) {
         std::cerr << "Error loading bullet_land.png!" << std::endl;
     }
-    if (!AllMissileTextures[0].loadFromFile("bullet_sky.png")) {
+    if (!AllMissileTextures[0].loadFromFile("bullet_p_sky.png")) {
         std::cerr << "Error loading sky_missile.png!" << std::endl;
     }
     if (!AllMissileTextures[1].loadFromFile("Q_sea_missile.png")) {
@@ -1262,4 +1264,7 @@ void Player::renderExplosions(sf::RenderWindow& window) {
     for (const auto& explosion : explosions) {
         window.draw(explosion.sprite);
     }
+}
+void Player::clearExplosions() {
+    explosions.clear();
 }
