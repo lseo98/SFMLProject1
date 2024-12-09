@@ -7,7 +7,7 @@ Projectile::Projectile(sf::Vector2f startPosition, sf::Vector2f direction, float
     shape.setFillColor(sf::Color::White);
     shape.setPosition(position);
     isCrashed = false;
-    isAlly = false;
+    isPlayerProjectile = true;
 }
 
 bool Projectile::isOffScreen() const {
@@ -22,7 +22,7 @@ bool Projectile::isOffScreen() const {
 
 
 void Projectile::adjustDirection(){
-    if (isAlly) {
+    if (!isPlayerProjectile) {
         // 필살기 아군 유닛 발사체인 경우 회전하지 않음
         return;
     }

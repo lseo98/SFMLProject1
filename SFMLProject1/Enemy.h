@@ -41,6 +41,7 @@ protected:
     static constexpr float maxHealth_NormalUnit = 100.0f;
     static constexpr float maxHealth_EliteUnit = 300.0f;
     static constexpr float maxHealth_HealUnit = 200.0f;
+    static constexpr float maxHealth_Shield = 1000.0f;
 
     bool collisionFlag;
 
@@ -76,6 +77,8 @@ public:
 class EliteUnit : public Enemy {
 
 public:
+    // void fireMissile(sf::Vector2f targetPosition, std::vector<std::unique_ptr<Missile>>& globalMissiles);
+    
     EliteUnit(int stageNumber, sf::Vector2f position,int direction)
         : Enemy(maxHealth_EliteUnit, 1.5f, position, stageNumber) {
         
@@ -131,6 +134,7 @@ public:
     void deleteThisProjectile();
     
     bool missileLaunched;
+    static void initializeTextures(); // static으로 선언
 
 
 private:
@@ -138,6 +142,8 @@ private:
     sf::Vector2f missileDirection;
     static sf::Texture missileTexture;
     sf::Clock fireClock;           // 미사일 발사 간격 관리
+
+    static sf::Texture missileTextures[3]; // 스테이지마다 다른 텍스처를 위한 배열
 };
 
 // 보스 패턴 4 관련 변수
@@ -148,5 +154,13 @@ public:
         image("land_elite_unit_right.png");  // 이미지 삽입
         //this->setPosition(sf::Vector2f(WINDOWWIDTH / 4+50, 200));
         //setPosition(sf::Vector2f(WINDOWWIDTH / 4+50, 200));
+    }
+};
+
+// 보스 패턴 5 관련 변수
+class Shield : public Enemy {
+public:
+    Shield() : Enemy(maxHealth_Shield, 0.0f, sf::Vector2f(WINDOWWIDTH / 2 - 50, WINDOWHEIGHT - 200), 4) {
+        image("land_elite_unit_left.png"); // 이미지 삽입
     }
 };

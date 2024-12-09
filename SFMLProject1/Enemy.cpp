@@ -34,6 +34,7 @@ void Enemy::draw(sf::RenderWindow& window) {
     if (dynamic_cast<NormalUnit*>(this)) maxHealth = maxHealth_NormalUnit;
     else if (dynamic_cast<EliteUnit*>(this)) maxHealth = maxHealth_EliteUnit;
     else if (dynamic_cast<HealUnit*>(this)) maxHealth = maxHealth_HealUnit;
+    else if(dynamic_cast<Shield*>(this)) maxHealth = maxHealth_Shield;
     else maxHealth = 100.0f;
 
     float healthBarWidth = (this->getHealth() / maxHealth) * 76.0f; // 체력에 비례한 길이
@@ -220,7 +221,8 @@ bool Enemy::isOffScreen() const {
 }
 
 // EliteUnit
-sf::Texture EliteUnit::missileTexture;
+sf::Texture EliteUnit::missileTexture; // 단일 텍스처
+sf::Texture EliteUnit::missileTextures[3];//엘리트 유닛 발사체 텍스처
 void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique_ptr<Missile>>& globalMissiles) {
     if (fireClock.getElapsedTime().asSeconds() >= 5.0f) {
         // 초기 방향 설정
@@ -233,9 +235,9 @@ void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique
         auto newMissile = std::make_unique<Missile>(this->position, direction, 3.0f);
         
 		sf::IntRect textureRect; 
-        if (!missileTexture.loadFromFile("missile_sky.png"));
+        newMissile->setTexture(missileTextures[stageNumber - 1], textureRect);
 		//missileTexture.loadFromFile("missile_sky.png"); //여기 수정해야함 static으로 빼던가 resourceManager 싱글톤 사용
-        newMissile->setTexture(missileTexture, textureRect);
+   
         // 미사일을 추적형으로 설정
         newMissile->setTarget(); // 플레이어 위치를 참조로 설정
         globalMissiles.push_back(std::move(newMissile)); // 전역 벡터에 추가
@@ -243,10 +245,15 @@ void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique
         //globalMissiles.emplace_back(newMissile); // 전역 벡터에 추가
 
         
-
         fireClock.restart();
 
     }
+}
+
+void EliteUnit::initializeTextures() {
+    missileTextures[0].loadFromFile("enemy_missile_sky.png"); //사진 변경예정
+    missileTextures[1].loadFromFile("enemy_missile_sea.png");
+    missileTextures[2].loadFromFile("enemy_missile_land.png");
 }
 
 void EliteUnit::updateAttack(float deltaTime) {

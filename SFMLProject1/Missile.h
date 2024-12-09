@@ -18,10 +18,10 @@ public:
     void changeRange(float range) { this->range = range; }
 
     void setTarget();
-
+    bool isTracking = false;                // 추적 여부
 
 private:
     float range;
     sf::Vector2f* targetPosition = nullptr; // 플레이어 위치 참조
-    bool isTracking = false;                // 추적 여부
+
 };
