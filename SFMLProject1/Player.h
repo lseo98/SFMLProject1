@@ -87,7 +87,7 @@ public:
     std::vector<Missile*>& getAllyMissiles() { return allyMissiles; }
 
     // 처치한 적군 수
-    int killCountNomalUnit, killCountEliteUnit1, killCountEliteUnit2, killCountEliteUnit3, maxKillEliteCount = 1;
+    int killCountNomalUnit, killCountEliteUnit1, killCountEliteUnit2, killCountEliteUnit3, maxKillEliteCount = 30;
 
     void setSpecialAttackCooldown(float cooldown) {
         specialAttackCooldown = cooldown;
@@ -117,6 +117,8 @@ public:
 
     void updateExplosions(float dt); // 폭발 애니메이션 업데이트
     void renderExplosions(sf::RenderWindow& window); // 폭발 렌더링
+    void clearExplosions(); //폭발 지우기
+
 
 private:
 

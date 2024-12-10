@@ -34,7 +34,7 @@ Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHE
 void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
 
-    if (stageNumber == 1 || stageNumber == 3 || stageNumber == 4) {
+    if (stageNumber == 1 || stageNumber == 3 ) {
         // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
         if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
         if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width;
@@ -68,7 +68,15 @@ void Player::move(sf::Vector2f updatePosition) {
             isOnGround = false; // 공중으로 나가면 다시 초기화
         }
     }
-
+    if (stageNumber == 4) {
+        // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
+        std::cout << "스테이지 4에서 이동 처리 " << std::endl;
+        if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
+        if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f - 200) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width - 200;
+        if (this->position.y < 0)  this->position.y = 0;
+        if (this->position.y + height > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - height;
+    }
+   // std::cout << "스테이지 4에서 이동 처리 " << stageNumber <<  std::endl;
 }
 
 
@@ -163,7 +171,7 @@ void Player::updateDirection(char direction, int stageNumber) {
 
             }
         }
-        if (stageNumber == 3) { // Only change image in stage 3
+        if (stageNumber == 3 || stageNumber == 4) { // Only change image in stage 3
             if (direction == 'A') {
                 textureRect = sf::IntRect(0, 0, 990, 710);
                 image("land_my_unit_left.PNG", textureRect);
@@ -203,6 +211,8 @@ void Player::setPlayer(int stageNumber) {
 
     allyMissiles.clear(); // 아군 발사체도 삭제
     allyUnits.clear();   // 기존 아군 유닛 삭제 
+    clearExplosions();   // 폭발 애니메이션 삭제
+
 
     this->stageNumber = stageNumber;
         sf::IntRect textureRect;  // 표시할 텍스처 영역
@@ -222,6 +232,7 @@ void Player::setPlayer(int stageNumber) {
         image("sea_my_unit_right.PNG", textureRect);
         break;
     case 3:
+    case 4:
         direction = 'D';
         bulletDirection = sf::Vector2f(1.0f, 0.0f);
         missileDirection = sf::Vector2f(0.0f, -1.0f);
@@ -273,7 +284,7 @@ void Player::basicAttack() {
         bulletStartPosition = sf::Vector2f(this->position.x + 50, this->position.y + 30);
         //sf::Vector2f bulletStartPosition(this->position.x + 200, this->position.y+100);
     }
-    if (stageNumber == 3) {
+    if (stageNumber == 3 || stageNumber == 4) {
         bulletStartPosition = sf::Vector2f(this->position.x + 20, this->position.y + 15);
         //sf::Vector2f bulletStartPosition(this->position.x + 20, this->position.y+20);
     }
@@ -917,7 +928,7 @@ void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& glo
                     sf::Vector2f dist = playerMissilePostion - enemyMissilePostion;
                     double distance = sqrt(dist.x * dist.x + dist.y * dist.y);
 
-                    createExplosion(enemyMissilePostion, ExplosionType::MissileImpact);
+                    createExplosion(playerMissilePostion, ExplosionType::MissileImpact);
 
                     if (distance < (*missileIt)->getRange()) {
                         (*enemyMissilTmpIt)->crashed();    // 적군 미사일 충돌 됨으로 상태 수정
@@ -1224,7 +1235,7 @@ void Player::loadProjectileTextures() {
     if (!MissileTextures[2].loadFromFile("missile_land.png")) {
         std::cerr << "Error loading bullet_land.png!" << std::endl;
     }
-    if (!AllMissileTextures[0].loadFromFile("bullet_sky.png")) {
+    if (!AllMissileTextures[0].loadFromFile("bullet_p_sky.png")) {
         std::cerr << "Error loading sky_missile.png!" << std::endl;
     }
     if (!AllMissileTextures[1].loadFromFile("Q_sea_missile.png")) {
@@ -1352,4 +1363,7 @@ void Player::renderExplosions(sf::RenderWindow& window) {
     for (const auto& explosion : explosions) {
         window.draw(explosion.sprite);
     }
+}
+void Player::clearExplosions() {
+    explosions.clear();
 }
