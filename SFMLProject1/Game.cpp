@@ -303,10 +303,7 @@ void Game::checkStageTransition() {
     }
 }
 void Game::minigameupdate() { // 게임 상태 업데이트
-    int arr[3] = { 4, 2, 3 }; // 남은 키 수, 입력된 키, 목표 키
-
-    // UIManager에 데이터 전달
-    std::cout << "Updating minigame info with arr: { ";
+    int arr[3] = { 4, 3, 3 }; // 남은 키 수, 입력된 키, 목표 키
 
     uiManager.updateMinigameInfo(arr);
 

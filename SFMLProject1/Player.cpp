@@ -955,7 +955,7 @@ void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& glo
                         (*enemyTmpIt)->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
 
                         if ((*enemyTmpIt)->getHealth() <= 0) {
-                            createExplosion(tmpEnemyCenter, ExplosionType::EnemyDestroyed);
+                           createExplosion(tmpEnemyCenter, ExplosionType::EnemyDestroyed);
                         }
                     }
 
@@ -1256,6 +1256,9 @@ void Player::loadExplosionTextures() {
     if (!enemyExplosionTextures[2].loadFromFile("explosion-3a.png") || !enemyExplosionTextures[3].loadFromFile("explosion-3a.png")) {
         std::cerr << "Error loading explosion_enemy_stage2.png!" << std::endl;
     }
+    if (!enemyExplosionTextures[3].loadFromFile("explosion-3a.png") || !enemyExplosionTextures[3].loadFromFile("explosion-3a.png")) {
+        std::cerr << "Error loading explosion_enemy_boss.png!" << std::endl;
+    }
     if (!missileExplosionTextures[0].loadFromFile("explosion-b.png")) {
         std::cerr << "Error loading explosion_missile_stage1.png!" << std::endl;
     }
@@ -1265,7 +1268,13 @@ void Player::loadExplosionTextures() {
     if (!missileExplosionTextures[2].loadFromFile("explosion.png") || !missileExplosionTextures[3].loadFromFile("explosion.png")) {
         std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
     }
+    if (!missileExplosionTextures[3].loadFromFile("explosion.png") || !missileExplosionTextures[3].loadFromFile("explosion.png")) {
+        std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
+    }
     if (!Q_missileExplosionTextures[1].loadFromFile("explosion_Q_sea.png")) {
+        std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
+    }
+    if (!Q_missileExplosionTextures[3].loadFromFile("explosion-3a.png")) {
         std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
     }
 }
@@ -1282,6 +1291,8 @@ void Player::createExplosion(sf::Vector2f position, ExplosionType type) {
     sf::Texture* texture = nullptr;
 
     // 텍스처 및 조건별 처리
+    explosion.sprite.setTexture(getExplosionTexture(stageNumber - 1));
+
     if (type == ExplosionType::EnemyDestroyed) {
         texture = &enemyExplosionTextures[stageNumber - 1];
     }
@@ -1304,20 +1315,15 @@ void Player::createExplosion(sf::Vector2f position, ExplosionType type) {
         if (type == ExplosionType::Q_missileImpact && stageNumber == 2) {
             explosion.sprite.setScale(900.0f / texture->getSize().x, 900.0f / texture->getSize().y); // 화면 전체 채우기
         }
+        else if (type == ExplosionType::Q_missileImpact && stageNumber == 4) {
+            explosion.sprite.setScale(900.0f / texture->getSize().x, 900.0f / texture->getSize().y);
+        }
         else {
             explosion.sprite.setScale(2.5f, 2.5f); // 기본 크기 조정
         }
-
-
         explosion.sprite.setTextureRect(sf::IntRect(0, 0, frameWidth, 32)); // 첫 프레임
         explosion.sprite.setPosition(position);
         explosions.push_back(explosion);
-        //Explosion explosion;
-        //explosion.sprite.setTexture(explosionTextures[stageNumber - 1]);
-        //explosion.sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // 첫 프레임 설정
-        //explosion.sprite.setScale(1.5f, 1.5f); // 크기 조정
-        //explosion.sprite.setPosition(position - sf::Vector2f(16, 16)); // 중심에 맞게 위치 조정
-        //explosions.push_back(explosion);
     }
 }
 
@@ -1346,12 +1352,6 @@ void Player::updateExplosions(float dt) {
             }
         }
         ++it;
-        //if (it->type == ExplosionType::Q_missileImpact && stageNumber == 2) {
-        //    // it->sprite.setScale(900.0f/32.0f,900.0f/32.0f); // 크기 조정
-
-        //}
-
-      //  it->sprite.setScale(900.0f/32.0f,900.0f/32.0f); // 크기 조정
 
     }
 

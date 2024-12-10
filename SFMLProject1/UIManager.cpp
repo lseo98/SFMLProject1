@@ -517,7 +517,7 @@ void UIManager::updateMinigameInfo(int arr[3]) {
 
     // 결과 텍스트 갱신
     if (inputKeyText.getString() == targetKeyText.getString()) {
-        resultString = "Correct!"; // 입력과 목표가 동일한 경우
+      //  resultString = (std::to_string(inputKeyText)+"Correct!"); // 입력과 목표가 동일한 경우
     }
     else {
         resultString = "No!"; // 입력과 목표가 다른 경우
@@ -543,7 +543,7 @@ void UIManager::renderMinigame(sf::RenderWindow& window) {
     window.draw(sminigame_background);
     window.draw(pressText);
     window.draw(remainingKeysText);
-    window.draw(inputKeyText);
+   // window.draw(inputKeyText);
     window.draw(targetKeyText);
     window.draw(timebox);
     window.draw(countdownText);

@@ -15,6 +15,11 @@ public:
 
     void render(sf::RenderWindow& window, std::vector<std::unique_ptr<Missile>>& bossMissiles);
 
+    Player* player; // 플레이어 객체에 대한 포인터
+    int stageNumber;               // 현재 스테이지 번호
+
+
+
 private:
     int phase;                                 // 보스의 페이즈 상태를 나타내는 변수
     int attackPattern;                         // 보스의 공격 패턴을 결정하는 변수
