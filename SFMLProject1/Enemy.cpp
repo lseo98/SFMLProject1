@@ -35,7 +35,7 @@ void Enemy::draw(sf::RenderWindow& window) {
     else if (dynamic_cast<EliteUnit*>(this)) maxHealth = maxHealth_EliteUnit;
     else if (dynamic_cast<HealUnit*>(this)) maxHealth = maxHealth_HealUnit;
     else if(dynamic_cast<Shield*>(this)) maxHealth = maxHealth_Shield;
-    else maxHealth = 100.0f;
+    else maxHealth = 3000.0f;
 
     float healthBarWidth = (this->getHealth() / maxHealth) * 76.0f; // 체력에 비례한 길이
 

@@ -1316,14 +1316,17 @@ void Player::createExplosion(sf::Vector2f position, ExplosionType type) {
             explosion.sprite.setScale(900.0f / texture->getSize().x, 900.0f / texture->getSize().y); // 화면 전체 채우기
         }
         else if (type == ExplosionType::Q_missileImpact && stageNumber == 4) {
-            explosion.sprite.setScale(900.0f / texture->getSize().x, 900.0f / texture->getSize().y);
+            // 보스 폭발에 맞춘 크기 조정
+            explosion.sprite.setScale(4.0f, 4.0f); 
+            explosion.sprite.setPosition(position);     
         }
         else {
             explosion.sprite.setScale(2.5f, 2.5f); // 기본 크기 조정
+
+            explosion.sprite.setTextureRect(sf::IntRect(0, 0, frameWidth, 32)); // 첫 프레임
+            explosion.sprite.setPosition(position);
+            explosions.push_back(explosion);
         }
-        explosion.sprite.setTextureRect(sf::IntRect(0, 0, frameWidth, 32)); // 첫 프레임
-        explosion.sprite.setPosition(position);
-        explosions.push_back(explosion);
     }
 }
 

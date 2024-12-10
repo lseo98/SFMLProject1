@@ -212,19 +212,19 @@ void UIManager::init() {
     // 카운트다운 텍스트 설정
     countdownText.setFont(font);
     countdownText.setCharacterSize(130);
-    countdownText.setFillColor(sf::Color::White);
+    countdownText.setFillColor(sf::Color::Red);
     countdownText.setString("5");  // 초기 값
-    countdownText.setPosition(1400, 25); // 오른쪽 위 위치
+    countdownText.setPosition(1410, 20); // 오른쪽 위 위치
 
     // 결과 텍스트 초기화
     resultText.setFont(font);
     resultText.setCharacterSize(38);
     resultText.setFillColor(sf::Color::White);
-    resultText.setPosition(5, 300); // 화면 왼쪽 아래에 출력
+    resultText.setPosition(10, 300); // 화면 왼쪽 아래에 출력
     resultString = ""; // 초기 문자열은 비어 있음
 }
 
-void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
+void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) { 
     // 마우스 클릭 이벤트 처리
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
