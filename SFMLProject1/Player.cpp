@@ -70,7 +70,6 @@ void Player::move(sf::Vector2f updatePosition) {
     }
     if (stageNumber == 4) {
         // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
-        std::cout << "스테이지 4에서 이동 처리 " << std::endl;
         if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
         if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f - 200) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width - 200;
         if (this->position.y < 0)  this->position.y = 0;
@@ -302,10 +301,10 @@ void Player::basicAttack() {
 }
 
 void Player::specialAttack() {
-    std::cout << "Nomal Unit 처치 수 : " << killCountNomalUnit << std::endl;
+    /*std::cout << "Nomal Unit 처치 수 : " << killCountNomalUnit << std::endl;
     std::cout << "stage1 Elite Unit 처치 수 : " << killCountEliteUnit1 << std::endl;
     std::cout << "stage2 Elite Unit 처치 수 : " << killCountEliteUnit2 << std::endl;
-    std::cout << "stage3 Elite Unit 처치 수 : " << killCountEliteUnit3 << std::endl << std::endl;
+    std::cout << "stage3 Elite Unit 처치 수 : " << killCountEliteUnit3 << std::endl << std::endl;*/
 
     if (canSpecialAttack) {
         // 플레이어의 중앙 위치를 계산하여 미사일의 시작 위치로 사용
@@ -322,10 +321,10 @@ void Player::specialAttack() {
         // 특수 공격 상태 갱신
         timeSinceLastSpecial = 0.0f;  // 쿨타임 초기화
         canSpecialAttack = false;     // 쿨타임 시작
-        std::cout << "Special attack activated!" << std::endl;
+       // std::cout << "Special attack activated!" << std::endl;
     }
     else {
-        std::cout << "Special attack on cooldown!" << std::endl;
+       // std::cout << "Special attack on cooldown!" << std::endl;
     }
 
 }
@@ -336,7 +335,7 @@ void Player::ultimateAttack() {
         switch (stageNumber) {
         case 1: // 하늘 스테이지
         {
-            std::cout << "Sky ultimate attack activated!" << std::endl;
+            //std::cout << "Sky ultimate attack activated!" << std::endl;
 
             // 대기 시간 초기화
             waitTime = 5.0f;  // 하늘 스테이지에서만 5초 대기
@@ -403,7 +402,7 @@ void Player::ultimateAttack() {
 
 
             // 발사체 하나 중앙에서 폭발
-            std::cout << "Sea ultimate attack activated!" << std::endl;
+            //std::cout << "Sea ultimate attack activated!" << std::endl;
 
             // 발사체 초기값 설정
             sf::Vector2f missileStartPosition(400, 600); // 왼쪽 끝에서 시작
@@ -425,7 +424,7 @@ void Player::ultimateAttack() {
         case 3: // 땅 스테이지
         case 4: // 보스 스테이지
         {
-            std::cout << "Land ultimate attack activated!" << std::endl;
+            //std::cout << "Land ultimate attack activated!" << std::endl;
 
             // 공격기 텍스처 로드
             if (!allyTexture.loadFromFile("land_p_unit.png")) { // 공격기 이미지 텍스처 로드
@@ -451,12 +450,12 @@ void Player::ultimateAttack() {
         break;
 
         default:
-            std::cout << "Invalid stage number for ultimate attack!" << std::endl;
+            //std::cout << "Invalid stage number for ultimate attack!" << std::endl;
             break;
         }
     }
     else {
-        std::cout << "Ultimate attack on cooldown!" << std::endl;
+       // std::cout << "Ultimate attack on cooldown!" << std::endl;
     }
 }
 
@@ -529,7 +528,7 @@ void Player::updateCooldowns(float dt) {
         timeSinceLastSpecial += dt; // 프레임 간 경과 시간을 누적
         if (timeSinceLastSpecial >= specialAttackCooldown) {
             canSpecialAttack = true; // 쿨타임 종료 시 특수 공격 가능하게 설정
-            std::cout << "Special attack is ready!" << std::endl;
+            //std::cout << "Special attack is ready!" << std::endl;
         }
     }
 
@@ -538,7 +537,7 @@ void Player::updateCooldowns(float dt) {
         timeSinceLastUltimate += dt; // 프레임 간 경과 시간을 누적
         if (timeSinceLastUltimate >= ultimateAttackCooldown) {
             canUltimateAttack = true; // 쿨타임 종료 시 필살기 가능하게 설정
-            std::cout << "Ultimate attack is ready!" << std::endl;
+           // std::cout << "Ultimate attack is ready!" << std::endl;
         }
     }
 }
@@ -881,21 +880,21 @@ void Player::shieldCollision(std::vector<Shield*> shield) {
     for (Shield* shield : shield) {
         for (auto bullet : bullets) {
             if (bullet->sprite.getGlobalBounds().intersects(shield->sprite.getGlobalBounds())) {
-                std::cout << "Collision detected!" << std::endl;
+                //std::cout << "Collision detected!" << std::endl;
                 shield->takeDamage(bullet->getDamage()); // 데미지 적용
                 bullet->crashed(); // 총알 상태 변경
             }
         }
         for (auto missile : missiles) {
             if (missile->sprite.getGlobalBounds().intersects(shield->sprite.getGlobalBounds())) {
-                std::cout << "Collision detected!" << std::endl;
+                //std::cout << "Collision detected!" << std::endl;
                 shield->takeDamage(missile->getDamage()); // 데미지 적용
                 missile->crashed(); // 총알 상태 변경
             }
         }
         for (auto allyMissile : allyMissiles) {
             if (allyMissile->sprite.getGlobalBounds().intersects(shield->sprite.getGlobalBounds())) {
-                std::cout << "Collision detected!" << std::endl;
+                //std::cout << "Collision detected!" << std::endl;
                 shield->takeDamage(allyMissile->getDamage()); // 데미지 적용
                 allyMissile->crashed(); // 총알 상태 변경
             }
