@@ -1223,7 +1223,7 @@ void Player::loadProjectileTextures() {
     if (!bulletTextures[1].loadFromFile("bullet_sea.png")) {
         std::cerr << "Error loading bullet_sea.png!" << std::endl;
     }
-    if (!bulletTextures[2].loadFromFile("bullet_land.png")) {
+    if (!bulletTextures[2].loadFromFile("bullet_land.png") || !bulletTextures[3].loadFromFile("bullet_land.png")) {
         std::cerr << "Error loading bullet_land.png!" << std::endl;
     }
     if (!MissileTextures[0].loadFromFile("missile_sky.png")) {
@@ -1232,7 +1232,7 @@ void Player::loadProjectileTextures() {
     if (!MissileTextures[1].loadFromFile("missile_sea.png")) {
         std::cerr << "Error loading bullet_sea.png!" << std::endl;
     }
-    if (!MissileTextures[2].loadFromFile("missile_land.png")) {
+    if (!MissileTextures[2].loadFromFile("missile_land.png") || !MissileTextures[3].loadFromFile("missile_land.png")) {
         std::cerr << "Error loading bullet_land.png!" << std::endl;
     }
     if (!AllMissileTextures[0].loadFromFile("bullet_p_sky.png")) {
@@ -1241,7 +1241,7 @@ void Player::loadProjectileTextures() {
     if (!AllMissileTextures[1].loadFromFile("Q_sea_missile.png")) {
         std::cerr << "Error loading Q_sea_missile.png!" << std::endl;
     }
-    if (!AllMissileTextures[2].loadFromFile("Q_missile_land.png")) {
+    if (!AllMissileTextures[2].loadFromFile("Q_missile_land.png") || !AllMissileTextures[3].loadFromFile("Q_missile_land.png")) {
         std::cerr << "Error loading Q_missile_land.png!" << std::endl;
     }
 }
@@ -1254,7 +1254,7 @@ void Player::loadExplosionTextures() {
     if (!enemyExplosionTextures[1].loadFromFile("explosion-b.png")) {
         std::cerr << "Error loading explosion_enemy_stage2.png!" << std::endl;
     }
-    if (!enemyExplosionTextures[2].loadFromFile("explosion-3a.png")) {
+    if (!enemyExplosionTextures[2].loadFromFile("explosion-3a.png") || !enemyExplosionTextures[3].loadFromFile("explosion-3a.png")) {
         std::cerr << "Error loading explosion_enemy_stage2.png!" << std::endl;
     }
     if (!missileExplosionTextures[0].loadFromFile("explosion-b.png")) {
@@ -1263,7 +1263,7 @@ void Player::loadExplosionTextures() {
     if (!missileExplosionTextures[1].loadFromFile("explosion.png")) {
         std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
     }
-    if (!missileExplosionTextures[2].loadFromFile("explosion.png")) {
+    if (!missileExplosionTextures[2].loadFromFile("explosion.png") || !missileExplosionTextures[3].loadFromFile("explosion.png")) {
         std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
     }
     if (!Q_missileExplosionTextures[1].loadFromFile("explosion_Q_sea.png")) {
