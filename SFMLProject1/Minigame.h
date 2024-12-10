@@ -19,7 +19,7 @@ private:
 	// 멤버 변수 및 벡터 선언
 	//sf::RenderWindow* window;
  	sf::Event event;
-	static const int defaultOccure = 1;
+	static const int defaultOccure = 3;
 	int targetKeys[100 + defaultOccure];	// 최대 미니게임 회수는 100 + defaultOccure회
 	int correctCnt;
 	int minigameOccured;

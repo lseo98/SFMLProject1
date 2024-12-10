@@ -311,22 +311,22 @@ void Game::checkStageTransition() {
         minigame = new Minigame(minigameOccured);
         minigameOccured++;
         for (int i = 0; i < 3; i++) minigameInput[i] = 0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
-            player.restart();
-            boss->initBoss();
-            stageSwitchCounter = 1;
-            stageNumber = 1;
-            for (Enemy* enemy : enemies) {
-                delete enemy;
-            }
-            enemies.clear();
-            /*for (Missile* enemyMissile : enemyMissiles) {
-                delete enemyMissile;
-            }*/
-            enemyMissiles.clear();
-            bossMissiles.clear();
-            currentStage.setStage(1, enemies);
-        }
+        //if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+        //    player.restart();
+        //    boss->initBoss();
+        //    stageSwitchCounter = 1;
+        //    stageNumber = 1;
+        //    for (Enemy* enemy : enemies) {
+        //        delete enemy;
+        //    }
+        //    enemies.clear();
+        //    /*for (Missile* enemyMissile : enemyMissiles) {
+        //        delete enemyMissile;
+        //    }*/
+        //    enemyMissiles.clear();
+        //    bossMissiles.clear();
+        //    currentStage.setStage(1, enemies);
+        //}
 
     }
 }
@@ -528,6 +528,7 @@ void Game::update() { // 게임 상태 업데이트
 
 void Game::minigameUpdate() {
     minigame->runMinigame(dt, minigameInput, *window);
+    uiManager.updateMinigameInfo(minigameInput);
 }
 
 void Game::render() {

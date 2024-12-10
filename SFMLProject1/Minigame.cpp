@@ -21,8 +21,7 @@ void Minigame::initTargetKeys() {
 	for (int i = 0; i < defaultOccure + minigameOccured; i++) {
 		targetKeys[i] = rand() % 10;
 	}
-	targetKeys[0] = 8;
-
+	m_keyArray[2] = targetKeys[correctCnt];
 }
 
 // 입력된 키와 타깃 키를 비교하여 성공하면 벡터의 가장 뒷부분에서 타깃 키 값을 빼내 다음 타깃 키로 넘어가도록 하는 함수
@@ -104,8 +103,9 @@ void Minigame::runMinigame(float deltaTime, int *minigameArr, sf::RenderWindow& 
 			
 		}
 		checkTargetKeys(m_keyArray[1]);
-		for (int i = 0; i < 3; i++) minigameArr[i] = m_keyArray[i];
+		
 	}
+	for (int i = 0; i < 3; i++) minigameArr[i] = m_keyArray[i];
 	
 	if (defaultOccure + minigameOccured == correctCnt) {
 		minigameSuccessed = true;
