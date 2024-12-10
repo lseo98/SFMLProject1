@@ -17,7 +17,10 @@ int main() {
     sf::Event event;
 
     Game game; 
-    game.run();   
+
+    bool goodEnding = game.run();
+    if (goodEnding) std::cout << "good" << std::endl;
+    else  std::cout << "bad" << std::endl;
 
 
 

@@ -40,7 +40,7 @@ protected:
    // static constexpr는 컴파일 타임 상수, static const는 상수
     static constexpr float maxHealth_NormalUnit = 100.0f;
     static constexpr float maxHealth_EliteUnit = 300.0f;
-    static constexpr float maxHealth_HealUnit = 200.0f;
+    static constexpr float maxHealth_HealUnit = 1.0f;
     static constexpr float maxHealth_Shield = 1000.0f;
 
     bool collisionFlag;
@@ -151,7 +151,7 @@ class HealUnit : public Enemy {
 public:
     HealUnit() : Enemy(maxHealth_HealUnit, 1.0f, sf::Vector2f(WINDOWWIDTH / 4 + 50, 200), 4) {
         this->direction = 1;    // 우측 이동
-        image("land_elite_unit_right.png");  // 이미지 삽입
+        image("heal_unit.png");  // 이미지 삽입
         //this->setPosition(sf::Vector2f(WINDOWWIDTH / 4+50, 200));
         //setPosition(sf::Vector2f(WINDOWWIDTH / 4+50, 200));
     }
@@ -160,7 +160,7 @@ public:
 // 보스 패턴 5 관련 변수
 class Shield : public Enemy {
 public:
-    Shield() : Enemy(maxHealth_Shield, 0.0f, sf::Vector2f(WINDOWWIDTH / 2 - 50, WINDOWHEIGHT - 200), 4) {
-        image("land_elite_unit_left.png"); // 이미지 삽입
+    Shield() : Enemy(maxHealth_Shield, 0.0f, sf::Vector2f(WINDOWWIDTH / 2 - 50, WINDOWHEIGHT - 210), 4) {
+        image("shield.png"); // 이미지 삽입
     }
 };

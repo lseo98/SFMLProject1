@@ -3,6 +3,7 @@
 
 // 정적 멤버 정의
 sf::Clock Game::globalClock;
+sf::Clock Game::stageTransitionClock;
 
 Game::Game() {
     initVariables();
@@ -18,39 +19,34 @@ Game::~Game() {
     delete window;
 }
 
-void Game::run() {
+bool Game::run() {
     while (isRunning && window->isOpen()) {
         sf::Event event;
         dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
-        handleEvents();
-        //sf::Time deltaTime = clock.restart(); // 프레임 간 경과 시간 측정  
-      //  std::cout << player.getHealth() << std::endl;
+        
         if (player.getHealth() <= 0) {
+            lastStageNumber = stageNumber;
             stageNumber = 5;
-            enemyMissiles.clear();
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
-                player.restart();
-                boss->initBoss();
-                stageSwitchCounter = 1;
-                stageNumber = 1;
-                for (Enemy* enemy : enemies) {
-                    delete enemy;
-                }
-                enemies.clear();
-                /*for (Missile* enemyMissile : enemyMissiles) {
-                    delete enemyMissile;
-                }*/
-                enemyMissiles.clear();
-                bossMissiles.clear();
-                currentStage.setStage(1, enemies);
-            }
+            checkStageTransition();
+            player.takeDamage(-1.0f);
         }
-        else if (stageNumber != 5)  update();
-        else if (stageNumber == 5) minigameUpdate();
-
+        else if (stageNumber != 5) {
+            handleEvents();
+            update();
+        }
+        else if (stageNumber == 5) {
+            minigameUpdate();
+            if (minigame->getSuccess()) {
+                stageNumber = lastStageNumber;
+                backStageTransition();
+            }
+            if (minigame->getBadEnding()) return false;
+        }
         render();
+        if (boss->getHealth() <= 0) return true;
+       
     }
+    return false;
 }
 
 
@@ -95,6 +91,9 @@ void Game::initVariables() {
 	uiManager.init(); // UI 초기화
     boss = new Boss();
     
+    // minigame 관련 초기화
+    minigameOccured = 0;
+    for (int i = 0; i < 3; i++) minigameInput[i] = 0;
 }
 
 void Game::initWindow() {
@@ -245,6 +244,7 @@ void Game::changeStage(int newStageNumber) {
 }
 
 
+
 void Game::checkStageTransition() {
     // 정예 유닛 모든 맵에서 조건 충족하면 보스 스테이지로 강제 이동
     if (player.killCountEliteUnit1 >= player.maxKillEliteCount
@@ -258,10 +258,11 @@ void Game::checkStageTransition() {
         currentStage.spawnEnemies(enemies, dt);
         enemyMissiles.clear();
         hasBossStageTransitioned = true;
+        stageTransitionClock.restart();
     }
 
     // 30초 경과 시 스테이지 이동
-    if (globalClock.getElapsedTime().asSeconds() > 30.0f * stageSwitchCounter) {
+    if (stageTransitionClock.getElapsedTime().asSeconds() > 30.0f) {
         // 스테이지 이동
         if (stageSwitchCounter == 1 && stageNumber == 1) {
             stageNumber = 2; // 다음 스테이지로 이동
@@ -303,82 +304,133 @@ void Game::checkStageTransition() {
             enemyMissiles.clear();
         }
         stageSwitchCounter++;
+        stageTransitionClock.restart();
+    }
+    if (stageNumber == 5) {
+        enemyMissiles.clear();
+        minigame = new Minigame(minigameOccured);
+        minigameOccured++;
+        for (int i = 0; i < 3; i++) minigameInput[i] = 0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+            player.restart();
+            boss->initBoss();
+            stageSwitchCounter = 1;
+            stageNumber = 1;
+            for (Enemy* enemy : enemies) {
+                delete enemy;
+            }
+            enemies.clear();
+            /*for (Missile* enemyMissile : enemyMissiles) {
+                delete enemyMissile;
+            }*/
+            enemyMissiles.clear();
+            bossMissiles.clear();
+            currentStage.setStage(1, enemies);
+        }
+
     }
 }
+void Game::backStageTransition() {
+    player.restart();
+    if (stageNumber == 1) {
+        currentStage.setStage(stageNumber, enemies);
+        player.setPlayer(stageNumber);
+        player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT * 9.0f / 10.0f));
+        enemyMissiles.clear();
+        currentStage.spawnEnemies(enemies, dt);
+    }
+    else if (stageNumber == 2) {
+        currentStage.setStage(stageNumber, enemies);
+        player.setPlayer(stageNumber);
+        player.setPosition(sf::Vector2f(WINDOWWIDTH / 4.0f, WINDOWHEIGHT / 2.0f));
+        currentStage.spawnEnemies(enemies, dt);
+        enemyMissiles.clear();
+    }
+    else if (stageNumber == 3) {
+        currentStage.setStage(stageNumber, enemies);
+        player.setPlayer(stageNumber);
+        player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
+        currentStage.spawnEnemies(enemies, dt);
+        enemyMissiles.clear();
+    }
+    else if(stageNumber == 4) {
+        currentStage.setStage(3, enemies);
+        player.setPlayer(3);
+        player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f - 200, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
+        currentStage.spawnEnemies(enemies, dt);
+        enemyMissiles.clear();
+        hasBossStageTransitioned = true;
+        
+    }
+    stageTransitionClock.restart();
 
+}
 
 void Game::update() { // 게임 상태 업데이트
 
-    if (stageNumber == 5) {
-        int arr[3] = { 4, 'A', 'W' }; // 남은 키 수, 입력된 키, 목표 키
-     
-        // UIManager에 데이터 전달
-        uiManager.updateMinigameInfo(arr);
-    }
-    else {
-        if (player.getHealth() > 0) {
-            // 스테이지 자동 전환 검사
-            checkStageTransition();
+    if (player.getHealth() > 0) {
+        // 스테이지 자동 전환 검사
+        if (stageNumber != 5)  checkStageTransition();
 
-            eliteUnitKillText.setString(killInfo); // 텍스트 설정
-            static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
-            static sf::Clock allyAttackClock;
+        eliteUnitKillText.setString(killInfo); // 텍스트 설정
+        static sf::Clock attackClock; // 자동 발사 간격을 위한 시계
+        static sf::Clock allyAttackClock;
 
-            // 플레이어 쿨타임 업데이트
-            player.updateCooldowns(dt);
-            // 궁극기 쿨타임 정보 얻기
-            float remainingUltimateCooldown = player.getUltimateAttackRemainingCooldown();
-            float ultimateCooldownRatio = remainingUltimateCooldown / player.getUltimateAttackCooldown();
-            // 특수 공격 쿨타임 정보 얻기
-            float remainingSpecialCooldown = player.getSpecialAttackRemainingCooldown();
-            float specialCooldownRatio = remainingSpecialCooldown / player.getSpecialAttackCooldown();
-            uiManager.setCooldownRatios(ultimateCooldownRatio, specialCooldownRatio);
-            if (!uiManager.isInputFocused()) {
-                float speed = player.getSpeed();
-                float dx = 0.0f, dy = 0.0f;
+        // 플레이어 쿨타임 업데이트
+        player.updateCooldowns(dt);
+        // 궁극기 쿨타임 정보 얻기
+        float remainingUltimateCooldown = player.getUltimateAttackRemainingCooldown();
+        float ultimateCooldownRatio = remainingUltimateCooldown / player.getUltimateAttackCooldown();
+        // 특수 공격 쿨타임 정보 얻기
+        float remainingSpecialCooldown = player.getSpecialAttackRemainingCooldown();
+        float specialCooldownRatio = remainingSpecialCooldown / player.getSpecialAttackCooldown();
+        uiManager.setCooldownRatios(ultimateCooldownRatio, specialCooldownRatio);
+        if (!uiManager.isInputFocused()) {
+            float speed = player.getSpeed();
+            float dx = 0.0f, dy = 0.0f;
 
-                // 플레이어 움직임 업데이트
-                dx += (sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A)) * speed;
-                dy += (sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W)) * speed;
+            // 플레이어 움직임 업데이트
+            dx += (sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A)) * speed;
+            dy += (sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W)) * speed;
 
-                if (stageNumber == 3 || stageNumber == 4) dy = 0; // 스테이지 3에서는 y축 이동 불가
-                else if (dx != 0 && dy != 0) { // 대각선 이동 속도 보정
-                    dx *= 0.7071f;
-                    dy *= 0.7071f;
-                }
-
-                for (float i = 0; i < 1; i += this->dt) player.move(sf::Vector2f(dx * dt, dy * dt));
-
+            if (stageNumber == 3 || stageNumber == 4) dy = 0; // 스테이지 3에서는 y축 이동 불가
+            else if (dx != 0 && dy != 0) { // 대각선 이동 속도 보정
+                dx *= 0.7071f;
+                dy *= 0.7071f;
             }
 
-            // 100ms 간격으로 기본 공격 발사
-            if (attackClock.getElapsedTime().asMilliseconds() >= 100) {
-                player.basicAttack(); // 기본 공격 발사
-                attackClock.restart(); // 타이머 초기화
-            }
+            for (float i = 0; i < 1; i += this->dt) player.move(sf::Vector2f(dx * dt, dy * dt));
 
-            // 스테이지에 따른 아군 유닛 발사 속도 조절
-            if (stageNumber == 1) {
-                // 하늘 스테이지: 100ms 간격으로 발사
-                if (allyAttackClock.getElapsedTime().asMilliseconds() >= 100) {
-                    player.allyAttack(); // 아군 유닛 기본 공격 발사
-                    allyAttackClock.restart(); // 타이머 초기화
-                }
+        }
+
+        // 100ms 간격으로 기본 공격 발사
+        if (attackClock.getElapsedTime().asMilliseconds() >= 100) {
+            player.basicAttack(); // 기본 공격 발사
+            attackClock.restart(); // 타이머 초기화
+        }
+
+        // 스테이지에 따른 아군 유닛 발사 속도 조절
+        if (stageNumber == 1) {
+            // 하늘 스테이지: 100ms 간격으로 발사
+            if (allyAttackClock.getElapsedTime().asMilliseconds() >= 100) {
+                player.allyAttack(); // 아군 유닛 기본 공격 발사
+                allyAttackClock.restart(); // 타이머 초기화
             }
-            //else if (stageNumber == 2) {
-            //    // 바다 스테이지: 500ms 간격으로 발사
-            //    if (allyAttackClock.getElapsedTime().asMilliseconds() >= 500) {
-            //        player.allyAttack(); // 아군 유닛 기본 공격 발사
-            //        allyAttackClock.restart(); // 타이머 초기화
-            //    }
-            //}
-            else if (stageNumber == 3 || stageNumber == 4) {
-                // 땅 스테이지: 500ms 간격으로 발사
-                if (allyAttackClock.getElapsedTime().asMilliseconds() >= 500) {
-                    player.allyAttack(); // 아군 유닛 기본 공격 발사
-                    allyAttackClock.restart(); // 타이머 초기화
-                }
+        }
+        //else if (stageNumber == 2) {
+        //    // 바다 스테이지: 500ms 간격으로 발사
+        //    if (allyAttackClock.getElapsedTime().asMilliseconds() >= 500) {
+        //        player.allyAttack(); // 아군 유닛 기본 공격 발사
+        //        allyAttackClock.restart(); // 타이머 초기화
+        //    }
+        //}
+        else if (stageNumber == 3 || stageNumber == 4) {
+            // 땅 스테이지: 500ms 간격으로 발사
+            if (allyAttackClock.getElapsedTime().asMilliseconds() >= 500) {
+                player.allyAttack(); // 아군 유닛 기본 공격 발사
+                allyAttackClock.restart(); // 타이머 초기화
             }
+        }
 
         player.updateAllies(dt, enemies, enemyMissiles);
         // 플레이어 공격 업데이트
@@ -388,22 +440,22 @@ void Game::update() { // 게임 상태 업데이트
         // 플레이어 업데이트
         player.updateBlink(); // 깜빡임 상태 업데이트
 
-            sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
+        sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
 
-            // 적 생성 및 업데이트
-            currentStage.spawnEnemies(enemies, dt);
-            for (auto* enemy : enemies) {
-                enemy->collision(player);
-                enemy->update(dt);
+        // 적 생성 및 업데이트
+        currentStage.spawnEnemies(enemies, dt);
+        for (auto* enemy : enemies) {
+            enemy->collision(player);
+            enemy->update(dt);
 
-                if (EliteUnit* elite = dynamic_cast<EliteUnit*>(enemy)) {
-                    elite->fireMissile(player.getPosition(), enemyMissiles); // 플레이어를 목표로 미사일 발사
-                    // 새로 생성된 미사일을 즉시 업데이트
-                    /*if (!enemyMissiles.empty()) {
-                        enemyMissiles.back()->update(); // 방금 추가된 미사일을 바로 업데이트
-                    }*/
-                }
+            if (EliteUnit* elite = dynamic_cast<EliteUnit*>(enemy)) {
+                elite->fireMissile(player.getPosition(), enemyMissiles); // 플레이어를 목표로 미사일 발사
+                // 새로 생성된 미사일을 즉시 업데이트
+                /*if (!enemyMissiles.empty()) {
+                    enemyMissiles.back()->update(); // 방금 추가된 미사일을 바로 업데이트
+                }*/
             }
+        }
 
         player.enemyProjectileCollision(enemyMissiles, enemies); // 적군 공격체와 플레이어, 플레이어 공격체 간 충돌 처리
         enemyMissiles.erase(                            // 충돌 된 적군 공격체 삭제
@@ -415,43 +467,43 @@ void Game::update() { // 게임 상태 업데이트
         );
 
 
-            for (auto& enemyMissile : enemyMissiles) {
-                enemyMissile->update(player.getPosition());
-            }
-            player.updateExplosions(dt);
+        for (auto& enemyMissile : enemyMissiles) {
+            enemyMissile->update(player.getPosition());
+        }
+        player.updateExplosions(dt);
 
-            //// 화면 밖 미사일 삭제
-            //enemyMissiles.erase(
-            //    std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
-            //        [](Missile* missile) {
-            //            return missile->isOffScreen();
-            //        }),
-            //    enemyMissiles.end()
-            //);
+        //// 화면 밖 미사일 삭제
+        //enemyMissiles.erase(
+        //    std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
+        //        [](Missile* missile) {
+        //            return missile->isOffScreen();
+        //        }),
+        //    enemyMissiles.end()
+        //);
 
-            //sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
+        //sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
 
-            //// 적 미사일 발사
-            //for (auto* enemy : enemies) {
-            //    enemy->fireMissile(enemyMissiles, playerPosition); // 플레이어를 목표로 미사일 발사
-            //}
+        //// 적 미사일 발사
+        //for (auto* enemy : enemies) {
+        //    enemy->fireMissile(enemyMissiles, playerPosition); // 플레이어를 목표로 미사일 발사
+        //}
 
-            //// 적 미사일 업데이트
-            //for (auto* missile : enemyMissiles) {
-            //    missile->targeting(playerPosition); // 플레이어를 향해 이동
-            //}
+        //// 적 미사일 업데이트
+        //for (auto* missile : enemyMissiles) {
+        //    missile->targeting(playerPosition); // 플레이어를 향해 이동
+        //}
 
-            /* if (attackClock.getElapsedTime().asMilliseconds() >= 500) {
-                 for (auto* enemy : enemies) {
-                     enemy->collision(player);
-                 }
-             }*/
+        /* if (attackClock.getElapsedTime().asMilliseconds() >= 500) {
+             for (auto* enemy : enemies) {
+                 enemy->collision(player);
+             }
+         }*/
 
          // stage 4 에서 보스 공격 처리
         if (stageNumber == 4) {
             boss->attack(dt, player, bossMissiles);
             boss->updateAttack(dt, player, bossMissiles);
-            
+
             // 플레이어, 플레이어 미사일과 보스미사일 충돌 처리
             player.enemyProjectileCollision(bossMissiles, enemies);
             bossMissiles.erase(                            // 충돌 된 보스 미사일 삭제
@@ -463,16 +515,19 @@ void Game::update() { // 게임 상태 업데이트
             );
         }
 
-            // 화면 밖 적 제거
-            deleteEnemy();
-            uiManager.update(stageNumber, false, player);
-        }
-        else {
-            // 게임 오버 상태 처리
-            uiManager.update(stageNumber, true, player);
-        }
+        // 화면 밖 적 제거
+        deleteEnemy();
+        uiManager.update(stageNumber, false, player);
+    }
+    else {
+        // 게임 오버 상태 처리
+        uiManager.update(stageNumber, true, player);
     }
 
+}
+
+void Game::minigameUpdate() {
+    minigame->runMinigame(dt, minigameInput, *window);
 }
 
 void Game::render() {

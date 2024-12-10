@@ -4,12 +4,11 @@
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
 
-// 보스의 초기 체력은 3000, 속도는 0.5로 설정
-Boss::Boss() : Enemy(3000.0f, 0.5f, sf::Vector2f(1300, 200), 4) {
+Boss::Boss() : Enemy(10000.0f, 0, sf::Vector2f(1300, 200), 4) {
     initBoss();
 }
 void Boss::initBoss() {
-    health = 3000;
+    health = 10000;
     phase = 1;
     time = pattern1 = pattern2 = pattern3 = pattern4 = pattern5 = 0;
     attackPattern = 1;
@@ -17,10 +16,10 @@ void Boss::initBoss() {
 
     // 보스 이미지 삽입 
     sf::IntRect textureRect;  // 표시할 텍스처 영역
-    textureRect = sf::IntRect(5, 75, 650, 650);
-    image("sky_elite_unit.png", textureRect);  // 이미지 파일을 초기화
-  
-    setPosition(sf::Vector2f(WINDOWWIDTH*3/4-100, WINDOWHEIGHT - 200));
+    textureRect = sf::IntRect(0, 0, 586, 847);
+    image("boss.png", textureRect);  // 이미지 파일을 초기화
+    sprite.setScale(0.62, 0.62);
+    setPosition(sf::Vector2f(1120, 250));
 
 
     // pattern 1
@@ -48,7 +47,7 @@ void Boss::initBoss() {
     healUnits.clear();
 
     // pattern 5
-    shieldActive = false;
+    shieldActive = true;
 
     // 벽 크기, 위치, 색상 동적 설정
     barrier.setSize(sf::Vector2f(20.0f, 500.0f));  // 가로 20, 세로 500 크기
@@ -364,7 +363,7 @@ void Boss::pattern4_Heal() {
 
 void Boss::deleteCollsionHealUnit() {
 
-    // 화면 밖으로 나갔거나 채력이 0 이하인 적 제거
+    // 화면 밖으로 나갔거나 체력이 0 이하인 적 제거
     healUnits.erase(
         std::remove_if(healUnits.begin(), healUnits.end(),
             [this](HealUnit* healUnit) {
@@ -392,7 +391,7 @@ void Boss::pattern5_DeployShield() {
         shieldActive = true; // 방패 활성화 
 
         shield = Shield(); // 새 Shield 객체 생성
-        shield.image("land_elite_unit_left.png"); // 이미지를 다시 설정
+        shield.image("shield.png"); // 이미지를 다시 설정
 
     }
 }
