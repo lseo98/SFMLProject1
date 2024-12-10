@@ -4,6 +4,9 @@
 #include <iostream>
 
 
+sf::Texture EliteUnit::landEliteUnitRightTexture;
+sf::Texture EliteUnit::landEliteUnitLeftTexture;
+
 Enemy::Enemy(float health, float speed, sf::Vector2f position, int stageNumber) 
     : Character(health, speed, position), stageNumber(stageNumber){
     collisionFlag = false;
@@ -198,9 +201,11 @@ void Enemy::update(float deltaTime) {
         else if (dynamic_cast<EliteUnit*>(this) || dynamic_cast<HealUnit*>(this)) {
             if (position.x <= 450) {
                 direction = 1; // 오른쪽으로 이동
+                updateTexture(); // 방향 변경 시 텍스처 갱신
             }
             else if (position.x >= 1250) {
                 direction = -1; // 왼쪽으로 이동
+                updateTexture(); // 방향 변경 시 텍스처 갱신
             }
             position.x += direction * 100.0f * deltaTime; // 방향에 따라 이동
             position.y += std::cos(position.x / 50.0f) * 30.0f * deltaTime; // 위아래로 흔들리며 이동
@@ -222,6 +227,7 @@ bool Enemy::isOffScreen() const {
 // EliteUnit
 sf::Texture EliteUnit::missileTexture; // 단일 텍스처
 sf::Texture EliteUnit::missileTextures[3];//엘리트 유닛 발사체 텍스처
+
 void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique_ptr<Missile>>& globalMissiles) {
     if (fireClock.getElapsedTime().asSeconds() >= 5.0f) {
         // 초기 방향 설정
@@ -253,6 +259,13 @@ void EliteUnit::initializeTextures() {
     missileTextures[0].loadFromFile("enemy_missile_sky.png"); //사진 변경예정
     missileTextures[1].loadFromFile("enemy_missile_sea.png");
     missileTextures[2].loadFromFile("enemy_missile_land.png");
+
+    if (!landEliteUnitRightTexture.loadFromFile("land_elite_unit_right.png")) {
+        std::cerr << "Failed to load land_elite_unit_right.png!" << std::endl;
+    }
+    if (!landEliteUnitLeftTexture.loadFromFile("land_elite_unit_left.png")) {
+        std::cerr << "Failed to load land_elite_unit_left.png!" << std::endl;
+    }
 }
 
 void EliteUnit::updateAttack(float deltaTime) {

@@ -58,7 +58,7 @@ private:
     sf::Font font;
     sf::Text inputText;
     sf::Text text;
-    sf::RectangleShape inputBoxl, inputBoxr, smallBoxr, coolbar_Q, coolbar_E, boxE, boxQ, boxdir, keyb,timebox;
+    sf::RectangleShape inputBoxl, inputBoxr, smallBoxr, coolbar_Q, coolbar_E, boxE, boxQ, boxdir, keyb, timebox;
     sf::Text skytext, seatext, landtext;
     sf::Text textbox;
     sf::Text gameOverText;
