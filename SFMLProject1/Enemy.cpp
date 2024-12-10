@@ -40,7 +40,7 @@ void Enemy::draw(sf::RenderWindow& window) {
     float healthBarWidth = (this->getHealth() / maxHealth) * 76.0f; // 체력에 비례한 길이
 
     // 체력바 (빨간색)
-    sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth + 2, 4.0f));
+    sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth+ 2, 4.0f));
     healthBar.setFillColor(sf::Color::Red);
     healthBar.setPosition((this->position.x + sprite.getGlobalBounds().width / 2) - 49 + adj, this->position.y - 13.0f);
     window.draw(healthBar);
@@ -199,9 +199,11 @@ void Enemy::update(float deltaTime) {
         else if (dynamic_cast<EliteUnit*>(this) || dynamic_cast<HealUnit*>(this)) {
             if (position.x <= 450) {
                 direction = 1; // 오른쪽으로 이동
+                updateTexture(); // 방향 변경 시 텍스처 갱신
             }
             else if (position.x >= 1250) {
                 direction = -1; // 왼쪽으로 이동
+                updateTexture(); // 방향 변경 시 텍스처 갱신
             }
             position.x += direction * 100.0f * deltaTime; // 방향에 따라 이동
             position.y += std::cos(position.x / 50.0f) * 30.0f * deltaTime; // 위아래로 흔들리며 이동

@@ -232,17 +232,17 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
             userInput = "";
 
             // 입력값에 따라 스테이지 번호 설정 
-            if (s2 == "skymap") {
+            if (s2 == "skymap" && currentStageNumber != 1) {
                 onStageChange(1); // 스테이지 1로 변경
                 Game::stageTransitionClock.restart();
 
             }
-            else if (s2 == "seamap") {
+            else if (s2 == "seamap" && currentStageNumber != 2) {
                 onStageChange(2); // 스테이지 1로 변경
                 Game::stageTransitionClock.restart();
 
             }
-            else if (s2 == "landmap") {
+            else if (s2 == "landmap" && currentStageNumber != 3) {
                 onStageChange(3); // 스테이지 1로 변경
                 Game::stageTransitionClock.restart();
                 //std::cout << "landmap = " << s2 << std::endl;

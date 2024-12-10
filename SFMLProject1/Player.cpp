@@ -313,6 +313,8 @@ void Player::specialAttack() {
         missileStartPosition.y += height / 2.0f; // 플레이어의 중심 y 좌표
         sf::IntRect textureRect;  // 표시할 텍스처 영역
         // 미사일 생성 및 설정
+        if (direction == 'A' && stageNumber == 2) missileDirection = sf::Vector2f(-1.0f, 0.0f);
+        else if (direction == 'D' && stageNumber == 2) missileDirection = sf::Vector2f(1.0f, 0.0f);
         Missile* missile = new Missile(missileStartPosition, missileDirection, 8.0f);
         missile->isPlayerProjectile = true;
         missile->setTexture(MissileTextures[stageNumber - 1], textureRect); // 텍스처 설정
