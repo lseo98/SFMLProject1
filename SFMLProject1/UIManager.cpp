@@ -47,19 +47,19 @@ void UIManager::init() {
     text.setPosition(1410, 120);
 
     skytext.setFont(font);
-    skytext.setString("AIR FORCE     0 / 30");
+    skytext.setString("AIR FORCE     0 / 15");
     skytext.setCharacterSize(38);
     skytext.setFillColor(sf::Color(100, 100, 100, 250));
     skytext.setPosition(1410, 200);
 
     seatext.setFont(font);
-    seatext.setString("NAVY          0 / 30");
+    seatext.setString("NAVY          0 / 15");
     seatext.setCharacterSize(38);
     seatext.setFillColor(sf::Color(100, 100, 100, 250));
     seatext.setPosition(1410, 250);
 
     landtext.setFont(font);
-    landtext.setString("ARMY          0 /  30");
+    landtext.setString("ARMY          0 /  15");
     landtext.setCharacterSize(38);
     landtext.setFillColor(sf::Color(100, 100, 100, 250));
     landtext.setPosition(1410, 300);
@@ -265,12 +265,12 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
             }
             else if (s2 == "landmap" && currentStageNumber != 3) {
                 onStageChange(3); // 스테이지 1로 변경
+                Game::stageTransitionClock.restart();
                 //std::cout << "landmap = " << s2 << std::endl;
 
             }
             else if (s2 == "restart") {
                 if (onRestart) onRestart(); // restart 콜백 호출
-                Game::stageTransitionClock.restart();
             }
 
             else {
