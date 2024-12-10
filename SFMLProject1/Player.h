@@ -87,7 +87,7 @@ public:
     std::vector<Missile*>& getAllyMissiles() { return allyMissiles; }
 
     // 처치한 적군 수
-    int killCountNomalUnit, killCountEliteUnit1, killCountEliteUnit2, killCountEliteUnit3, maxKillEliteCount = 1;
+    int killCountNomalUnit, killCountEliteUnit1, killCountEliteUnit2, killCountEliteUnit3, maxKillEliteCount = 30;
 
     void setSpecialAttackCooldown(float cooldown) {
         specialAttackCooldown = cooldown;
