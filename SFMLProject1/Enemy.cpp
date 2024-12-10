@@ -75,7 +75,7 @@ void Enemy::collision(Player& player) {
     if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds()) && !collisionFlag) { // 충돌 발생 시
         player.takeDamage(1);
         player.changeHeartSprite();
-        std::cout << "플레이어 목숨 : " << player.getHealth() << std::endl;
+        //std::cout << "플레이어 목숨 : " << player.getHealth() << std::endl;
         collisionFlag = true;
     }
 }

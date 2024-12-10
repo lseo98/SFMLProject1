@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Boss.h" 
 #include "Bullet.h" 
 #include "Missile.h"
 #include "Game.h"
@@ -10,7 +11,7 @@ Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHE
     //missileLaunched = false; 
 
     // 특수 공격 관련 변수 초기화
-    specialAttackCooldown = 2.0f; // 특수 공격 쿨타임: 2초
+    specialAttackCooldown = 1.0f; // 특수 공격 쿨타임: 1초
     //timeSinceLastSpecial = specialAttackCooldown; // 게임 시작 시 바로 사용할 수 있도록 설정
     canSpecialAttack = false;
 
@@ -33,7 +34,7 @@ Player::Player() : Character(5, 15.0f, sf::Vector2f(WINDOWWIDTH / 2.0f, WINDOWHE
 void Player::move(sf::Vector2f updatePosition) {
     this->position += updatePosition;   // 위치 업데이트
 
-    if (stageNumber == 1 || stageNumber == 3 || stageNumber == 4) {
+    if (stageNumber == 1 || stageNumber == 3 ) {
         // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
         if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
         if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width;
@@ -67,7 +68,14 @@ void Player::move(sf::Vector2f updatePosition) {
             isOnGround = false; // 공중으로 나가면 다시 초기화
         }
     }
-
+    if (stageNumber == 4) {
+        // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
+        if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
+        if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f - 200) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width - 200;
+        if (this->position.y < 0)  this->position.y = 0;
+        if (this->position.y + height > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - height;
+    }
+   // std::cout << "스테이지 4에서 이동 처리 " << stageNumber <<  std::endl;
 }
 
 
@@ -162,7 +170,7 @@ void Player::updateDirection(char direction, int stageNumber) {
 
             }
         }
-        if (stageNumber == 3) { // Only change image in stage 3
+        if (stageNumber == 3 || stageNumber == 4) { // Only change image in stage 3
             if (direction == 'A') {
                 textureRect = sf::IntRect(0, 0, 990, 710);
                 image("land_my_unit_left.PNG", textureRect);
@@ -223,6 +231,7 @@ void Player::setPlayer(int stageNumber) {
         image("sea_my_unit_right.PNG", textureRect);
         break;
     case 3:
+    case 4:
         direction = 'D';
         bulletDirection = sf::Vector2f(1.0f, 0.0f);
         missileDirection = sf::Vector2f(0.0f, -1.0f);
@@ -274,7 +283,7 @@ void Player::basicAttack() {
         bulletStartPosition = sf::Vector2f(this->position.x + 50, this->position.y + 30);
         //sf::Vector2f bulletStartPosition(this->position.x + 200, this->position.y+100);
     }
-    if (stageNumber == 3) {
+    if (stageNumber == 3 || stageNumber == 4) {
         bulletStartPosition = sf::Vector2f(this->position.x + 20, this->position.y + 15);
         //sf::Vector2f bulletStartPosition(this->position.x + 20, this->position.y+20);
     }
@@ -292,10 +301,10 @@ void Player::basicAttack() {
 }
 
 void Player::specialAttack() {
-    std::cout << "Nomal Unit 처치 수 : " << killCountNomalUnit << std::endl;
+    /*std::cout << "Nomal Unit 처치 수 : " << killCountNomalUnit << std::endl;
     std::cout << "stage1 Elite Unit 처치 수 : " << killCountEliteUnit1 << std::endl;
     std::cout << "stage2 Elite Unit 처치 수 : " << killCountEliteUnit2 << std::endl;
-    std::cout << "stage3 Elite Unit 처치 수 : " << killCountEliteUnit3 << std::endl << std::endl;
+    std::cout << "stage3 Elite Unit 처치 수 : " << killCountEliteUnit3 << std::endl << std::endl;*/
 
     if (canSpecialAttack) {
         // 플레이어의 중앙 위치를 계산하여 미사일의 시작 위치로 사용
@@ -312,10 +321,10 @@ void Player::specialAttack() {
         // 특수 공격 상태 갱신
         timeSinceLastSpecial = 0.0f;  // 쿨타임 초기화
         canSpecialAttack = false;     // 쿨타임 시작
-        std::cout << "Special attack activated!" << std::endl;
+       // std::cout << "Special attack activated!" << std::endl;
     }
     else {
-        std::cout << "Special attack on cooldown!" << std::endl;
+       // std::cout << "Special attack on cooldown!" << std::endl;
     }
 
 }
@@ -326,7 +335,7 @@ void Player::ultimateAttack() {
         switch (stageNumber) {
         case 1: // 하늘 스테이지
         {
-            std::cout << "Sky ultimate attack activated!" << std::endl;
+            //std::cout << "Sky ultimate attack activated!" << std::endl;
 
             // 대기 시간 초기화
             waitTime = 5.0f;  // 하늘 스테이지에서만 5초 대기
@@ -393,7 +402,7 @@ void Player::ultimateAttack() {
 
 
             // 발사체 하나 중앙에서 폭발
-            std::cout << "Sea ultimate attack activated!" << std::endl;
+            //std::cout << "Sea ultimate attack activated!" << std::endl;
 
             // 발사체 초기값 설정
             sf::Vector2f missileStartPosition(400, 600); // 왼쪽 끝에서 시작
@@ -415,7 +424,7 @@ void Player::ultimateAttack() {
         case 3: // 땅 스테이지
         case 4: // 보스 스테이지
         {
-            std::cout << "Land ultimate attack activated!" << std::endl;
+            //std::cout << "Land ultimate attack activated!" << std::endl;
 
             // 공격기 텍스처 로드
             if (!allyTexture.loadFromFile("land_p_unit.png")) { // 공격기 이미지 텍스처 로드
@@ -441,12 +450,12 @@ void Player::ultimateAttack() {
         break;
 
         default:
-            std::cout << "Invalid stage number for ultimate attack!" << std::endl;
+            //std::cout << "Invalid stage number for ultimate attack!" << std::endl;
             break;
         }
     }
     else {
-        std::cout << "Ultimate attack on cooldown!" << std::endl;
+       // std::cout << "Ultimate attack on cooldown!" << std::endl;
     }
 }
 
@@ -519,7 +528,7 @@ void Player::updateCooldowns(float dt) {
         timeSinceLastSpecial += dt; // 프레임 간 경과 시간을 누적
         if (timeSinceLastSpecial >= specialAttackCooldown) {
             canSpecialAttack = true; // 쿨타임 종료 시 특수 공격 가능하게 설정
-            std::cout << "Special attack is ready!" << std::endl;
+            //std::cout << "Special attack is ready!" << std::endl;
         }
     }
 
@@ -528,7 +537,7 @@ void Player::updateCooldowns(float dt) {
         timeSinceLastUltimate += dt; // 프레임 간 경과 시간을 누적
         if (timeSinceLastUltimate >= ultimateAttackCooldown) {
             canUltimateAttack = true; // 쿨타임 종료 시 필살기 가능하게 설정
-            std::cout << "Ultimate attack is ready!" << std::endl;
+           // std::cout << "Ultimate attack is ready!" << std::endl;
         }
     }
 }
@@ -738,7 +747,7 @@ void Player::collision(std::vector<Enemy*>& enemies) {
                     << (*enemyIt)->sprite.getGlobalBounds().height << std::endl;*/
 
                 float damage = (*bulletIt)->getDamage();
-                if (dynamic_cast<EliteUnit*>(*enemyIt) == *enemyIt) damage /= 10;
+                if (dynamic_cast<EliteUnit*>(*enemyIt) == *enemyIt) damage /= 2.0f;
 
                 (*enemyIt)->takeDamage(damage);   // Enemy의 체력 감소
                 (*bulletIt)->crashed();
@@ -871,21 +880,21 @@ void Player::shieldCollision(std::vector<Shield*> shield) {
     for (Shield* shield : shield) {
         for (auto bullet : bullets) {
             if (bullet->sprite.getGlobalBounds().intersects(shield->sprite.getGlobalBounds())) {
-                std::cout << "Collision detected!" << std::endl;
+                //std::cout << "Collision detected!" << std::endl;
                 shield->takeDamage(bullet->getDamage()); // 데미지 적용
                 bullet->crashed(); // 총알 상태 변경
             }
         }
         for (auto missile : missiles) {
             if (missile->sprite.getGlobalBounds().intersects(shield->sprite.getGlobalBounds())) {
-                std::cout << "Collision detected!" << std::endl;
+                //std::cout << "Collision detected!" << std::endl;
                 shield->takeDamage(missile->getDamage()); // 데미지 적용
                 missile->crashed(); // 총알 상태 변경
             }
         }
         for (auto allyMissile : allyMissiles) {
             if (allyMissile->sprite.getGlobalBounds().intersects(shield->sprite.getGlobalBounds())) {
-                std::cout << "Collision detected!" << std::endl;
+                //std::cout << "Collision detected!" << std::endl;
                 shield->takeDamage(allyMissile->getDamage()); // 데미지 적용
                 allyMissile->crashed(); // 총알 상태 변경
             }
@@ -895,7 +904,7 @@ void Player::shieldCollision(std::vector<Shield*> shield) {
 
 
 // 적군 공격체-플레이어 충돌 처리
-void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles) {   
+void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles, std::vector<Enemy*>& enemies) {
     for (auto enemyMissileIt = globalMissiles.begin(); enemyMissileIt != globalMissiles.end(); enemyMissileIt++) {
         if ((*enemyMissileIt)->checkCrashed()) continue;        // 이미 충돌이 일어났다면 continue
         bool misileDestroyed = false;
@@ -904,7 +913,6 @@ void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& glo
         }
 
         // 플레이어 Missile 처리   
-        // 미사일의 개수가 총알에 비해 비교적 적고 범위 공격을 인해 continue가 자주 발생할 수 있어 총알보다 우선 충돌처리
         for (auto missileIt = missiles.begin(); missileIt != missiles.end(); missileIt++) {
             if (*missileIt == nullptr) {  // nullptr 체크
                 break;
@@ -921,13 +929,40 @@ void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& glo
 
                     createExplosion(playerMissilePostion, ExplosionType::MissileImpact);
 
-                    /* std::cout << "player 미사일 x,y : " << playerMissilePostion.x << " " << playerMissilePostion.y << std::endl;
-                    std::cout << "enemy 미사일 x,y : " << enemyMissilePostion.x << " " << enemyMissilePostion.y << std::endl;
-                    std::cout << "미사일 distance : " << distance << std::endl;*/
                     if (distance < (*missileIt)->getRange()) {
                         (*enemyMissilTmpIt)->crashed();    // 적군 미사일 충돌 됨으로 상태 수정
                     }
                 }
+
+                // 아군 미사일 범위 안 적군도 피격처리
+
+                sf::FloatRect boundsMissile = (*missileIt)->sprite.getGlobalBounds(); 
+                sf::Vector2f missileCenter = sf::Vector2f(boundsMissile.left + boundsMissile.width / 2, boundsMissile.top + boundsMissile.height / 2);
+                sf::Vector2f missiletopcenter = sf::Vector2f(boundsMissile.left + boundsMissile.width / 2, boundsMissile.top);
+                createExplosion(missiletopcenter, ExplosionType::MissileImpact);
+
+                for (auto enemyTmpIt = enemies.begin(); enemyTmpIt != enemies.end(); enemyTmpIt++) {
+                    if (*enemyTmpIt == nullptr) {  // nullptr 체크
+                        break;
+                    }
+                    sf::FloatRect boundsTmpEnemy = (*enemyTmpIt)->sprite.getGlobalBounds();
+                    sf::Vector2f tmpEnemyCenter = sf::Vector2f(boundsTmpEnemy.left + boundsTmpEnemy.width / 2, boundsTmpEnemy.top + boundsTmpEnemy.height / 2);
+                    sf::Vector2f dist = tmpEnemyCenter - missileCenter;
+                    double distance = sqrt(dist.x * dist.x + dist.y * dist.y);
+
+                    if (distance < (*missileIt)->getRange()) {
+
+                        (*enemyTmpIt)->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
+
+                        if ((*enemyTmpIt)->getHealth() <= 0) {
+                            createExplosion(tmpEnemyCenter, ExplosionType::EnemyDestroyed);
+                        }
+                    }
+
+                }
+
+
+
             }
             if (misileDestroyed) break;
         }
@@ -968,6 +1003,69 @@ void Player::enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& glo
             (*enemyMissileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
         }
     }
+    deleteThisProjectile();
+
+}
+void Player::bossCollision(Boss* boss) {
+        // 플레이어의 공격과 보스 충돌 처리
+    
+
+        // Missile 처리   // 미사일의 개수가 총알에 비해 비교적 적고 범위 공격을 인해 continue가 자주 발생할 수 있어 총알보다 우선 충돌처리
+        for (auto missileIt = missiles.begin(); missileIt != missiles.end(); missileIt++) {
+            if (*missileIt == nullptr) {  // nullptr 체크
+                break;
+            }
+            if ((*missileIt)->sprite.getGlobalBounds().intersects((boss)->sprite.getGlobalBounds())) { // 충돌 발생 시
+
+                boss->takeDamage((*missileIt)->getDamage());   // Enemy의 체력 감소
+                (*missileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
+
+                if ((boss)->getHealth() <= 0) {
+                    sf::FloatRect boundsTmpEnemy = (boss)->sprite.getGlobalBounds();
+                    sf::Vector2f tmpEnemyCenter = sf::Vector2f(boundsTmpEnemy.left + boundsTmpEnemy.width / 2, boundsTmpEnemy.top + boundsTmpEnemy.height / 2);
+                    createExplosion(tmpEnemyCenter, ExplosionType::EnemyDestroyed);
+                    return;     // 보스 하나만 검사하므로 보스 처치 시 바로 return
+                }
+            }
+        }
+
+        // Bullet 처리
+        for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); bulletIt++) {
+            if ((*bulletIt)->sprite.getGlobalBounds().intersects((boss)->sprite.getGlobalBounds())) { // 충돌 발생 시
+
+                (boss)->takeDamage((*bulletIt)->getDamage());   // Boss의 체력 감소
+                (*bulletIt)->crashed();
+                if ((boss)->getHealth() <= 0) {
+                    createExplosion((boss->sprite.getPosition()), ExplosionType::EnemyDestroyed);
+                    return;
+                }
+            }
+        }
+
+        // 필살기 Missile 처리   
+        for (auto missileIt = allyMissiles.begin(); missileIt != allyMissiles.end(); missileIt++) {
+            if (*missileIt == nullptr) {  // nullptr 체크
+                break;
+            }
+            if ((*missileIt)->sprite.getGlobalBounds().intersects((boss)->sprite.getGlobalBounds())) { // 충돌 발생 시
+                sf::FloatRect boundsMissile = (*missileIt)->sprite.getGlobalBounds();
+                sf::Vector2f missileCenter = sf::Vector2f(boundsMissile.left + boundsMissile.width / 2, boundsMissile.top + boundsMissile.height / 2);
+
+
+                sf::FloatRect boundsTmpEnemy = (boss)->sprite.getGlobalBounds();
+                sf::Vector2f tmpEnemyCenter = sf::Vector2f(boundsTmpEnemy.left + boundsTmpEnemy.width / 2, boundsTmpEnemy.top + boundsTmpEnemy.height / 2);
+
+
+                boss->takeDamage((*missileIt)->getDamage());   // Boss의 체력 감소
+                createExplosion(tmpEnemyCenter, ExplosionType::EnemyDestroyed);
+
+
+                (*missileIt)->crashed();    // 미사일 충돌 됨으로 상태 수정
+            }
+           
+
+        }
+
     deleteThisProjectile();
 
 }
@@ -1124,7 +1222,7 @@ void Player::loadProjectileTextures() {
     if (!bulletTextures[1].loadFromFile("bullet_sea.png")) {
         std::cerr << "Error loading bullet_sea.png!" << std::endl;
     }
-    if (!bulletTextures[2].loadFromFile("bullet_land.png")) {
+    if (!bulletTextures[2].loadFromFile("bullet_land.png") || !bulletTextures[3].loadFromFile("bullet_land.png")) {
         std::cerr << "Error loading bullet_land.png!" << std::endl;
     }
     if (!MissileTextures[0].loadFromFile("missile_sky.png")) {
@@ -1133,7 +1231,7 @@ void Player::loadProjectileTextures() {
     if (!MissileTextures[1].loadFromFile("missile_sea.png")) {
         std::cerr << "Error loading bullet_sea.png!" << std::endl;
     }
-    if (!MissileTextures[2].loadFromFile("missile_land.png")) {
+    if (!MissileTextures[2].loadFromFile("missile_land.png") || !MissileTextures[3].loadFromFile("missile_land.png")) {
         std::cerr << "Error loading bullet_land.png!" << std::endl;
     }
     if (!AllMissileTextures[0].loadFromFile("bullet_p_sky.png")) {
@@ -1142,7 +1240,7 @@ void Player::loadProjectileTextures() {
     if (!AllMissileTextures[1].loadFromFile("Q_sea_missile.png")) {
         std::cerr << "Error loading Q_sea_missile.png!" << std::endl;
     }
-    if (!AllMissileTextures[2].loadFromFile("Q_missile_land.png")) {
+    if (!AllMissileTextures[2].loadFromFile("Q_missile_land.png") || !AllMissileTextures[3].loadFromFile("Q_missile_land.png")) {
         std::cerr << "Error loading Q_missile_land.png!" << std::endl;
     }
 }
@@ -1155,7 +1253,7 @@ void Player::loadExplosionTextures() {
     if (!enemyExplosionTextures[1].loadFromFile("explosion-b.png")) {
         std::cerr << "Error loading explosion_enemy_stage2.png!" << std::endl;
     }
-    if (!enemyExplosionTextures[2].loadFromFile("explosion-3a.png")) {
+    if (!enemyExplosionTextures[2].loadFromFile("explosion-3a.png") || !enemyExplosionTextures[3].loadFromFile("explosion-3a.png")) {
         std::cerr << "Error loading explosion_enemy_stage2.png!" << std::endl;
     }
     if (!missileExplosionTextures[0].loadFromFile("explosion-b.png")) {
@@ -1164,7 +1262,7 @@ void Player::loadExplosionTextures() {
     if (!missileExplosionTextures[1].loadFromFile("explosion.png")) {
         std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
     }
-    if (!missileExplosionTextures[2].loadFromFile("explosion.png")) {
+    if (!missileExplosionTextures[2].loadFromFile("explosion.png") || !missileExplosionTextures[3].loadFromFile("explosion.png")) {
         std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
     }
     if (!Q_missileExplosionTextures[1].loadFromFile("explosion_Q_sea.png")) {

@@ -64,7 +64,7 @@ private:
     // ÃÊ±â °´Ã¼ »ý¼º
     Player player;
     std::vector<Enemy*> enemies;
-    Boss boss;
+    Boss *boss;
     Stage currentStage;
     int stageNumber;        // 1: ÇÏ´Ã, 2: ¹Ù´Ù, 3: ¶¥
 

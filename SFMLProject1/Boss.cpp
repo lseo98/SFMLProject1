@@ -15,6 +15,14 @@ void Boss::initBoss() {
     attackPattern = 1;
     beforeAttackpattern = 0;
 
+    // 보스 이미지 삽입 
+    sf::IntRect textureRect;  // 표시할 텍스처 영역
+    textureRect = sf::IntRect(5, 75, 650, 650);
+    image("sky_elite_unit.png", textureRect);  // 이미지 파일을 초기화
+  
+    setPosition(sf::Vector2f(WINDOWWIDTH*3/4-100, WINDOWHEIGHT - 200));
+
+
     // pattern 1
     maxMissile = 0;
     launchedMissile = 0;
@@ -51,11 +59,11 @@ void Boss::initBoss() {
 void Boss::change_phase() {
     if (health < 1500.0f && attackPattern == 1) {
         attackPattern = 2;
-        std::cout << "페이즈 2로 전환\n";
+        //std::cout << "페이즈 2로 전환\n";
     }
     else if (health < 500.0f && attackPattern == 2) {
         attackPattern = 3;
-        std::cout << "페이즈 3으로 전환\n";
+       // std::cout << "페이즈 3으로 전환\n";
     }
     // 체력에 따라 보스의 페이즈 변경
 }
@@ -63,40 +71,41 @@ void Boss::change_phase() {
 void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<Missile>>& bossMissiles) {
     time += deltaTime;
 
-    //pattern1_BossMissile(player.getPosition(), bossMissiles);
-    //pattern2_Laser();
-    //pattern3_Barrier();
-    //pattern4_Heal();
-    pattern5_DeployShield();
+    /*pattern1_BossMissile(player.getPosition(), bossMissiles);
+    pattern2_Laser();
+    pattern3_Barrier();
+    pattern4_Heal();
+    pattern5_DeployShield();*/
 
 
-    /*if (time > 5) {
+    if (time > 10) {
 
         attackPattern = rand() % 5 + 1;
-        if (attackPattern == beforeAttackpattern) attackPattern = attackPattern % 5 + 1;
+        if (attackPattern == beforeAttackpattern) attackPattern = attackPattern % 5 + 1;    // 1 ~ 5 사이의 패턴 생성
+        //std::cout << getHealth() << std::endl;
         switch (attackPattern) {
         case 1:
-            std::cout << 1 << std::endl;
+            pattern1_BossMissile(player.getPosition(), bossMissiles);
             break;
         case 2:
             pattern2_Laser();
             break;
         case 3:
-            std::cout << 3 << std::endl;
+            pattern3_Barrier();
             break;
         case 4:
             pattern4_Heal();
             break;
         case 5:
-            std::cout << 5 << std::endl;
+            pattern5_DeployShield();
             break;
         default:
-            std::cout << "Error boss attack" << std::endl;
+           // std::cout << "Error boss attack" << std::endl;
             break;
         }
         beforeAttackpattern = attackPattern;
         time = 0;
-    }*/
+    }
 }
 void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique_ptr<Missile>>& bossMissiles) {
     // pattern1 보스미사일 update
@@ -210,6 +219,9 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
 }
 
 void Boss::render(sf::RenderWindow& window, std::vector<std::unique_ptr<Missile>>& bossMissiles) {
+    
+    this->draw(window);
+    
     // pattern1
     for (const auto& missile : bossMissiles) {
         missile->draw(window);
@@ -358,7 +370,7 @@ void Boss::deleteCollsionHealUnit() {
             [this](HealUnit* healUnit) {
                 if (healUnit->sprite.getGlobalBounds().width + healUnit->sprite.getGlobalBounds().left > WINDOWWIDTH / 4 * 3 - 200) {   // 게임화면 우측 끝에서 왼쪽으로 200만큼 이전에 닿을 경우 보스에 도달 처리
                     this->takeDamage(-200.0f);                                          // 보스 체력 200만큼 회복
-                    std::cout << "boss 체력 : " << this->getHealth() << std::endl;
+                    //std::cout << "boss 체력 : " << this->getHealth() << std::endl;
                     killHealUnitCount--;
                     delete healUnit; // 메모리 해제
                     return true; // 제거 대상
@@ -377,7 +389,7 @@ void Boss::deleteCollsionHealUnit() {
 // 패턴 5 관련 함수
 void Boss::pattern5_DeployShield() {
     if (!shieldActive) {
-        shieldActive = true; // 방패 활성화
+        shieldActive = true; // 방패 활성화 
 
         shield = Shield(); // 새 Shield 객체 생성
         shield.image("land_elite_unit_left.png"); // 이미지를 다시 설정

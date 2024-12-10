@@ -241,7 +241,7 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
             }
             else if (s2 == "landmap") {
                 onStageChange(3); // 스테이지 1로 변경
-                std::cout << "landmap = " << s2 << std::endl;
+                //std::cout << "landmap = " << s2 << std::endl;
 
             }
             else if (s2 == "restart") {
@@ -251,7 +251,7 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
             }
 
             else {
-                std::cout << "Invalid input: " << s2 << std::endl;
+                //std::cout << "Invalid input: " << s2 << std::endl;
             }
 
 
@@ -472,7 +472,7 @@ void UIManager::setBackground(int stageNumber) {
     //    backgroundImagePath = "minigame.png";
 
     default:
-        std::cout << "background" << std::endl;
+        //std::cout << "background" << std::endl;
         break;
     }
 

@@ -64,14 +64,18 @@ void Missile::update(const sf::Vector2f& targetPosition) {
         direction.y = std::sin(newAngle);
 
         // 목표에 도달하면 추적 종료
-        if (std::abs(position.x - targetPosition.x) < 5.0f &&
-            std::abs(position.y - targetPosition.y) < 5.0f) {
+        if (std::abs(position.x - targetPosition.x) < 150.0f &&
+            std::abs(position.y - targetPosition.y) < 150.0f) {
             isTracking = false;
         }
         position += direction * speed;
         sprite.setPosition(position);
         float angleDegrees = atan2(direction.y, direction.x) * 180.0f / 3.14159265f + 90.0f;
         sprite.setRotation(angleDegrees);
+    }
+    else {
+        position += direction * speed;
+        sprite.setPosition(position);
     }
 }
 

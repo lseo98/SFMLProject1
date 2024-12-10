@@ -28,7 +28,7 @@ void Game::run() {
         if (player.getHealth() <= 0) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
                 player.restart();
-                boss.initBoss();
+                boss->initBoss();
                 stageSwitchCounter = 1;
                 stageNumber = 1;
                 for (Enemy* enemy : enemies) {
@@ -65,7 +65,7 @@ void Game::initVariables() {
     // restart 콜백 설정
     uiManager.setRestartCallback([this]() {
         player.restart();
-    boss.initBoss();
+    boss->initBoss();
     stageSwitchCounter = 1;
     stageNumber = 1;
 
@@ -89,7 +89,8 @@ void Game::initVariables() {
 
 
 	uiManager.init(); // UI 초기화
-
+    boss = new Boss();
+    
 }
 
 void Game::initWindow() {
@@ -162,7 +163,7 @@ void Game::handleEvents() {
                 else if (event.key.code == sf::Keyboard::Num4 || event.key.code == sf::Keyboard::Numpad4) {
                     stageNumber = 4;
                     currentStage.setStage(3, enemies);
-                    player.setPlayer(3);
+                    player.setPlayer(4);
                     player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f - 200, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
                     currentStage.spawnEnemies(enemies, dt);
                     enemyMissiles.clear();
@@ -184,7 +185,7 @@ void Game::handleEvents() {
                     }
                     // 보스 패턴 테스트용 // 이거 사용 시 game update에 가서 boss.attack 주석처리해야
                     if (event.key.code == sf::Keyboard::T) {
-                        if (stageNumber == 4) boss.attack(dt, player, bossMissiles);
+                        if (stageNumber == 4) boss->attack(dt, player, bossMissiles);
                     }
                 }
                 // 플레이어 좌우 반전
@@ -309,7 +310,6 @@ void Game::update() { // 게임 상태 업데이트
 
         // UIManager에 데이터 전달
         uiManager.updateMinigameInfo(arr);
-        std::cout << "dlsfj";
     }
     else {
         if (player.getHealth() > 0) {
@@ -376,13 +376,13 @@ void Game::update() { // 게임 상태 업데이트
                 }
             }
 
-            player.updateAllies(dt, enemies, enemyMissiles);
-            // 플레이어 공격 업데이트
-            player.collision(enemies);
-            player.updateAttack();
-
-            // 플레이어 업데이트
-            player.updateBlink(); // 깜빡임 상태 업데이트
+        player.updateAllies(dt, enemies, enemyMissiles);
+        // 플레이어 공격 업데이트
+        player.collision(enemies);
+        player.updateAttack();
+        if (stageNumber == 4) { player.bossCollision(boss); }
+        // 플레이어 업데이트
+        player.updateBlink(); // 깜빡임 상태 업데이트
 
             sf::Vector2f playerPosition = player.getPosition(); // 플레이어 위치 가져오기
 
@@ -401,14 +401,14 @@ void Game::update() { // 게임 상태 업데이트
                 }
             }
 
-            player.enemyProjectileCollision(enemyMissiles); // 적군 공격체와 플레이어, 플레이어 공격체 간 충돌 처리
-            enemyMissiles.erase(                            // 충돌 된 적군 공격체 삭제
-                std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
-                    [](std::unique_ptr<Missile>& missile) {
-                        return missile->checkCrashed();
-                    }),
-                enemyMissiles.end()
-                        );
+        player.enemyProjectileCollision(enemyMissiles, enemies); // 적군 공격체와 플레이어, 플레이어 공격체 간 충돌 처리
+        enemyMissiles.erase(                            // 충돌 된 적군 공격체 삭제
+            std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),
+                [](std::unique_ptr<Missile>& missile) {
+                    return missile->checkCrashed();
+                }),
+            enemyMissiles.end()
+        );
 
 
             for (auto& enemyMissile : enemyMissiles) {
@@ -443,21 +443,21 @@ void Game::update() { // 게임 상태 업데이트
                  }
              }*/
 
-             // stage 4 에서 보스 공격 처리
-            if (stageNumber == 4) {
-                //boss.attack(dt, player, bossMissiles);
-                boss.updateAttack(dt, player, bossMissiles);
-
-                // 플레이어, 플레이어 미사일과 보스미사일 충돌 처리
-                player.enemyProjectileCollision(bossMissiles);
-                bossMissiles.erase(                            // 충돌 된 보스 미사일 삭제
-                    std::remove_if(bossMissiles.begin(), bossMissiles.end(),
-                        [](std::unique_ptr<Missile>& missile) {
-                            return missile->checkCrashed();
-                        }),
-                    bossMissiles.end()
-                            );
-            }
+         // stage 4 에서 보스 공격 처리
+        if (stageNumber == 4) {
+            boss->attack(dt, player, bossMissiles);
+            boss->updateAttack(dt, player, bossMissiles);
+            
+            // 플레이어, 플레이어 미사일과 보스미사일 충돌 처리
+            player.enemyProjectileCollision(bossMissiles, enemies);
+            bossMissiles.erase(                            // 충돌 된 보스 미사일 삭제
+                std::remove_if(bossMissiles.begin(), bossMissiles.end(),
+                    [](std::unique_ptr<Missile>& missile) {
+                        return missile->checkCrashed();
+                    }),
+                bossMissiles.end()
+            );
+        }
 
             // 화면 밖 적 제거
             deleteEnemy();
@@ -506,8 +506,8 @@ void Game::render() {
             player.drawAllies(*window);
         }
 
-        if (stageNumber == 4) boss.render(*window, bossMissiles);
-        player.renderExplosions(*window);
+    if (stageNumber == 4) boss->render(*window,bossMissiles);
+    player.renderExplosions(*window);
 
         window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
@@ -530,17 +530,19 @@ void Game::deleteEnemy() {
     enemies.erase(
         std::remove_if(enemies.begin(), enemies.end(),
             [this](Enemy* enemy) {
-                if (enemy->isOffScreen()) {  
+
+                if (enemy->isOffScreen()) {
                     delete enemy; // 메모리 해제
                     return true; // 제거 대상
                 }
-                else if(enemy->getHealth() <= 0) {  // 격추 당한 적군 수 
+                else if (enemy->getHealth() <= 0) {  // 격추 당한 적군 수 
                     if (dynamic_cast<NormalUnit*>(enemy) == enemy) this->player.countKillNormal();
                     else if (dynamic_cast<EliteUnit*>(enemy) == enemy) this->player.countKillElite();
                     delete enemy; // 메모리 해제
                     return true; // 제거 대상
                 }
                 return false; // 유지 대상
+
             }),
         enemies.end());
     
