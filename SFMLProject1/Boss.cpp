@@ -78,7 +78,7 @@ void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<M
     pattern5_DeployShield();*/
 
 
-    if (time > 8) {
+    if (time > 10) {
 
         attackPattern = rand() % 5 + 1;
         if (attackPattern == beforeAttackpattern) attackPattern = attackPattern % 5 + 1;    // 1 ~ 5 사이의 패턴 생성
@@ -389,7 +389,7 @@ void Boss::deleteCollsionHealUnit() {
 // 패턴 5 관련 함수
 void Boss::pattern5_DeployShield() {
     if (!shieldActive) {
-        shieldActive = true; // 방패 활성화
+        shieldActive = true; // 방패 활성화 
 
         shield = Shield(); // 새 Shield 객체 생성
         shield.image("land_elite_unit_left.png"); // 이미지를 다시 설정

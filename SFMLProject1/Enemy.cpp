@@ -237,7 +237,7 @@ void EliteUnit::fireMissile(sf::Vector2f targetPosition, std::vector<std::unique
 		sf::IntRect textureRect; 
         newMissile->setTexture(missileTextures[stageNumber - 1], textureRect);
 		//missileTexture.loadFromFile("missile_sky.png"); //여기 수정해야함 static으로 빼던가 resourceManager 싱글톤 사용
-   
+
         // 미사일을 추적형으로 설정
         newMissile->setTarget(); // 플레이어 위치를 참조로 설정
         globalMissiles.push_back(std::move(newMissile)); // 전역 벡터에 추가
