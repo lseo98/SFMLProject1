@@ -219,9 +219,9 @@ void UIManager::init() {
 
     // 결과 텍스트 초기화
     resultText.setFont(font);
-    resultText.setCharacterSize(38);
+    resultText.setCharacterSize(60);
     resultText.setFillColor(sf::Color::White);
-    resultText.setPosition(10, 300); // 화면 왼쪽 아래에 출력
+    resultText.setPosition(20, 600); // 화면 왼쪽 아래에 출력
     resultString = ""; // 초기 문자열은 비어 있음
 }
 
@@ -512,7 +512,7 @@ void UIManager::setRestartCallback(std::function<void()> callback) {
 
 
 
-void UIManager::updateMinigameInfo(int arr[3]) {
+void UIManager::updateMinigameInfo(int arr[3], int countdownValue) {
     // 텍스트 업데이트
     remainingKeysText.setString(std::to_string(arr[0])+" Left Keys");
     inputKeyText.setString(std::to_string(arr[1]));
@@ -520,21 +520,23 @@ void UIManager::updateMinigameInfo(int arr[3]) {
 
     // 결과 텍스트 갱신
     if (inputKeyText.getString() == targetKeyText.getString()) {
-      //  resultString = (std::to_string(inputKeyText)+"Correct!"); // 입력과 목표가 동일한 경우
+        resultString= inputKeyText.getString() + "\nCorrect!\n";  // 일치한 경우 누적
     }
     else {
-        resultString = "No!"; // 입력과 목표가 다른 경우
+        resultString = inputKeyText.getString() + "\nNo!\n";  // 불일치한 경우 누적
     }
     resultText.setString(resultString); // 결과 텍스트 업데이트
 
     // 카운트다운 업데이트
-    if (countdownClock.getElapsedTime().asSeconds() >= 1.0f) {
-        if (countdownValue > 0) {
-            countdownValue--;  // 1초마다 감소
-        }
-        countdownText.setString("00:0" + std::to_string(countdownValue));
-        countdownClock.restart();  // 타이머 리셋
-    }
+    countdownText.setString("00:0" + std::to_string(countdownValue));
+
+    //if (countdownClock.getElapsedTime().asSeconds() >= 1.0f) {
+    //    if (countdownValue > 0) {
+    //        countdownValue--;  // 1초마다 감소
+    //    }
+    //    countdownText.setString("00:0" + std::to_string(countdownValue));
+    //    countdownClock.restart();  // 타이머 리셋
+    //}
 
     // 카운트다운이 0이 되었을 때
     if (countdownValue == 0) {

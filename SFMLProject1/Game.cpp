@@ -218,7 +218,7 @@ void Game::changeStage(int newStageNumber) {
     stageNumber = newStageNumber;          // 스테이지 번호 설정
 
     if (stageNumber == 5) {
-        int arr[3] = { 4, 'A', 'W' }; // 남은 키 수, 입력된 키, 목표 키
+       // int arr[3] = { 4, 'A', 'W' }; // 남은 키 수, 입력된 키, 목표 키
     }
     else {
         currentStage.setStage(stageNumber, enemies); // 현재 스테이지 적 초기화
@@ -528,7 +528,7 @@ void Game::update() { // 게임 상태 업데이트
 
 void Game::minigameUpdate() {
     minigame->runMinigame(dt, minigameInput, *window);
-    uiManager.updateMinigameInfo(minigameInput);
+    uiManager.updateMinigameInfo(minigameInput, minigame->getCountdownValue());
 }
 
 void Game::render() {

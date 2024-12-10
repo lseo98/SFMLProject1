@@ -11,8 +11,13 @@ Minigame::Minigame(int minigameOccured) {
 	m_keyArray[1] = 0;
 	m_keyArray[2] = 0;
 	clock = 0;
+	countdownValue = 5; // 카운트다운 초기화
+	countdownClock.restart(); // 카운트다운 시계 초기화
 
 	initTargetKeys();
+}
+int Minigame::getCountdownValue() const {
+	return countdownValue;
 }
 
 // 타깃 키 벡터를 초기화하는 함수
@@ -48,6 +53,14 @@ void Minigame::runMinigame(float deltaTime, int *minigameArr, sf::RenderWindow& 
 	window.pollEvent(event);
 	//std::cout << m_keyArray[1] << std::endl;
 	// 미니게임 시작 후 제한 시간인 5초가 넘어가면 실패로 간주하여 m_minigameSuccessed 변수에 false
+		// 카운트다운 업데이트
+	if (countdownClock.getElapsedTime().asSeconds() >= 1.0f) {
+		if (countdownValue > 0) {
+			countdownValue--; // 1초마다 감소
+		}
+		countdownClock.restart(); // 카운트다운 타이머 리셋
+	}
+	
 	if (clock >= 5) {
 		minigameSuccessed = false;
 		badEnding = true;
@@ -111,3 +124,5 @@ void Minigame::runMinigame(float deltaTime, int *minigameArr, sf::RenderWindow& 
 		minigameSuccessed = true;
 	}
 }
+
+

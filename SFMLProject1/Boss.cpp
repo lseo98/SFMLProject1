@@ -10,6 +10,8 @@ Boss::Boss() : Enemy(10000.0f, 0, sf::Vector2f(1300, 200), 4) {
 }
 void Boss::initBoss() {
     health = 10000;
+  //  health = 100;
+
     phase = 1;
     time = pattern1 = pattern2 = pattern3 = pattern4 = pattern5 = 0;
     attackPattern = 1;
@@ -65,7 +67,7 @@ void Boss::change_phase() {
         attackPattern = 3;
        // std::cout << "페이즈 3으로 전환\n";
     }
-    // 체력에 따라 보스의 페이즈 변경
+     // 체력에 따라 보스의 페이즈 변경
 }
 
 void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<Missile>>& bossMissiles) {
@@ -79,8 +81,9 @@ void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<M
 
 
     if (time > 10) {
+       // attackPattern = rand() % 5 + 1;
 
-        attackPattern = rand() % 5 + 1;
+        attackPattern = 4;
         if (attackPattern == beforeAttackpattern) attackPattern = attackPattern % 5 + 1;    // 1 ~ 5 사이의 패턴 생성
         //std::cout << getHealth() << std::endl;
         switch (attackPattern) {
@@ -352,7 +355,7 @@ void Boss::barrierCollision(Player& player) {
             );
 
             // 폭발 트리거
-            //player.createExplosion(collisionCenter, Player::ExplosionType::MissileImpact);
+            player.createExplosion(collisionCenter, Player::ExplosionType::MissileImpact);
 
             // 충돌한 미사일 제거
             delete missiles[i];
@@ -372,7 +375,7 @@ void Boss::barrierCollision(Player& player) {
             );
 
             // 폭발 트리거
-           // player.createExplosion(collisionCenter, Player::ExplosionType::MissileImpact);
+            player.createExplosion(collisionCenter, Player::ExplosionType::MissileImpact);
 
             delete ultimates[i];
             ultimates.erase(ultimates.begin() + i);
@@ -416,7 +419,7 @@ void Boss::deleteCollsionHealUnit() {
                         missileBounds.left + missileBounds.width / 2,
                         missileBounds.top + missileBounds.height / 2
                     );
-                    //player->createExplosion(collisionCenter, Player::ExplosionType::EnemyDestroyed);
+                   // player->createExplosion(collisionCenter, Player::ExplosionType::EnemyDestroyed);
                     // 폭발 트리거
                     //player.createExplosion(collisionCenter, Player::ExplosionType::MissileImpact);
 

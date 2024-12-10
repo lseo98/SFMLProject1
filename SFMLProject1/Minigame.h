@@ -14,6 +14,10 @@ public:
 	void runMinigame(float deltaTime, int* minigameArr, sf::RenderWindow& window);
 	bool getSuccess() { return minigameSuccessed; }
 	bool getBadEnding() { return badEnding; }
+	int countdownValue = 5; // 카운트다운 초기화
+	sf::Clock countdownClock;    // 카운트다운 타이머
+
+	int getCountdownValue() const; // 남은 카운트다운 값을 반환
 
 private:
 	// 멤버 변수 및 벡터 선언

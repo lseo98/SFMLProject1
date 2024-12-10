@@ -35,7 +35,7 @@ public:
 
 
 
-    void updateMinigameInfo(int arr[3]); // 미니게임 데이터를 업데이트하는 메서드
+    void updateMinigameInfo(int arr[3], int countdownValue); // 미니게임 데이터를 업데이트하는 메서드
     void renderMinigame(sf::RenderWindow& window);
 
     sf::Texture tminigame_background;
