@@ -310,7 +310,6 @@ void Game::update() { // 게임 상태 업데이트
 
         // UIManager에 데이터 전달
         uiManager.updateMinigameInfo(arr);
-        std::cout << "dlsfj";
     }
     else {
         if (player.getHealth() > 0) {

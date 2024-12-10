@@ -59,11 +59,11 @@ void Boss::initBoss() {
 void Boss::change_phase() {
     if (health < 1500.0f && attackPattern == 1) {
         attackPattern = 2;
-        std::cout << "페이즈 2로 전환\n";
+        //std::cout << "페이즈 2로 전환\n";
     }
     else if (health < 500.0f && attackPattern == 2) {
         attackPattern = 3;
-        std::cout << "페이즈 3으로 전환\n";
+       // std::cout << "페이즈 3으로 전환\n";
     }
     // 체력에 따라 보스의 페이즈 변경
 }
@@ -82,7 +82,7 @@ void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<M
 
         attackPattern = rand() % 5 + 1;
         if (attackPattern == beforeAttackpattern) attackPattern = attackPattern % 5 + 1;    // 1 ~ 5 사이의 패턴 생성
-        std::cout << getHealth() << std::endl;
+        //std::cout << getHealth() << std::endl;
         switch (attackPattern) {
         case 1:
             pattern1_BossMissile(player.getPosition(), bossMissiles);
@@ -100,7 +100,7 @@ void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<M
             pattern5_DeployShield();
             break;
         default:
-            std::cout << "Error boss attack" << std::endl;
+           // std::cout << "Error boss attack" << std::endl;
             break;
         }
         beforeAttackpattern = attackPattern;
@@ -370,7 +370,7 @@ void Boss::deleteCollsionHealUnit() {
             [this](HealUnit* healUnit) {
                 if (healUnit->sprite.getGlobalBounds().width + healUnit->sprite.getGlobalBounds().left > WINDOWWIDTH / 4 * 3 - 200) {   // 게임화면 우측 끝에서 왼쪽으로 200만큼 이전에 닿을 경우 보스에 도달 처리
                     this->takeDamage(-200.0f);                                          // 보스 체력 200만큼 회복
-                    std::cout << "boss 체력 : " << this->getHealth() << std::endl;
+                    //std::cout << "boss 체력 : " << this->getHealth() << std::endl;
                     killHealUnitCount--;
                     delete healUnit; // 메모리 해제
                     return true; // 제거 대상
