@@ -265,12 +265,12 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
             }
             else if (s2 == "landmap" && currentStageNumber != 3) {
                 onStageChange(3); // 스테이지 1로 변경
+                Game::stageTransitionClock.restart();
                 //std::cout << "landmap = " << s2 << std::endl;
 
             }
             else if (s2 == "restart") {
                 if (onRestart) onRestart(); // restart 콜백 호출
-                Game::stageTransitionClock.restart();
             }
 
             else {
