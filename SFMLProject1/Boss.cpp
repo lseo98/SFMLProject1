@@ -1,5 +1,6 @@
 #include "Boss.h"
 #include "Game.h"
+#include "Player.h"
 #include <iostream>
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
@@ -9,6 +10,8 @@ Boss::Boss() : Enemy(10000.0f, 0, sf::Vector2f(1300, 200), 4) {
 }
 void Boss::initBoss() {
     health = 10000;
+  //  health = 100;
+
     phase = 1;
     time = pattern1 = pattern2 = pattern3 = pattern4 = pattern5 = 0;
     attackPattern = 1;
@@ -64,7 +67,7 @@ void Boss::change_phase() {
         attackPattern = 3;
        // std::cout << "페이즈 3으로 전환\n";
     }
-    // 체력에 따라 보스의 페이즈 변경
+     // 체력에 따라 보스의 페이즈 변경
 }
 
 void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<Missile>>& bossMissiles) {
@@ -78,8 +81,8 @@ void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<M
 
 
     if (time > 10) {
-
         attackPattern = rand() % 5 + 1;
+
         if (attackPattern == beforeAttackpattern) attackPattern = attackPattern % 5 + 1;    // 1 ~ 5 사이의 패턴 생성
         //std::cout << getHealth() << std::endl;
         switch (attackPattern) {
@@ -206,17 +209,35 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
 
         if (pattern5 > 5) {
             shieldActive = false; // 5초 후 융합로 터져서 없어질 때 폭발 효과 넣어야 함
+            // 폭발 효과 추가
+            sf::FloatRect shieldBounds = shield.sprite.getGlobalBounds();
+            sf::Vector2f collisionCenter(
+                shieldBounds.left ,
+                shieldBounds.top
+            );
+
+            player.createExplosion(collisionCenter, Player::ExplosionType::EnemyDestroyed);
+
             player.takeDamage(1.0f);
             player.changeHeartSprite();
         }
 
         if (shield.getHealth() <= 0.0f) {
             shieldActive = false; // 방패 비활성화
+
+            // 폭발 효과 추가
+            sf::FloatRect shieldBounds = shield.sprite.getGlobalBounds();
+            sf::Vector2f collisionCenter(
+                shieldBounds.left ,
+                shieldBounds.top 
+            );
+            player.createExplosion(collisionCenter, Player::ExplosionType::EnemyDestroyed);
+
         }
     }
 
 }
-
+ 
 void Boss::render(sf::RenderWindow& window, std::vector<std::unique_ptr<Missile>>& bossMissiles) {
     
     this->draw(window);
@@ -326,6 +347,15 @@ void Boss::barrierCollision(Player& player) {
     auto& missiles = player.getMissiles(); // 플레이어 미사일 벡터 가져오기
     for (size_t i = 0; i < missiles.size(); ++i) {
         if (missiles[i]->sprite.getGlobalBounds().intersects(barrier.getGlobalBounds())) {
+            sf::FloatRect missileBounds = missiles[i]->sprite.getGlobalBounds();
+            sf::Vector2f collisionCenter = sf::Vector2f(
+                missileBounds.left + missileBounds.width / 2,
+                missileBounds.top + missileBounds.height / 2
+            );
+
+            // 폭발 트리거
+            player.createExplosion(collisionCenter, Player::ExplosionType::MissileImpact);
+
             // 충돌한 미사일 제거
             delete missiles[i];
             missiles.erase(missiles.begin() + i);
@@ -337,7 +367,15 @@ void Boss::barrierCollision(Player& player) {
     auto& ultimates = player.getAllyMissiles(); // 플레이어 궁극기 공격 벡터 가져오기
     for (size_t i = 0; i < ultimates.size(); ++i) {
         if (ultimates[i]->sprite.getGlobalBounds().intersects(barrier.getGlobalBounds())) {
-            // 충돌한 궁극기 제거
+            sf::FloatRect missileBounds = ultimates[i]->sprite.getGlobalBounds();
+            sf::Vector2f collisionCenter = sf::Vector2f(
+                missileBounds.left + missileBounds.width / 2,
+                missileBounds.top + missileBounds.height / 2
+            );
+
+            // 폭발 트리거
+            player.createExplosion(collisionCenter, Player::ExplosionType::MissileImpact);
+
             delete ultimates[i];
             ultimates.erase(ultimates.begin() + i);
             --i; // 인덱스 조정
@@ -374,7 +412,17 @@ void Boss::deleteCollsionHealUnit() {
                     delete healUnit; // 메모리 해제
                     return true; // 제거 대상
                 }
-                else if (healUnit->getHealth() <= 0) {                                  // 플레이어 공격으로 인한 채력 0 도달 시
+                else if (healUnit->getHealth() <= 0) {   
+                    sf::FloatRect missileBounds = healUnit->sprite.getGlobalBounds();
+                    sf::Vector2f collisionCenter = sf::Vector2f(
+                        missileBounds.left + missileBounds.width / 2,
+                        missileBounds.top + missileBounds.height / 2
+                    );
+                   // player->createExplosion(collisionCenter, Player::ExplosionType::EnemyDestroyed);
+                    // 폭발 트리거
+                    //player.createExplosion(collisionCenter, Player::ExplosionType::MissileImpact);
+
+                   // 플레이어 공격으로 인한 채력 0 도달 시
                     killHealUnitCount--;
                     delete healUnit; // 메모리 해제
                     return true; // 제거 대상
@@ -395,3 +443,6 @@ void Boss::pattern5_DeployShield() {
 
     }
 }
+
+
+

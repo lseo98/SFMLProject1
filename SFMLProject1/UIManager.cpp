@@ -47,19 +47,19 @@ void UIManager::init() {
     text.setPosition(1410, 120);
 
     skytext.setFont(font);
-    skytext.setString("AIR FORCE     0 / 40");
+    skytext.setString("AIR FORCE     0 / 30");
     skytext.setCharacterSize(38);
     skytext.setFillColor(sf::Color(100, 100, 100, 250));
     skytext.setPosition(1410, 200);
 
     seatext.setFont(font);
-    seatext.setString("NAVY          0 / 40");
+    seatext.setString("NAVY          0 / 30");
     seatext.setCharacterSize(38);
     seatext.setFillColor(sf::Color(100, 100, 100, 250));
     seatext.setPosition(1410, 250);
 
     landtext.setFont(font);
-    landtext.setString("ARMY          0 /  40");
+    landtext.setString("ARMY          0 /  30");
     landtext.setCharacterSize(38);
     landtext.setFillColor(sf::Color(100, 100, 100, 250));
     landtext.setPosition(1410, 300);
@@ -173,18 +173,18 @@ void UIManager::init() {
     remainingKeysText.setCharacterSize(50);
     remainingKeysText.setString("  Left Keys");
     remainingKeysText.setFillColor(sf::Color::Red);
-    remainingKeysText.setPosition(1400, 800); // 위치 조정
+    remainingKeysText.setPosition(1420, 800); // 위치 조정
 
     // 입력된 키 텍스트 초기화
     inputKeyText.setFont(font);
-    inputKeyText.setString("w");
+    inputKeyText.setString("");
     inputKeyText.setCharacterSize(38);
     inputKeyText.setFillColor(sf::Color::Yellow);
     inputKeyText.setPosition(5, 250);
 
     // 목표 키 텍스트 초기화
     targetKeyText.setFont(font);
-    targetKeyText.setString("t");
+    targetKeyText.setString("");
     targetKeyText.setCharacterSize(160);
     targetKeyText.setFillColor(sf::Color::Red);
     targetKeyText.setPosition(1530, 300);
@@ -202,9 +202,30 @@ void UIManager::init() {
     keyBox.setOutlineColor(sf::Color::Red);
     keyBox.setOutlineThickness(5);
     keyBox.setPosition(1470, 300);
+
+    // 시간 박스
+    timebox.setSize(sf::Vector2f(400, 150));
+    timebox.setPosition(1375, 30);
+    timebox.setFillColor(sf::Color::Black);
+    timebox.setOutlineColor(sf::Color::Red);
+    timebox.setOutlineThickness(5);
+
+    // 카운트다운 텍스트 설정
+    countdownText.setFont(font);
+    countdownText.setCharacterSize(130);
+    countdownText.setFillColor(sf::Color::Red);
+    countdownText.setString("5");  // 초기 값
+    countdownText.setPosition(1410, 20); // 오른쪽 위 위치
+
+    // 결과 텍스트 초기화
+    resultText.setFont(font);
+    resultText.setCharacterSize(60);
+    resultText.setFillColor(sf::Color::White);
+    resultText.setPosition(20, 600); // 화면 왼쪽 아래에 출력
+    resultString = ""; // 초기 문자열은 비어 있음
 }
 
-void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
+void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) { 
     // 마우스 클릭 이벤트 처리
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
@@ -232,19 +253,18 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
             userInput = "";
 
             // 입력값에 따라 스테이지 번호 설정 
-            if (s2 == "skymap") {
+            if (s2 == "skymap" && currentStageNumber != 1) {
                 onStageChange(1); // 스테이지 1로 변경
                 Game::stageTransitionClock.restart();
 
             }
-            else if (s2 == "seamap") {
+            else if (s2 == "seamap" && currentStageNumber != 2) {
                 onStageChange(2); // 스테이지 1로 변경
                 Game::stageTransitionClock.restart();
 
             }
-            else if (s2 == "landmap") {
+            else if (s2 == "landmap" && currentStageNumber != 3) {
                 onStageChange(3); // 스테이지 1로 변경
-                Game::stageTransitionClock.restart();
                 //std::cout << "landmap = " << s2 << std::endl;
 
             }
@@ -387,16 +407,7 @@ void UIManager::render(sf::RenderWindow& window) {
     specialCooldownBar.setSize(sf::Vector2f(150.0f, specialBarHeight));
 
     if (currentStageNumber == 5) {
-        window.draw(sminigame_background);
-        window.draw(remainingKeysText);
-        window.draw(inputKeyText);
-        window.draw(targetKeyText); 
-           window.draw(pressText);
-
-        // 키 강조 박스
-        window.draw(keyBox);
-       // window.draw(skytext);
-
+        renderMinigame(window);
     }
     else {
         window.draw(inputBoxl);
@@ -500,23 +511,58 @@ void UIManager::setRestartCallback(std::function<void()> callback) {
 }
 
 
-void UIManager::updateMinigameInfo(int arr[3]) {
+
+void UIManager::updateMinigameInfo(int arr[3], int countdownValue) {
     // 텍스트 업데이트
-    remainingKeysText.setString(std::to_string(arr[0])+"Left Keys");
+    remainingKeysText.setString(std::to_string(arr[0])+" Left Keys");
     inputKeyText.setString(std::to_string(arr[1]));
     targetKeyText.setString(std::to_string(arr[2]));
-   //td::cout << "dsfl";
+
+    //// 결과 텍스트 갱신
+    //if (inputKeyText.getString() == targetKeyText.getString()) {
+    //    resultString= inputKeyText.getString() + "\nCorrect!\n";  // 일치한 경우 누적
+    //}
+    //else {
+    //    resultString = inputKeyText.getString() + "\nNo!\n";  // 불일치한 경우 누적
+    //}
+    //resultText.setString(resultString); // 결과 텍스트 업데이트
+
+    // 카운트다운 업데이트
+    countdownText.setString("00:0" + std::to_string(countdownValue));
+
+    //if (countdownClock.getElapsedTime().asSeconds() >= 1.0f) {
+    //    if (countdownValue > 0) {
+    //        countdownValue--;  // 1초마다 감소
+    //    }
+    //    countdownText.setString("00:0" + std::to_string(countdownValue));
+    //    countdownClock.restart();  // 타이머 리셋
+    //}
+
+    // 카운트다운이 0이 되었을 때
+    if (countdownValue == 0) {
+        isGameOver = true; // 게임 오버 상태 설정
+    }
 }
 void UIManager::renderMinigame(sf::RenderWindow& window) {
     // 텍스트 렌더링
     window.draw(sminigame_background);
     window.draw(pressText);
     window.draw(remainingKeysText);
-    window.draw(inputKeyText);
+   // window.draw(inputKeyText);
     window.draw(targetKeyText);
+    window.draw(timebox);
+    window.draw(countdownText);
+    window.draw(resultText);
+
+
+
 
     // 키 강조 박스
     window.draw(keyBox);
+    // 게임 오버 상태면 게임 오버 화면 표시
+    if (isGameOver) {
+        drawGameOverScreen(window);
+    }
 }
 
 

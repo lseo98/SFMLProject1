@@ -25,6 +25,8 @@ public:
     sf::Texture texture;      // 이미지 텍스처
     sf::Sprite sprite;        // 텍스처를 사용할 스프라이트
 
+    virtual void updateTexture() {};
+
 protected:
     int stageNumber;  // 스테이지 번호
     int direction;    // 땅 스테이지에서만 사용되는 방향 (1: 오른쪽, -1: 왼쪽)
@@ -136,7 +138,6 @@ public:
     bool missileLaunched;
     static void initializeTextures(); // static으로 선언
 
-
 private:
     std::vector<std::unique_ptr<Missile>> missiles;
     sf::Vector2f missileDirection;
@@ -144,6 +145,23 @@ private:
     sf::Clock fireClock;           // 미사일 발사 간격 관리
 
     static sf::Texture missileTextures[3]; // 스테이지마다 다른 텍스처를 위한 배열
+
+    static sf::Texture landEliteUnitRightTexture; // 오른쪽 방향 텍스처
+    static sf::Texture landEliteUnitLeftTexture;  // 왼쪽 방향 텍스처
+
+    // 방향에 따라 텍스처를 변경하는 함수
+    void updateTexture() override {
+        if (stageNumber == 3 || stageNumber == 4) {
+            if (direction == 1) {
+                sprite.setTexture(landEliteUnitRightTexture); // 오른쪽 방향 텍스처 설정
+                sprite.setTextureRect(sf::IntRect(200, 0, 800, 435));
+            }
+            else if (direction == -1) {
+                sprite.setTexture(landEliteUnitLeftTexture); // 왼쪽 방향 텍스처 설정
+                sprite.setTextureRect(sf::IntRect(0, 0, 800, 435));
+            }
+        }
+    }
 };
 
 // 보스 패턴 4 관련 변수

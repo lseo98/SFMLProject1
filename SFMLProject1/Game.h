@@ -34,6 +34,7 @@ private:
     void handleEvents();
     void update();
     void minigameUpdate();
+
     void render();
 
     // 게임 루프 내 필요 함수

@@ -23,7 +23,7 @@ bool Game::run() {
     while (isRunning && window->isOpen()) {
         sf::Event event;
         dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
-        
+
         if (player.getHealth() <= 0) {
             lastStageNumber = stageNumber;
             stageNumber = 5;
@@ -44,7 +44,7 @@ bool Game::run() {
         }
         render();
         if (boss->getHealth() <= 0) return true;
-       
+
     }
     return false;
 }
@@ -54,7 +54,7 @@ void Game::initVariables() {
     globalClock.restart(); // 게임 시작 시 Clock 초기화
 
     window = nullptr;   // 윈도우 초기화
-    isRunning = true;   
+    isRunning = true;
     isMaingameRunning = true;   // stage 1, 2, 3이 아닌 미니게임 혹은 화면 전환 중에는 false
     this->clock.restart(); // 추후 미니게임 혹은 메인 게임 시작 후 시간 계산하는 것으로 변경 필요
     stageNumber = 1;        // 1: 하늘, 2: 바다, 3: 땅
@@ -65,18 +65,18 @@ void Game::initVariables() {
     // restart 콜백 설정
     uiManager.setRestartCallback([this]() {
         player.restart();
-    boss->initBoss();
-    stageSwitchCounter = 1;
-    stageNumber = 1;
+        boss->initBoss();
+        stageSwitchCounter = 1;
+        stageNumber = 1;
 
-    for (Enemy* enemy : enemies) {
-        delete enemy;
-    }
-    enemies.clear();
+        for (Enemy* enemy : enemies) {
+            delete enemy;
+        }
+        enemies.clear();
 
-    enemyMissiles.clear();
-    bossMissiles.clear();
-    currentStage.setStage(1, enemies);
+        enemyMissiles.clear();
+        bossMissiles.clear();
+        currentStage.setStage(1, enemies);
         });
 
     EliteUnit::initializeTextures(); // 여기서 호출
@@ -88,21 +88,21 @@ void Game::initVariables() {
 
 
 
-	uiManager.init(); // UI 초기화
+    uiManager.init(); // UI 초기화
     boss = new Boss();
-    
+
     // minigame 관련 초기화
     minigameOccured = 0;
     for (int i = 0; i < 3; i++) minigameInput[i] = 0;
 }
 
 void Game::initWindow() {
-   
+
     window = new sf::RenderWindow(sf::VideoMode(WINDOWWIDTH, WINDOWHEIGHT), "Game Stages"); // 윈도우 게임화면 렌더링
     // 전체 화면 (그래픽 볼 때 전체화면으로 미리 실행해보면 좋을 것 같아서 넣음)
     //sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
     //sf::RenderWindow window(desktopMode, "Game Stages", sf::Style::Fullscreen);
-    
+
     window->setFramerateLimit(60);  // 프레임 속도 제한, 초당 60프레임
 
     // 중앙 정사각형 영역을 위한 게임 뷰 초기화
@@ -130,9 +130,9 @@ void Game::handleEvents() {
             isRunning = false;
             window->close();
         }
-        
+
         // UIManager에 이벤트 전달
-        uiManager.handleEvent(event,*window);
+        uiManager.handleEvent(event, *window);
         // UI에 포커스가 있을 때는 게임 입력을 처리하지 않음
         if (!uiManager.isInputFocused()) {
             // 게임 입력 처리 (스테이지 전환 등)
@@ -218,7 +218,7 @@ void Game::changeStage(int newStageNumber) {
     stageNumber = newStageNumber;          // 스테이지 번호 설정
 
     if (stageNumber == 5) {
-        int arr[3] = { 4, 'A', 'W' }; // 남은 키 수, 입력된 키, 목표 키
+       // int arr[3] = { 4, 'A', 'W' }; // 남은 키 수, 입력된 키, 목표 키
     }
     else {
         currentStage.setStage(stageNumber, enemies); // 현재 스테이지 적 초기화
@@ -266,7 +266,7 @@ void Game::checkStageTransition() {
         // 스테이지 이동
         if (stageSwitchCounter == 1 && stageNumber == 1) {
             stageNumber = 2; // 다음 스테이지로 이동
-        } 
+        }
         else if (stageSwitchCounter == 2 && stageNumber == 2) {
             stageNumber = 3; // 다음 스테이지로 이동
         }
@@ -311,22 +311,22 @@ void Game::checkStageTransition() {
         minigame = new Minigame(minigameOccured);
         minigameOccured++;
         for (int i = 0; i < 3; i++) minigameInput[i] = 0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
-            player.restart();
-            boss->initBoss();
-            stageSwitchCounter = 1;
-            stageNumber = 1;
-            for (Enemy* enemy : enemies) {
-                delete enemy;
-            }
-            enemies.clear();
-            /*for (Missile* enemyMissile : enemyMissiles) {
-                delete enemyMissile;
-            }*/
-            enemyMissiles.clear();
-            bossMissiles.clear();
-            currentStage.setStage(1, enemies);
-        }
+        //if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+        //    player.restart();
+        //    boss->initBoss();
+        //    stageSwitchCounter = 1;
+        //    stageNumber = 1;
+        //    for (Enemy* enemy : enemies) {
+        //        delete enemy;
+        //    }
+        //    enemies.clear();
+        //    /*for (Missile* enemyMissile : enemyMissiles) {
+        //        delete enemyMissile;
+        //    }*/
+        //    enemyMissiles.clear();
+        //    bossMissiles.clear();
+        //    currentStage.setStage(1, enemies);
+        //}
 
     }
 }
@@ -353,14 +353,14 @@ void Game::backStageTransition() {
         currentStage.spawnEnemies(enemies, dt);
         enemyMissiles.clear();
     }
-    else if(stageNumber == 4) {
+    else if (stageNumber == 4) {
         currentStage.setStage(3, enemies);
         player.setPlayer(3);
         player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f - 200, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
         currentStage.spawnEnemies(enemies, dt);
         enemyMissiles.clear();
         hasBossStageTransitioned = true;
-        
+
     }
     stageTransitionClock.restart();
 
@@ -528,11 +528,12 @@ void Game::update() { // 게임 상태 업데이트
 
 void Game::minigameUpdate() {
     minigame->runMinigame(dt, minigameInput, *window);
+    uiManager.updateMinigameInfo(minigameInput, minigame->getCountdownValue());
 }
 
 void Game::render() {
     window->clear(); // 화면 지우기
-  //  std::cout << stageNumber << std::endl;
+    //  std::cout << stageNumber << std::endl;
 
     if (stageNumber == 5) {
         uiManager.renderMinigame(*window);
@@ -565,8 +566,8 @@ void Game::render() {
             player.drawAllies(*window);
         }
 
-    if (stageNumber == 4) boss->render(*window,bossMissiles);
-    player.renderExplosions(*window);
+        if (stageNumber == 4) boss->render(*window, bossMissiles);
+        player.renderExplosions(*window);
 
         window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
@@ -584,7 +585,7 @@ void Game::render() {
 
 
 void Game::deleteEnemy() {
-    
+
     // 화면 밖으로 나갔거나 채력이 0 이하인 적 제거
     enemies.erase(
         std::remove_if(enemies.begin(), enemies.end(),
@@ -604,7 +605,7 @@ void Game::deleteEnemy() {
 
             }),
         enemies.end());
-    
+
     // 화면 밖 미사일 삭제
     enemyMissiles.erase(
         std::remove_if(enemyMissiles.begin(), enemyMissiles.end(),

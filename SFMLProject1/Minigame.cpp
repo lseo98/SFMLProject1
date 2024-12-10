@@ -11,8 +11,13 @@ Minigame::Minigame(int minigameOccured) {
 	m_keyArray[1] = 0;
 	m_keyArray[2] = 0;
 	clock = 0;
+	countdownValue = 5; // 카운트다운 초기화
+	countdownClock.restart(); // 카운트다운 시계 초기화
 
 	initTargetKeys();
+}
+int Minigame::getCountdownValue() const {
+	return countdownValue;
 }
 
 // 타깃 키 벡터를 초기화하는 함수
@@ -21,8 +26,7 @@ void Minigame::initTargetKeys() {
 	for (int i = 0; i < defaultOccure + minigameOccured; i++) {
 		targetKeys[i] = rand() % 10;
 	}
-	targetKeys[0] = 8;
-
+	m_keyArray[2] = targetKeys[correctCnt];
 }
 
 // 입력된 키와 타깃 키를 비교하여 성공하면 벡터의 가장 뒷부분에서 타깃 키 값을 빼내 다음 타깃 키로 넘어가도록 하는 함수
@@ -49,6 +53,14 @@ void Minigame::runMinigame(float deltaTime, int *minigameArr, sf::RenderWindow& 
 	window.pollEvent(event);
 	//std::cout << m_keyArray[1] << std::endl;
 	// 미니게임 시작 후 제한 시간인 5초가 넘어가면 실패로 간주하여 m_minigameSuccessed 변수에 false
+		// 카운트다운 업데이트
+	if (countdownClock.getElapsedTime().asSeconds() >= 1.0f) {
+		if (countdownValue > 0) {
+			countdownValue--; // 1초마다 감소
+		}
+		countdownClock.restart(); // 카운트다운 타이머 리셋
+	}
+	
 	if (clock >= 5) {
 		minigameSuccessed = false;
 		badEnding = true;
@@ -104,10 +116,13 @@ void Minigame::runMinigame(float deltaTime, int *minigameArr, sf::RenderWindow& 
 			
 		}
 		checkTargetKeys(m_keyArray[1]);
-		for (int i = 0; i < 3; i++) minigameArr[i] = m_keyArray[i];
+		
 	}
+	for (int i = 0; i < 3; i++) minigameArr[i] = m_keyArray[i];
 	
 	if (defaultOccure + minigameOccured == correctCnt) {
 		minigameSuccessed = true;
 	}
 }
+
+
