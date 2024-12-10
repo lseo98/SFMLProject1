@@ -81,9 +81,8 @@ void Boss::attack(float deltaTime, Player& player, std::vector<std::unique_ptr<M
 
 
     if (time > 10) {
-       // attackPattern = rand() % 5 + 1;
+        attackPattern = rand() % 5 + 1;
 
-        attackPattern = 4;
         if (attackPattern == beforeAttackpattern) attackPattern = attackPattern % 5 + 1;    // 1 ~ 5 사이의 패턴 생성
         //std::cout << getHealth() << std::endl;
         switch (attackPattern) {

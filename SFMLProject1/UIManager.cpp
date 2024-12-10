@@ -518,14 +518,14 @@ void UIManager::updateMinigameInfo(int arr[3], int countdownValue) {
     inputKeyText.setString(std::to_string(arr[1]));
     targetKeyText.setString(std::to_string(arr[2]));
 
-    // 결과 텍스트 갱신
-    if (inputKeyText.getString() == targetKeyText.getString()) {
-        resultString= inputKeyText.getString() + "\nCorrect!\n";  // 일치한 경우 누적
-    }
-    else {
-        resultString = inputKeyText.getString() + "\nNo!\n";  // 불일치한 경우 누적
-    }
-    resultText.setString(resultString); // 결과 텍스트 업데이트
+    //// 결과 텍스트 갱신
+    //if (inputKeyText.getString() == targetKeyText.getString()) {
+    //    resultString= inputKeyText.getString() + "\nCorrect!\n";  // 일치한 경우 누적
+    //}
+    //else {
+    //    resultString = inputKeyText.getString() + "\nNo!\n";  // 불일치한 경우 누적
+    //}
+    //resultText.setString(resultString); // 결과 텍스트 업데이트
 
     // 카운트다운 업데이트
     countdownText.setString("00:0" + std::to_string(countdownValue));
