@@ -26,6 +26,9 @@ void Game::run() {
         //sf::Time deltaTime = clock.restart(); // 프레임 간 경과 시간 측정  
       //  std::cout << player.getHealth() << std::endl;
         if (player.getHealth() <= 0) {
+            stageNumber = 5;
+            enemyMissiles.clear();
+
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
                 player.restart();
                 boss->initBoss();
@@ -43,7 +46,8 @@ void Game::run() {
                 currentStage.setStage(1, enemies);
             }
         }
-        else if (stageNumber != 5) update();
+        else if (stageNumber != 5)  update();
+        else if (stageNumber == 5) minigameUpdate();
 
         render();
     }
@@ -307,7 +311,7 @@ void Game::update() { // 게임 상태 업데이트
 
     if (stageNumber == 5) {
         int arr[3] = { 4, 'A', 'W' }; // 남은 키 수, 입력된 키, 목표 키
-
+     
         // UIManager에 데이터 전달
         uiManager.updateMinigameInfo(arr);
     }

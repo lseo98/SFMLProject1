@@ -7,9 +7,11 @@
 #include <map>
 #include <string>
 #include "UIManager.h" 
+#include "Minigame.h" 
 
 
 extern int WINDOWWIDTH, WINDOWHEIGHT;
+//extern bool isGameOver = false; // 게임 상태를 관리하는 전역 변수
 
 class Game {
 public:

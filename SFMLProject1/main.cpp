@@ -8,7 +8,7 @@
 
 int WINDOWWIDTH = 1800;    // 맵 너비
 int WINDOWHEIGHT = 900;    // 맵 높이
-bool isGameOver = false; // 게임 상태를 관리하는 전역 변수
+
 
 
 int main() {   

@@ -466,6 +466,7 @@ void UIManager::setBackground(int stageNumber) {
         backgroundImagePath = "sea.png";
         break;
     case 3:
+    case 4:
         backgroundImagePath = "land.png";
         break;
     //case 5:

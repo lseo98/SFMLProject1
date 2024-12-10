@@ -146,6 +146,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputKeyUpdate.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Minigame.cpp" />
     <ClCompile Include="Missile.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputKeyUpdate.h" />
+    <ClInclude Include="Minigame.h" />
     <ClInclude Include="Missile.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
