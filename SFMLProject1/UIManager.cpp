@@ -173,18 +173,18 @@ void UIManager::init() {
     remainingKeysText.setCharacterSize(50);
     remainingKeysText.setString("  Left Keys");
     remainingKeysText.setFillColor(sf::Color::Red);
-    remainingKeysText.setPosition(1400, 800); // 위치 조정
+    remainingKeysText.setPosition(1420, 800); // 위치 조정
 
     // 입력된 키 텍스트 초기화
     inputKeyText.setFont(font);
-    inputKeyText.setString("w");
+    inputKeyText.setString("");
     inputKeyText.setCharacterSize(38);
     inputKeyText.setFillColor(sf::Color::Yellow);
     inputKeyText.setPosition(5, 250);
 
     // 목표 키 텍스트 초기화
     targetKeyText.setFont(font);
-    targetKeyText.setString("t");
+    targetKeyText.setString("");
     targetKeyText.setCharacterSize(160);
     targetKeyText.setFillColor(sf::Color::Red);
     targetKeyText.setPosition(1530, 300);
@@ -202,9 +202,30 @@ void UIManager::init() {
     keyBox.setOutlineColor(sf::Color::Red);
     keyBox.setOutlineThickness(5);
     keyBox.setPosition(1470, 300);
+
+    // 시간 박스
+    timebox.setSize(sf::Vector2f(400, 150));
+    timebox.setPosition(1375, 30);
+    timebox.setFillColor(sf::Color::Black);
+    timebox.setOutlineColor(sf::Color::Red);
+    timebox.setOutlineThickness(5);
+
+    // 카운트다운 텍스트 설정
+    countdownText.setFont(font);
+    countdownText.setCharacterSize(130);
+    countdownText.setFillColor(sf::Color::Red);
+    countdownText.setString("5");  // 초기 값
+    countdownText.setPosition(1410, 20); // 오른쪽 위 위치
+
+    // 결과 텍스트 초기화
+    resultText.setFont(font);
+    resultText.setCharacterSize(38);
+    resultText.setFillColor(sf::Color::White);
+    resultText.setPosition(10, 300); // 화면 왼쪽 아래에 출력
+    resultString = ""; // 초기 문자열은 비어 있음
 }
 
-void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
+void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) { 
     // 마우스 클릭 이벤트 처리
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
@@ -244,7 +265,6 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
             }
             else if (s2 == "landmap") {
                 onStageChange(3); // 스테이지 1로 변경
-                Game::stageTransitionClock.restart();
                 //std::cout << "landmap = " << s2 << std::endl;
 
             }
@@ -387,16 +407,7 @@ void UIManager::render(sf::RenderWindow& window) {
     specialCooldownBar.setSize(sf::Vector2f(150.0f, specialBarHeight));
 
     if (currentStageNumber == 5) {
-        window.draw(sminigame_background);
-        window.draw(remainingKeysText);
-        window.draw(inputKeyText);
-        window.draw(targetKeyText); 
-           window.draw(pressText);
-
-        // 키 강조 박스
-        window.draw(keyBox);
-       // window.draw(skytext);
-
+        renderMinigame(window);
     }
     else {
         window.draw(inputBoxl);
@@ -500,23 +511,56 @@ void UIManager::setRestartCallback(std::function<void()> callback) {
 }
 
 
+
 void UIManager::updateMinigameInfo(int arr[3]) {
     // 텍스트 업데이트
-    remainingKeysText.setString(std::to_string(arr[0])+"Left Keys");
+    remainingKeysText.setString(std::to_string(arr[0])+" Left Keys");
     inputKeyText.setString(std::to_string(arr[1]));
     targetKeyText.setString(std::to_string(arr[2]));
-   //td::cout << "dsfl";
+
+    // 결과 텍스트 갱신
+    if (inputKeyText.getString() == targetKeyText.getString()) {
+      //  resultString = (std::to_string(inputKeyText)+"Correct!"); // 입력과 목표가 동일한 경우
+    }
+    else {
+        resultString = "No!"; // 입력과 목표가 다른 경우
+    }
+    resultText.setString(resultString); // 결과 텍스트 업데이트
+
+    // 카운트다운 업데이트
+    if (countdownClock.getElapsedTime().asSeconds() >= 1.0f) {
+        if (countdownValue > 0) {
+            countdownValue--;  // 1초마다 감소
+        }
+        countdownText.setString("00:0" + std::to_string(countdownValue));
+        countdownClock.restart();  // 타이머 리셋
+    }
+
+    // 카운트다운이 0이 되었을 때
+    if (countdownValue == 0) {
+        isGameOver = true; // 게임 오버 상태 설정
+    }
 }
 void UIManager::renderMinigame(sf::RenderWindow& window) {
     // 텍스트 렌더링
     window.draw(sminigame_background);
     window.draw(pressText);
     window.draw(remainingKeysText);
-    window.draw(inputKeyText);
+   // window.draw(inputKeyText);
     window.draw(targetKeyText);
+    window.draw(timebox);
+    window.draw(countdownText);
+    window.draw(resultText);
+
+
+
 
     // 키 강조 박스
     window.draw(keyBox);
+    // 게임 오버 상태면 게임 오버 화면 표시
+    if (isGameOver) {
+        drawGameOverScreen(window);
+    }
 }
 
 
