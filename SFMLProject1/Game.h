@@ -17,6 +17,7 @@ public:
     Game();
     ~Game();
     static sf::Clock globalClock; // 정적 멤버로 선언
+    static sf::Clock stageTransitionClock; // 스테이지 전환을 위한 개별 클럭
 
     // 게임 실행
     void run();

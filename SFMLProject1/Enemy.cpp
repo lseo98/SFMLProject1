@@ -35,12 +35,12 @@ void Enemy::draw(sf::RenderWindow& window) {
     else if (dynamic_cast<EliteUnit*>(this)) maxHealth = maxHealth_EliteUnit;
     else if (dynamic_cast<HealUnit*>(this)) maxHealth = maxHealth_HealUnit;
     else if(dynamic_cast<Shield*>(this)) maxHealth = maxHealth_Shield;
-    else maxHealth = 100.0f;
+    else maxHealth = 10000.0f;
 
     float healthBarWidth = (this->getHealth() / maxHealth) * 76.0f; // 체력에 비례한 길이
 
     // 체력바 (빨간색)
-    sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth+2, 4.0f));
+    sf::RectangleShape healthBar(sf::Vector2f(healthBarWidth + 2, 4.0f));
     healthBar.setFillColor(sf::Color::Red);
     healthBar.setPosition((this->position.x + sprite.getGlobalBounds().width / 2) - 49 + adj, this->position.y - 13.0f);
     window.draw(healthBar);

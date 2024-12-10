@@ -81,6 +81,4 @@ private:
     bool showBossText = false;      // "BOSS" 텍스트 표시 여부
     bool bossTextDisplayed = false; // "BOSS" 텍스트 한 번만 표시
 
-
-
 };

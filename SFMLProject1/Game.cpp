@@ -3,6 +3,7 @@
 
 // 정적 멤버 정의
 sf::Clock Game::globalClock;
+sf::Clock Game::stageTransitionClock;
 
 Game::Game() {
     initVariables();
@@ -254,10 +255,11 @@ void Game::checkStageTransition() {
         currentStage.spawnEnemies(enemies, dt);
         enemyMissiles.clear();
         hasBossStageTransitioned = true;
+        stageTransitionClock.restart();
     }
 
     // 30초 경과 시 스테이지 이동
-    if (globalClock.getElapsedTime().asSeconds() > 30.0f * stageSwitchCounter) {
+    if (stageTransitionClock.getElapsedTime().asSeconds() > 30.0f) {
         // 스테이지 이동
         if (stageSwitchCounter == 1 && stageNumber == 1) {
             stageNumber = 2; // 다음 스테이지로 이동
@@ -299,6 +301,7 @@ void Game::checkStageTransition() {
             enemyMissiles.clear();
         }
         stageSwitchCounter++;
+        stageTransitionClock.restart();
     }
 }
 

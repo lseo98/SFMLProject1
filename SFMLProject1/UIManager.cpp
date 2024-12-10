@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "UIManager.h"
+#include "Game.h"
 #include <iostream>
 #include <vector>
 
@@ -233,21 +234,23 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
             // 입력값에 따라 스테이지 번호 설정 
             if (s2 == "skymap") {
                 onStageChange(1); // 스테이지 1로 변경
+                Game::stageTransitionClock.restart();
 
             }
             else if (s2 == "seamap") {
                 onStageChange(2); // 스테이지 1로 변경
+                Game::stageTransitionClock.restart();
 
             }
             else if (s2 == "landmap") {
                 onStageChange(3); // 스테이지 1로 변경
+                Game::stageTransitionClock.restart();
                 //std::cout << "landmap = " << s2 << std::endl;
 
             }
             else if (s2 == "restart") {
                 if (onRestart) onRestart(); // restart 콜백 호출
-
-
+                Game::stageTransitionClock.restart();
             }
 
             else {
@@ -466,6 +469,7 @@ void UIManager::setBackground(int stageNumber) {
         backgroundImagePath = "sea.png";
         break;
     case 3:
+    case 4:
         backgroundImagePath = "land.png";
         break;
     //case 5:

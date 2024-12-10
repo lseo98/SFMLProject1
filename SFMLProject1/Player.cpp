@@ -71,7 +71,7 @@ void Player::move(sf::Vector2f updatePosition) {
     if (stageNumber == 4) {
         // 플레이어가 설정 화면 바깥으로 나갈 경우 예외 처리
         if (this->position.x < WINDOWWIDTH / 4.0f) this->position.x = WINDOWWIDTH / 4.0f;
-        if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f - 200) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width - 200;
+        if (this->position.x + width > WINDOWWIDTH / 4.0f * 3.0f - 250) this->position.x = WINDOWWIDTH / 4.0f * 3.0f - width - 250;
         if (this->position.y < 0)  this->position.y = 0;
         if (this->position.y + height > WINDOWHEIGHT) this->position.y = WINDOWHEIGHT - height;
     }
