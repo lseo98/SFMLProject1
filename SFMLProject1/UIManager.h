@@ -58,7 +58,7 @@ private:
     sf::Font font;
     sf::Text inputText;
     sf::Text text;
-    sf::RectangleShape inputBoxl, inputBoxr, smallBoxr, coolbar_Q, coolbar_E, boxE, boxQ, boxdir, keyb;
+    sf::RectangleShape inputBoxl, inputBoxr, smallBoxr, coolbar_Q, coolbar_E, boxE, boxQ, boxdir, keyb,timebox;
     sf::Text skytext, seatext, landtext;
     sf::Text textbox;
     sf::Text gameOverText;
@@ -81,6 +81,13 @@ private:
     bool showBossText = false;      // "BOSS" 텍스트 표시 여부
     bool bossTextDisplayed = false; // "BOSS" 텍스트 한 번만 표시
 
+    sf::Text countdownText;       // 타이머를 표시할 텍스트
+    sf::Clock countdownClock;     // 카운트다운 측정을 위한 SFML Clock
+    int countdownValue = 5;       // 초기 카운트다운 값
 
+    bool isGameOver = false; // 미니게임 오버 상태를 추적
+
+    sf::Text resultText; // 결과 텍스트
+    std::string resultString; // 현재 결과 문자열
 
 };

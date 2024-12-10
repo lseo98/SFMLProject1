@@ -30,6 +30,8 @@ private:
     // 게임 루프의 세 가지 주요 단계
     void handleEvents();
     void update();
+    void minigameupdate();
+
     void render();
 
     // 게임 루프 내 필요 함수

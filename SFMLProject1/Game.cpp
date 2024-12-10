@@ -44,6 +44,7 @@ void Game::run() {
             }
         }
         else if (stageNumber != 5) update();
+        else if (stageNumber == 5) minigameupdate();
 
         render();
     }
@@ -215,7 +216,7 @@ void Game::changeStage(int newStageNumber) {
     stageNumber = newStageNumber;          // 스테이지 번호 설정
 
     if (stageNumber == 5) {
-        int arr[3] = { 4, 'A', 'W' }; // 남은 키 수, 입력된 키, 목표 키
+        int arr[3] = { 4, 5, 6 }; // 남은 키 수, 입력된 키, 목표 키
     }
     else {
         currentStage.setStage(stageNumber, enemies); // 현재 스테이지 적 초기화
@@ -301,17 +302,21 @@ void Game::checkStageTransition() {
         stageSwitchCounter++;
     }
 }
+void Game::minigameupdate() { // 게임 상태 업데이트
+    int arr[3] = { 4, 2, 3 }; // 남은 키 수, 입력된 키, 목표 키
+
+    // UIManager에 데이터 전달
+    std::cout << "Updating minigame info with arr: { ";
+
+    uiManager.updateMinigameInfo(arr);
 
 
+}
 void Game::update() { // 게임 상태 업데이트
 
-    if (stageNumber == 5) {
-        int arr[3] = { 4, 'A', 'W' }; // 남은 키 수, 입력된 키, 목표 키
 
-        // UIManager에 데이터 전달
-        uiManager.updateMinigameInfo(arr);
-    }
-    else {
+    
+
         if (player.getHealth() > 0) {
             // 스테이지 자동 전환 검사
             checkStageTransition();
@@ -467,7 +472,7 @@ void Game::update() { // 게임 상태 업데이트
             // 게임 오버 상태 처리
             uiManager.update(stageNumber, true, player);
         }
-    }
+    
 
 }
 
