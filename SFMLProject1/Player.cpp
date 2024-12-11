@@ -1093,12 +1093,12 @@ void Player::bossCollision(Boss* boss) {
         }
         int flag = 0;
         // 보스 체력이 0 이하일 경우 폭발 효과 생성
-        if (boss->getHealth() <= 0) {
-            // 보스 파괴 시 큰 폭발 효과 생성
-            createExplosion(sf::Vector2f(450, 0), ExplosionType::Q_missileImpact);     
+        //if (boss->getHealth() <= 0) {
+        //    // 보스 파괴 시 큰 폭발 효과 생성
+        //    createExplosion(sf::Vector2f(450, 0), ExplosionType::Q_missileImpact);     
 
-        
-        }
+        //
+        //}
 
     deleteThisProjectile();
 
@@ -1431,4 +1431,10 @@ void Player::renderExplosions(sf::RenderWindow& window) {
 }
 void Player::clearExplosions() {
     explosions.clear();
+}
+
+void Player::clearProjectiles() {
+    bullets.clear();    // 플레이어의 총알 제거
+    missiles.clear();   // 플레이어의 미사일 제거
+    allyMissiles.clear(); // 아군의 미사일 제거
 }

@@ -128,6 +128,9 @@ public:
     }
     int stageNumber;                 // 현재 스테이지 번호
 
+    void clearProjectiles();
+
+
 
 private:
 

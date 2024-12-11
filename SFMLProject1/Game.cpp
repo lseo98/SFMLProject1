@@ -46,13 +46,23 @@ bool Game::run() {
         }
         // 보스 패배 상태 확인
         if (!bossDefeated && boss->getHealth() <= 0) {
+                // 보스 파괴 시 큰 폭발 효과 생성
+                player.createExplosion(sf::Vector2f(450, 0), Player::ExplosionType::Q_missileImpact);
+                
+
+            
             bossDefeated = true;             // 보스 패배 플래그 설정
             bossDefeatClock.restart();      // 패배 시점 기록
-                        clearEnemiesAndMissiles();
+            //// **적군 유닛 및 미사일 제거 코드**
+            enemies.clear(); // 모든 적군 유닛 제거
+
+            //// **플레이어의 총알 및 미사일 제거 코드**
+            player.clearProjectiles();
+            clearEnemiesAndMissiles();
 
         }
         // 보스 패배 후 3초 경과 시 게임 종료
-        if (bossDefeated && bossDefeatClock.getElapsedTime().asSeconds() >= 3.0f) {
+        if (bossDefeated && bossDefeatClock.getElapsedTime().asSeconds() >= 2.0f) {
             return true;
         }
 
