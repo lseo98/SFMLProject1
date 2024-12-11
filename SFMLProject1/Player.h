@@ -122,6 +122,7 @@ public:
     const sf::Texture& getExplosionTexture(int stage) const {
         return enemyExplosionTextures[stage];
     }
+    int stageNumber;                 // 현재 스테이지 번호
 
 
 private:
@@ -153,7 +154,6 @@ private:
     float waitTime;  // 하늘 스테이지에서 아군 유닛의 대기 시간
 
     sf::Texture bulletTextures[4];   // 스테이지별 발사체 이미지 (1: 하늘, 2: 바다, 3: 땅) 
-    int stageNumber;                 // 현재 스테이지 번호
     void loadProjectileTextures();
 
     // 처치한 적군 수
