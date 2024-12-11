@@ -51,6 +51,7 @@ public:
     sf::Text pressText;     // 목표 키 텍스트
 
     sf::RectangleShape keyBox;  // 키 강조 박스
+    sf::Text mapchangetime;
 
 private:
     sf::Texture backgroundTexture;

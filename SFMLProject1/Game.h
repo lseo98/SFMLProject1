@@ -25,6 +25,8 @@ public:
     bool run();
    
     void clearEnemiesAndMissiles();
+    static bool bossDefeated;
+
 
 
 private:

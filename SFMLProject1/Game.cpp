@@ -4,6 +4,8 @@
 // 정적 멤버 정의
 sf::Clock Game::globalClock;
 sf::Clock Game::stageTransitionClock;
+bool Game::bossDefeated = false;
+
 
 Game::Game() {
     initVariables();
@@ -21,7 +23,6 @@ Game::~Game() {
 
 bool Game::run() {
     sf::Clock bossDefeatClock;  // 보스가 패배한 시점을 기록하는 시계
-    bool bossDefeated = false; // 보스 패배 상태 확인 변수
     while (isRunning && window->isOpen()) {
         sf::Event event;
         dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
@@ -89,6 +90,7 @@ void Game::initVariables() {
     isMaingameRunning = true;   // stage 1, 2, 3이 아닌 미니게임 혹은 화면 전환 중에는 false
     this->clock.restart(); // 추후 미니게임 혹은 메인 게임 시작 후 시간 계산하는 것으로 변경 필요
     stageNumber = 1;        // 1: 하늘, 2: 바다, 3: 땅
+    bool bossDefeated = false; // 초기값 설정
 
     uiManager.setStageChangeCallback([this](int stage) {
         this->changeStage(stage); // 콜백에서 Game의 메서드를 호출

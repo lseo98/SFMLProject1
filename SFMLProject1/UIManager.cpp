@@ -3,6 +3,8 @@
 #include "Game.h"
 #include <iostream>
 #include <vector>
+#include <sstream>
+#include <iomanip>
 
 // UIManager.cpp
 UIManager::UIManager() : isInputActive(false), currentStageNumber(1),
@@ -65,7 +67,7 @@ void UIManager::init() {
     landtext.setPosition(1410, 300);
 
     textbox.setFont(font);
-    textbox.setString("Welcome to the\n<Biocommander-II> terminal.\n___________________________\n\n>System\n\nCommand request received.\n\n*Warning\nUse restart as a last resort\n\n>System\nMental power exhausted.\nThe interrogation begins.\n\n>System\nIf the E key is red, \nthe cooldown is reduced.\n\nType switch to help.\n\n>  [skymap]  [seamap]\n   [landmap]  [restart]\n\nTyping Here\n->");
+    textbox.setString("\n\n\n\nWelcome to the\n<Biocommander-II> terminal.\n___________________________\n\n>System\n\nCommand request received.\n\n>System\nThe interrogation begins.\n\n>System\nIf the E key is red, \nthe cooldown is reduced.\n\nType switch to help.\n\n>  [skymap]  [seamap]\n   [landmap]  [restart]\n\nTyping Here\n->");
     textbox.setCharacterSize(25);
     textbox.setFillColor(sf::Color::Yellow);
     textbox.setPosition(5, 5);
@@ -223,6 +225,11 @@ void UIManager::init() {
     resultText.setFillColor(sf::Color::White);
     resultText.setPosition(20, 600); // 화면 왼쪽 아래에 출력
     resultString = ""; // 초기 문자열은 비어 있음
+
+    mapchangetime.setFont(font);
+    mapchangetime.setCharacterSize(35);
+    mapchangetime.setFillColor(sf::Color::White);
+    mapchangetime.setPosition(30, 30);
 }
 
 void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) { 
@@ -344,6 +351,17 @@ void UIManager::updateKeyBoxes() {
 
 
 void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
+
+    float elapsedTime = Game::stageTransitionClock.getElapsedTime().asSeconds();
+    elapsedTime = round((30.0f - elapsedTime) * 100) / 100.0f;
+
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(2) << elapsedTime;
+
+    mapchangetime.setString(" Change Place "+oss.str());
+    //elapsedTime = round((30.0f-elapsedTime) * 100) / 100;
+    //mapchangetime.setString("Change Place "+std::to_string(elapsedTime));
+
     // UI 요소 업데이트 코드
     if (currentStageNumber != stageNumber) {
         setBackground(stageNumber);
@@ -415,6 +433,8 @@ void UIManager::render(sf::RenderWindow& window) {
         window.draw(smallBoxr);
 
         window.draw(inputText);
+        window.draw(mapchangetime);
+
         window.draw(text);
       //
         window.draw(skytext);
