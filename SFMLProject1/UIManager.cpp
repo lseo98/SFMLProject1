@@ -40,7 +40,7 @@ void UIManager::init() {
     inputText.setFont(font);
     inputText.setCharacterSize(24);
     inputText.setFillColor(sf::Color::Yellow);
-    inputText.setPosition(30, 730);
+    inputText.setPosition(33, 730);
 
     text.setFont(font);
     text.setString("Kill Count");
@@ -67,10 +67,10 @@ void UIManager::init() {
     landtext.setPosition(1410, 300);
 
     textbox.setFont(font);
-    textbox.setString("\n\n\n\nWelcome to the\n<Biocommander-II> terminal.\n___________________________\n\n>System\n\nCommand request received.\n\n>System\nThe interrogation begins.\n\n>System\nIf the E key is red, \nthe cooldown is reduced.\n\nType switch to help.\n\n>  [skymap]  [seamap]\n   [landmap]  [restart]\n\nTyping Here\n->");
+    textbox.setString("Stage Transition Timer : \n\n\n\nWelcome to the\n<Biocommander-II> terminal.\n___________________________\n\n>System\nThe interrogation begins.\n\n>System\nIf the E key is red, \nthe cooldown is reduced.\n\nType switch to help.\n\n> [skymap]  [seamap]  [landmap]\n\nTyping Here\n->");
     textbox.setCharacterSize(25);
     textbox.setFillColor(sf::Color::Yellow);
-    textbox.setPosition(5, 5);
+    textbox.setPosition(10, 5);
 
     // 게임 오버 텍스트 설정
     gameOverText.setFont(font);
@@ -182,7 +182,7 @@ void UIManager::init() {
     inputKeyText.setString("");
     inputKeyText.setCharacterSize(38);
     inputKeyText.setFillColor(sf::Color::Yellow);
-    inputKeyText.setPosition(5, 250);
+    inputKeyText.setPosition(10, 250);
 
     // 목표 키 텍스트 초기화
     targetKeyText.setFont(font);
@@ -227,9 +227,12 @@ void UIManager::init() {
     resultString = ""; // 초기 문자열은 비어 있음
 
     mapchangetime.setFont(font);
-    mapchangetime.setCharacterSize(35);
-    mapchangetime.setFillColor(sf::Color::White);
-    mapchangetime.setPosition(30, 30);
+    mapchangetime.setCharacterSize(25);
+    mapchangetime.setFillColor(sf::Color::Yellow);
+    mapchangetime.setPosition(10, 6);
+    mapchangetime.setOutlineColor(sf::Color::Black);
+    mapchangetime.setOutlineThickness(2);
+
 }
 
 void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) { 
@@ -276,16 +279,8 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
                 //std::cout << "landmap = " << s2 << std::endl;
 
             }
-            else if (s2 == "restart") {
-                if (onRestart) onRestart(); // restart 콜백 호출
-            }
+      
 
-            else {
-                //std::cout << "Invalid input: " << s2 << std::endl;
-            }
-
-
-            // std::cout << "s2 = " << s2 << std::endl;
         }
         else if (event.text.unicode < 128) {
             // 일반 문자 입력
@@ -354,11 +349,19 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
 
     float elapsedTime = Game::stageTransitionClock.getElapsedTime().asSeconds();
     elapsedTime = round((30.0f - elapsedTime) * 100) / 100.0f;
+    if (elapsedTime < 5) {
+        mapchangetime.setOutlineColor(sf::Color::Red);
+        mapchangetime.setOutlineThickness(2);
+    }
+    else {
+        mapchangetime.setOutlineColor(sf::Color::Black);
+        mapchangetime.setOutlineThickness(2);
+    }
 
     std::ostringstream oss;
-    oss << std::fixed << std::setprecision(2) << elapsedTime;
+    oss << std::fixed << std::setprecision(2) << elapsedTime;//소수 둘째 자리까지
 
-    mapchangetime.setString(" Change Place "+oss.str());
+    mapchangetime.setString("                          "+oss.str());
     //elapsedTime = round((30.0f-elapsedTime) * 100) / 100;
     //mapchangetime.setString("Change Place "+std::to_string(elapsedTime));
 

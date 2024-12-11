@@ -143,7 +143,7 @@ void Player::updateBlink() {
 }
 
 void Player::takeDamage(float amount) {
-    if (Game::bossDefeated) { // bossDefeated가 Game 클래스의 정적 변수로 관리된다 가정
+    if (Game::bossDefeated) {
         return; // 보스 패배 후 플레이어 데미지 무시
     }
     // 부모 클래스의 takeDamage 호출
