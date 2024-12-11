@@ -20,6 +20,7 @@ Game::~Game() {
 }
 
 bool Game::run() {
+    stageTransitionClock.restart();
     while (isRunning && window->isOpen()) {
         sf::Event event;
         dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
@@ -40,10 +41,10 @@ bool Game::run() {
                 stageNumber = lastStageNumber;
                 backStageTransition();
             }
-            if (minigame->getBadEnding()) return false;
+            if (minigame->getBadEnding()) { delete window; return false; }
         }
         render();
-        if (boss->getHealth() <= 0) return true;
+        if (boss->getHealth() <= 0) { delete window; return true; }
 
     }
     return false;
