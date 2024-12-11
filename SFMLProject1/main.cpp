@@ -46,12 +46,16 @@ void printScript(const std::string& script) {
 
         Sleep(100); // 0.1초 대기
         curPosition = position + 1;
+        /*if (GetAsyncKeyState(VK_RETURN)) {    // skip 키
+            return;
+        }*/
     }
 
     // 마지막 단어 출력
     std::string result = script.substr(curPosition);
     std::cout << result << std::endl;
 
+   
     // 엔터 입력 대기
     waitForEnter();
 }
@@ -65,7 +69,7 @@ void printTutorialScript(std::string script) {
         if (GetAsyncKeyState(VK_RETURN)) {
             std::string result = script.substr(curPosition);
             std::cout << result << std::endl << std::endl;
-            Sleep(1000);
+                Sleep(1000);
             return;
         }
         std::string result = script.substr(curPosition, len);
