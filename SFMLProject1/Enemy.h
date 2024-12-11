@@ -43,7 +43,7 @@ protected:
     static constexpr float maxHealth_NormalUnit = 100.0f;
     static constexpr float maxHealth_EliteUnit = 300.0f;
     static constexpr float maxHealth_HealUnit = 1.0f;
-    static constexpr float maxHealth_Shield = 1000.0f;
+    static constexpr float maxHealth_Shield = 600.0f;
 
     bool collisionFlag;
 

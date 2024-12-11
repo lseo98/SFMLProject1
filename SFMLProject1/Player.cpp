@@ -628,11 +628,10 @@ void Player::updateAllies(float dt, std::vector<Enemy*>& enemies, std::vector<st
 
          // 필살기 중앙에 도달하면 적군 전체 제거
         if (std::any_of(allyMissiles.begin(), allyMissiles.end(), [](Missile* missile) {
-            return missile->position.x >= WINDOWWIDTH / 2.0f + 100;
+            return missile->position.x >= WINDOWWIDTH / 2.0f ;
             })) {
-            sf::Vector2f QExpolPosition(450, 0); // 오른쪽 상단에서 등장
 
-            createExplosion(QExpolPosition, ExplosionType::Q_missileImpact);
+            createExplosion(sf::Vector2f(450.0f, 0.0f), ExplosionType::Q_missileImpact);
 
             // 적군 전체 삭제
             for (auto* enemy : enemies) {
@@ -641,10 +640,12 @@ void Player::updateAllies(float dt, std::vector<Enemy*>& enemies, std::vector<st
                 delete enemy;  // 동적 메모리 해제
             }
             enemies.clear(); // 적군 벡터 초기화
+
             for (auto& enemyMissile : globalMissiles) {
                 //delete enemyMissile;  // 동적 메모리 해제
             }
             globalMissiles.clear(); // 적군 공격체 벡터 초기화
+
         }
 
         allyMissiles.erase(
@@ -1049,8 +1050,8 @@ void Player::bossCollision(Boss* boss) {
                 createExplosion(explosionPosition, ExplosionType::MissileImpact);
 
 
-                if ((boss)->getHealth() <= 0) {
-                    createExplosion(explosionPosition, ExplosionType::EnemyDestroyed);
+                if ((boss)->getHealth() <= 500) {
+                    createExplosion(sf::Vector2f(450, 0), ExplosionType::Q_missileImpact);
                     return;     // 보스 하나만 검사하므로 보스 처치 시 바로 return
                 }
             }
@@ -1063,7 +1064,6 @@ void Player::bossCollision(Boss* boss) {
                 (boss)->takeDamage((*bulletIt)->getDamage());   // Boss의 체력 감소
                 (*bulletIt)->crashed();
                 if ((boss)->getHealth() <= 0) {
-                    createExplosion((boss->sprite.getPosition()), ExplosionType::EnemyDestroyed);
                     return;
                 }
             }
@@ -1298,7 +1298,7 @@ void Player::loadExplosionTextures() {
     if (!Q_missileExplosionTextures[1].loadFromFile("explosion_Q_sea.png")) {
         std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
     }
-    if (!Q_missileExplosionTextures[3].loadFromFile("explosion-3a.png")) {
+    if (!Q_missileExplosionTextures[3].loadFromFile("explosion_Q_sea.png")) {
         std::cerr << "Error loading explosion_missile_stage2.png!" << std::endl;
     }
 }
@@ -1336,13 +1336,12 @@ void Player::createExplosion(sf::Vector2f position, ExplosionType type) {
         explosion.totalFrames = textureWidth / frameWidth; // 프레임 개수 계산
 
         // 스프라이트 크기 설정
-        if (type == ExplosionType::Q_missileImpact && stageNumber == 2) {
-            explosion.sprite.setScale(900.0f / texture->getSize().x, 900.0f / texture->getSize().y); // 화면 전체 채우기
-        }
-        else if (type == ExplosionType::Q_missileImpact && stageNumber == 4) {
-            // 보스 폭발에 맞춘 크기 조정
-            explosion.sprite.setScale(4.0f, 4.0f); 
-            explosion.sprite.setPosition(position);     
+        if (type == ExplosionType::Q_missileImpact) {
+            explosion.sprite.setTextureRect(sf::IntRect(0, 0, frameWidth, 32));
+            explosion.sprite.setScale(900.0f /texture->getSize().x, 900.0f /texture->getSize().y); // 화면 전체 채우기
+            explosion.sprite.setPosition(450.0f, 0.0f);
+
+            explosions.push_back(explosion);
         }
         else {
             explosion.sprite.setScale(2.5f, 2.5f); // 기본 크기 조정
@@ -1352,6 +1351,7 @@ void Player::createExplosion(sf::Vector2f position, ExplosionType type) {
             explosions.push_back(explosion);
         }
     }
+
 }
 
 // 폭발 업데이트
@@ -1368,18 +1368,22 @@ void Player::updateExplosions(float dt) {
             else {
                 int frameWidth = 32; // 한 프레임의 가로 크기
                 int frameHeight = 32; // 각 프레임의 세로 크기
-                // Q_missileImpact & stageNumber == 2 처리
-                if (it->type == ExplosionType::Q_missileImpact && stageNumber == 2) {
+
+              
+                 //Q_missileImpact & stageNumber == 2 처리
+                if (it->type == ExplosionType::MissileImpact || it->type == ExplosionType::EnemyDestroyed) {
                     it->sprite.setTextureRect(sf::IntRect(it->currentFrame * frameWidth, 0, frameWidth, frameHeight));
-                    it->sprite.setScale(900.0f / frameWidth, 900.0f / frameHeight); // 화면 전체 크기 유지
-                }
+
+           }
                 else {//나머지
+
                     it->sprite.setTextureRect(sf::IntRect(it->currentFrame * frameWidth, 0, frameWidth, frameHeight));
+               
+                    it->sprite.setScale(900.0f / frameWidth, 900.0f / frameHeight); // 화면 전체 크기 유지
                 }
             }
         }
         ++it;
-
     }
 
 }

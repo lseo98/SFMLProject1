@@ -83,41 +83,13 @@ void printTutorialScript(std::string script) {
     Sleep(1000);
 }
 
-//void printScript(std::string script) {
-//    std::string seperator = " ";
-//    int curPosition = 0;
-//    int position;
-//    clearConsole(); // 콘솔 화면 초기화
-//    while ((position = script.find(seperator, curPosition)) != std::string::npos) {
-//        int len = position - curPosition;
-//        if (GetAsyncKeyState(VK_RETURN)) {
-//            std::string result = script.substr(curPosition);
-//            std::cout << result << std::endl << std::endl;
-//            Sleep(1000);
-//            return;
-//        }
-//        std::string result = script.substr(curPosition, len);
-//        std::cout << result << " ";
-//        Sleep(100);
-//        curPosition = position + 1;
-//    }
-//
-//    std::string result = script.substr(curPosition);
-//    std::cout << result << std::endl << std::endl;
-//
-//   /* if (GetAsyncKeyState(VK_RETURN)) {
-//        return;
-//    }*/
-//    Sleep(1000);
-//    waitForEnter();
-//   
-//}
+
 void beforeGameScript() {
     printScript("project 1984 시작");
-   // printScript("1984년, 전 세계는 단 하나의 제국 아래 굴복했고, <민족사회당>은 모든 진실과 기억, 감정을 조작하며 인류를 옥죄고 있다.\n그러나 이런 폭압적 질서 속에서도, 수많은 인종과 사상을 초월한 무장 해방 단체 <민주해방전선>은 오직 세계 해방이라는 단 하나의 신념으로 결집했다.\n내가 바로 이 민주해방전선의 야전 지휘관이자 상징적 리더였다.\n수많은 전투를 승리로 이끌어냈고, 사람들에게 자유에 대한 희망을 불어넣었다.\n");
-    //printScript("하지만 그 희망도 잠시, 내부에 잠복한 제국의 첩자가 우리의 전방 기지를 노출시켰고, 나는 제국 정보부 특수군의 기습에 결국 생포되었다.\n이제 제국은 나를 공개 처형함으로써 전 세계에 저항이 무의미하다는 공포를 심으려 한다.\n한껏 어두운 감옥 속에 갇힌 지금, 제국의 눈길은 내 모든 숨결, 생각까지 감시한다.\n");
+    printScript("1984년, 전 세계는 단 하나의 제국 아래 굴복했고, <민족사회당>은 모든 진실과 기억, 감정을 조작하며 인류를 옥죄고 있다.\n그러나 이런 폭압적 질서 속에서도, 수많은 인종과 사상을 초월한 무장 해방 단체 <민주해방전선>은 오직 세계 해방이라는 단 하나의 신념으로 결집했다.\n내가 바로 이 민주해방전선의 야전 지휘관이자 상징적 리더였다.\n수많은 전투를 승리로 이끌어냈고, 사람들에게 자유에 대한 희망을 불어넣었다.\n");
+    printScript("하지만 그 희망도 잠시, 내부에 잠복한 제국의 첩자가 우리의 전방 기지를 노출시켰고, 나는 제국 정보부 특수군의 기습에 결국 생포되었다.\n이제 제국은 나를 공개 처형함으로써 전 세계에 저항이 무의미하다는 공포를 심으려 한다.\n한껏 어두운 감옥 속에 갇힌 지금, 제국의 눈길은 내 모든 숨결, 생각까지 감시한다.\n");
     system("cls");
-    /*printTutorialScript(" < 튜 토 리 얼 >");
+    printTutorialScript(" < 튜 토 리 얼 >");
     printTutorialScript("WASD           : 상하좌우 이동 - 하늘, 바다 스테이지");
     printTutorialScript("AD             : 좌우 이동 - 땅 스테이지");
     printTutorialScript("좌우 방향키    : 특수 공격 발사체 방향 조작");
@@ -130,7 +102,7 @@ void beforeGameScript() {
     printTutorialScript("스테이지마다 정해진 수의 정예 유닛을 처치해야 일반 스테이지가 최종적으로 클리어되며, 보스를 처치하여 세계를 구할 기회가 주어진다.");
     printTutorialScript("정해진 시간마다, 다른 스테이지에서 지휘 요청이 들어와 자동으로 시점이 전환된다.");
     printTutorialScript("보스는 일반적이지 않은 패턴을 가지고 있으니 조심하여 꼭 세상을 구하길 바란다.");
-    printTutorialScript("Enter 키를 입력하여 작전개시");*/
+    printTutorialScript("Enter 키를 입력하여 작전개시");
     waitForEnter();
 
     system("cls");
@@ -164,9 +136,8 @@ int main() {
 
     Game game;
     bool goodEnding = game.run();
-    goodEndingScript();/*
     if (goodEnding) goodEndingScript();
-    else  badEndingScript();*/
+    else  badEndingScript();
 
     return 0;
 }

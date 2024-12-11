@@ -568,7 +568,7 @@ void Game::render() {
         }
 
         if (stageNumber == 4) boss->render(*window, bossMissiles);
-        player.renderExplosions(*window);
+     //   player.renderExplosions(*window);
 
         window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
@@ -579,6 +579,8 @@ void Game::render() {
             uiManager.drawGameOverScreen(*window);
         }
         if (stageNumber != 5) player.draw(*window);
+        player.renderExplosions(*window);
+
     }
 
     window->display(); // 화면에 그린 내용을 표시

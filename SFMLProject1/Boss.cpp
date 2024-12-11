@@ -9,8 +9,7 @@ Boss::Boss() : Enemy(10000.0f, 0, sf::Vector2f(1300, 200), 4) {
     initBoss();
 }
 void Boss::initBoss() {
-    health = 10000;
-  //  health = 100;
+    health = 1000;
 
     phase = 1;
     time = pattern1 = pattern2 = pattern3 = pattern4 = pattern5 = 0;
