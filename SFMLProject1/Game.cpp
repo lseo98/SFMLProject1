@@ -20,6 +20,8 @@ Game::~Game() {
 }
 
 bool Game::run() {
+    sf::Clock bossDefeatClock;  // 보스가 패배한 시점을 기록하는 시계
+    bool bossDefeated = false; // 보스 패배 상태 확인 변수
     while (isRunning && window->isOpen()) {
         sf::Event event;
         dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
@@ -42,13 +44,32 @@ bool Game::run() {
             }
             if (minigame->getBadEnding()) return false;
         }
+        // 보스 패배 상태 확인
+        if (!bossDefeated && boss->getHealth() <= 0) {
+            bossDefeated = true;             // 보스 패배 플래그 설정
+            bossDefeatClock.restart();      // 패배 시점 기록
+                        clearEnemiesAndMissiles();
+
+        }
+        // 보스 패배 후 3초 경과 시 게임 종료
+        if (bossDefeated && bossDefeatClock.getElapsedTime().asSeconds() >= 3.0f) {
+            return true;
+        }
+
         render();
-        if (boss->getHealth() <= 0) return true;
 
     }
-    return false;
-}
+       return false;
+    
 
+}
+void Game::clearEnemiesAndMissiles() {
+    // 적군 제거
+    for (auto* enemy : enemies) {
+        delete enemy;  // 동적 메모리 해제
+    }
+    enemies.clear();  // 적군 벡터 초기화
+}
 
 void Game::initVariables() {
     globalClock.restart(); // 게임 시작 시 Clock 초기화
@@ -567,7 +588,7 @@ void Game::render() {
         }
 
         if (stageNumber == 4) boss->render(*window, bossMissiles);
-     //   player.renderExplosions(*window);
+        player.renderExplosions(*window);
 
         window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
@@ -578,8 +599,6 @@ void Game::render() {
             uiManager.drawGameOverScreen(*window);
         }
         if (stageNumber != 5) player.draw(*window);
-        player.renderExplosions(*window);
-
     }
 
     window->display(); // 화면에 그린 내용을 표시

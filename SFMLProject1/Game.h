@@ -24,6 +24,8 @@ public:
     // 게임 실행
     bool run();
    
+    void clearEnemiesAndMissiles();
+
 
 private:
     // 초기화 함수

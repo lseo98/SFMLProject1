@@ -44,7 +44,7 @@ public:
     void enemyProjectileCollision(std::vector<std::unique_ptr<Missile>>& globalMissiles, std::vector<Enemy*>& enemies); // 공격체-공격체 충돌처리
     void healUnitCollision(std::vector<HealUnit*> healUnits);  // 보스 스테이지 / 공격체-힐유닛 충돌처리// 공격체-적 충돌 처리
     void shieldCollision(std::vector<Shield*> shield);  // 보스 스테이지 / 공격체-융합로 충돌처리
-    void bossCollision(Boss *boss);                     // 보스 스테이지 / 보스-공격체 충돌 처리
+    void bossCollision(Boss *boss);                 // 보스 스테이지 / 보스-공격체 충돌 처리
     void deleteThisProjectile();                     // 충돌된 내 발사체 삭제
     void updateAttack();                             // 공격체 업데이트
     void updateAllies(float delatime, std::vector<Enemy*>& enemies, std::vector<std::unique_ptr<Missile>>& globalMissiles);
@@ -96,7 +96,8 @@ public:
     enum class ExplosionType {
         EnemyDestroyed,
         MissileImpact,
-        Q_missileImpact
+        Q_missileImpact,
+        bossu
     };
     struct Explosion {
         sf::Sprite sprite;
@@ -110,6 +111,9 @@ public:
     sf::Texture enemyExplosionTextures[4]; // 스테이지별 폭발 텍스처
     sf::Texture missileExplosionTextures[4]; // 스테이지별 폭발 텍스처
     sf::Texture Q_missileExplosionTextures[4]; // 스테이지별 폭발 텍스처
+    sf::Texture boExplosionTextures[4]; // 스테이지별 폭발 텍스처
+
+
 
 
     void loadExplosionTextures(); // 폭발 텍스처 로드

@@ -211,11 +211,11 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
             // 폭발 효과 추가
             sf::FloatRect shieldBounds = shield.sprite.getGlobalBounds();
             sf::Vector2f collisionCenter(
-                shieldBounds.left ,
-                shieldBounds.top
+                shieldBounds.left, // X 중심
+                shieldBounds.top   // Y 중심
             );
 
-            player.createExplosion(collisionCenter, Player::ExplosionType::EnemyDestroyed);
+            player.createExplosion(collisionCenter, Player::ExplosionType::bossu);
 
             player.takeDamage(1.0f);
             player.changeHeartSprite();
@@ -230,7 +230,7 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
                 shieldBounds.left ,
                 shieldBounds.top 
             );
-            player.createExplosion(collisionCenter, Player::ExplosionType::EnemyDestroyed);
+            player.createExplosion(collisionCenter, Player::ExplosionType::bossu);
 
         }
     }
