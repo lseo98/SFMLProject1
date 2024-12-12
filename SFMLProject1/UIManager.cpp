@@ -350,17 +350,25 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
 
     float elapsedTime = Game::stageTransitionClock.getElapsedTime().asSeconds();
     elapsedTime = round((30.0f - elapsedTime) * 100) / 100.0f;
-
     if (stageNumber == 4 || stageNumber == 5) {
         mapchangetime.setOutlineColor(sf::Color::Red);
         mapchangetime.setOutlineThickness(2);
         elapsedTime = 999.99;
     }
-    else if (elapsedTime < 5) {
+    if (elapsedTime < 6) {
         mapchangetime.setOutlineColor(sf::Color::Red);
         mapchangetime.setOutlineThickness(2);
+
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(2) << elapsedTime;
+        elapsedTimeText.setFont(font);
+        elapsedTimeText.setString("Stage Transition Timer: " + ss.str());
+        elapsedTimeText.setCharacterSize(40); // 텍스트 크기
+        elapsedTimeText.setFillColor(sf::Color::Red); // 텍스트 색상
+        elapsedTimeText.setPosition(560, 30); // 출력 좌표 설정
     }
     else {
+        elapsedTimeText.setString("");
         mapchangetime.setOutlineColor(sf::Color::Black);
         mapchangetime.setOutlineThickness(2);
     }
@@ -476,6 +484,7 @@ void UIManager::render(sf::RenderWindow& window) {
         if (showBossText) {
             window.draw(bossText);
         }
+        window.draw(elapsedTimeText);
     }
 }
 void UIManager::setCooldownRatios(float ultimateRatio, float specialRatio) {

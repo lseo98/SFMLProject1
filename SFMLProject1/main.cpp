@@ -136,7 +136,7 @@ int main() {
     srand(static_cast<unsigned>(time(0))); // 난수 생성기의 seed를 현재 시간으로 설정
     sf::Event event;
 
-   // beforeGameScript();
+    beforeGameScript();
 
     Game game;
     bool goodEnding = game.run();
