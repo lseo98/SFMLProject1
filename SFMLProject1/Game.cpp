@@ -43,6 +43,9 @@ bool Game::run() {
             if (minigame->getSuccess()) {
                 stageNumber = lastStageNumber;
                 backStageTransition();
+                // 부활 후 폭발 텍스처 및 플레이어 상태 재설정
+                player.loadExplosionTextures();
+                player.setPlayer(stageNumber);
             }
             if (minigame->getBadEnding()) { delete window; return false; }
         }
