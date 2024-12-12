@@ -350,7 +350,13 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
 
     float elapsedTime = Game::stageTransitionClock.getElapsedTime().asSeconds();
     elapsedTime = round((30.0f - elapsedTime) * 100) / 100.0f;
-    if (elapsedTime < 5) {
+
+    if (stageNumber == 4 || stageNumber == 5) {
+        mapchangetime.setOutlineColor(sf::Color::Red);
+        mapchangetime.setOutlineThickness(2);
+        elapsedTime = 999.99;
+    }
+    else if (elapsedTime < 5) {
         mapchangetime.setOutlineColor(sf::Color::Red);
         mapchangetime.setOutlineThickness(2);
     }
@@ -359,14 +365,16 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
         mapchangetime.setOutlineThickness(2);
     }
 
+
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(2) << elapsedTime;//소수 둘째 자리까지
 
-    mapchangetime.setString("                          "+oss.str());
+    mapchangetime.setString("                          " + oss.str());
     //elapsedTime = round((30.0f-elapsedTime) * 100) / 100;
     //mapchangetime.setString("Change Place "+std::to_string(elapsedTime));
 
-    // UI 요소 업데이트 코드
+
+// UI 요소 업데이트 코드
     if (currentStageNumber != stageNumber) {
         setBackground(stageNumber);
         currentStageNumber = stageNumber;
@@ -406,6 +414,7 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
     // 노말유닛 10마리 처치시 E키 빨간색으로 변환
     if (player.killCountNomalUnit == 10 && !isRed) {
         boxE.setOutlineColor(sf::Color::Red);
+        specialCooldownBar.setFillColor(sf::Color(255, 0, 0, 100));
         isRed = true;
         player.setSpecialAttackCooldown(0.2);
         timer.restart();
@@ -413,6 +422,7 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
     // 3초가 지나면 테두리 색상을 원래대로 복구
     if (isRed && timer.getElapsedTime().asSeconds() > 3) {
         boxE.setOutlineColor(sf::Color::Green); // 기본 색상으로 복구
+        specialCooldownBar.setFillColor(sf::Color(50, 50, 50, 100));
         isRed = false; // 강조 상태 해제
         player.killCountNomalUnit = 0; // 노말 유닛 처치 수 0으로 초기화
         player.setSpecialAttackCooldown(2);
