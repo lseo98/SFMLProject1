@@ -40,7 +40,7 @@ void UIManager::init() {
     inputText.setFont(font);
     inputText.setCharacterSize(24);
     inputText.setFillColor(sf::Color::Yellow);
-    inputText.setPosition(33, 730);
+    inputText.setPosition(35, 760);
 
     text.setFont(font);
     text.setString("Kill Count");
@@ -67,7 +67,7 @@ void UIManager::init() {
     landtext.setPosition(1410, 300);
 
     textbox.setFont(font);
-    textbox.setString("Stage Transition Timer : \n\n\n\nWelcome to the\n<Biocommander-II> terminal.\n___________________________\n\n>System\nThe interrogation begins.\n\n>System\nIf the E key is red, \nthe cooldown is reduced.\n\nType switch to help.\n\n> [skymap]  [seamap]  [landmap]\n\nTyping Here\n->");
+    textbox.setString("Stage Transition Timer : \n\nWelcome to the\n<Biocommander-II> terminal.\n_____________________________\n\n>System\nThe interrogation begins.\n\n>Mission Objective\n- Eliminate 15 elite units \n  from each map.\n- Complete all objectives\n  to unlock the boss fight.\n\n>Tip\n- If the E key is red, \n  the cooldown is reduced.\n- Remember, each time you fall,\n  the challenge grows harder.\n\n>Type switch to help.\n\n  [skymap]  [seamap]  [landmap]\n\nTyping Here\n->");
     textbox.setCharacterSize(25);
     textbox.setFillColor(sf::Color::Yellow);
     textbox.setPosition(10, 5);
@@ -226,6 +226,7 @@ void UIManager::init() {
     resultText.setPosition(20, 600); // 화면 왼쪽 아래에 출력
     resultString = ""; // 초기 문자열은 비어 있음
 
+    // 강제 스테이지 이동까지 남은 시간 표시
     mapchangetime.setFont(font);
     mapchangetime.setCharacterSize(25);
     mapchangetime.setFillColor(sf::Color::Yellow);
