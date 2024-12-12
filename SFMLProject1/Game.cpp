@@ -247,10 +247,8 @@ void Game::handleEvents() {
 void Game::changeStage(int newStageNumber) {
     stageNumber = newStageNumber;          // 스테이지 번호 설정
 
-    if (stageNumber == 5) {
-       // int arr[3] = { 4, 'A', 'W' }; // 남은 키 수, 입력된 키, 목표 키
-    }
-    else {
+    if (stageNumber != 5) {
+        
         currentStage.setStage(stageNumber, enemies); // 현재 스테이지 적 초기화
         player.setPlayer(stageNumber);        // 플레이어 초기화
 
@@ -274,7 +272,6 @@ void Game::changeStage(int newStageNumber) {
 }
 
 
-
 void Game::checkStageTransition() {
     // 정예 유닛 모든 맵에서 조건 충족하면 보스 스테이지로 강제 이동
     if (player.killCountEliteUnit1 >= player.maxKillEliteCount
@@ -283,12 +280,13 @@ void Game::checkStageTransition() {
         && hasBossStageTransitioned == false) {
         stageNumber = 4;
         currentStage.setStage(3, enemies);
-        player.setPlayer(3);
+        player.setPlayer(4);
         player.setPosition(sf::Vector2f(WINDOWWIDTH / 2.0f - 200, WINDOWHEIGHT / 4.0f * 3.0f + 29.0f));
         currentStage.spawnEnemies(enemies, dt);
         enemyMissiles.clear();
         hasBossStageTransitioned = true;
         stageTransitionClock.restart();
+        enemyMissiles.clear();
     }
 
     // 30초 경과 시 스테이지 이동

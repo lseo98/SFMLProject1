@@ -365,7 +365,7 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
         elapsedTimeText.setString("Stage Transition Timer: " + ss.str());
         elapsedTimeText.setCharacterSize(40); // 텍스트 크기
         elapsedTimeText.setFillColor(sf::Color::Red); // 텍스트 색상
-        elapsedTimeText.setPosition(560, 30); // 출력 좌표 설정
+        elapsedTimeText.setPosition(620, 30); // 출력 좌표 설정
     }
     else {
         elapsedTimeText.setString("");
