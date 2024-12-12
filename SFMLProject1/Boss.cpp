@@ -9,8 +9,7 @@ Boss::Boss() : Enemy(10000.0f, 0, sf::Vector2f(1300, 200), 4) {
     initBoss();
 }
 void Boss::initBoss() {
-    health = 1000;
-
+    health = 10000;
     phase = 1;
     time = pattern1 = pattern2 = pattern3 = pattern4 = pattern5 = 0;
     attackPattern = 1;
@@ -211,11 +210,11 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
             // 폭발 효과 추가
             sf::FloatRect shieldBounds = shield.sprite.getGlobalBounds();
             sf::Vector2f collisionCenter(
-                shieldBounds.left ,
-                shieldBounds.top
+                shieldBounds.left, // X 중심
+                shieldBounds.top   // Y 중심
             );
 
-            player.createExplosion(collisionCenter, Player::ExplosionType::EnemyDestroyed);
+            player.createExplosion(collisionCenter, Player::ExplosionType::bossu);
 
             player.takeDamage(1.0f);
             player.changeHeartSprite();
@@ -230,7 +229,7 @@ void Boss::updateAttack(float deltaTime, Player& player, std::vector<std::unique
                 shieldBounds.left ,
                 shieldBounds.top 
             );
-            player.createExplosion(collisionCenter, Player::ExplosionType::EnemyDestroyed);
+            player.createExplosion(collisionCenter, Player::ExplosionType::bossu);
 
         }
     }

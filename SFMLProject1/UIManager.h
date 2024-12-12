@@ -51,6 +51,7 @@ public:
     sf::Text pressText;     // 목표 키 텍스트
 
     sf::RectangleShape keyBox;  // 키 강조 박스
+    sf::Text mapchangetime;
 
 private:
     sf::Texture backgroundTexture;
@@ -89,5 +90,5 @@ private:
 
     sf::Text resultText; // 결과 텍스트
     std::string resultString; // 현재 결과 문자열
-
+    sf::Text elapsedTimeText;   // 스테이지 강제 전환 6초 전 출력할 텍스트
 };

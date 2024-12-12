@@ -3,6 +3,8 @@
 #include "Game.h"
 #include <iostream>
 #include <vector>
+#include <sstream>
+#include <iomanip>
 
 // UIManager.cpp
 UIManager::UIManager() : isInputActive(false), currentStageNumber(1),
@@ -38,7 +40,7 @@ void UIManager::init() {
     inputText.setFont(font);
     inputText.setCharacterSize(24);
     inputText.setFillColor(sf::Color::Yellow);
-    inputText.setPosition(30, 730);
+    inputText.setPosition(35, 760);
 
     text.setFont(font);
     text.setString("Kill Count");
@@ -65,10 +67,10 @@ void UIManager::init() {
     landtext.setPosition(1410, 300);
 
     textbox.setFont(font);
-    textbox.setString("Welcome to the\n<Biocommander-II> terminal.\n___________________________\n\n>System\n\nCommand request received.\n\n*Warning\nUse restart as a last resort\n\n>System\nMental power exhausted.\nThe interrogation begins.\n\n>System\nIf the E key is red, \nthe cooldown is reduced.\n\nType switch to help.\n\n>  [skymap]  [seamap]\n   [landmap]  [restart]\n\nTyping Here\n->");
+    textbox.setString("Stage Transition Timer : \n\nWelcome to the\n<Biocommander-II> terminal.\n_____________________________\n\n>System\nThe interrogation begins.\n\n>Mission Objective\n- Eliminate 15 elite units \n  from each map.\n- Complete all objectives\n  to unlock the boss fight.\n\n>Tip\n- If the E key is red, \n  the cooldown is reduced.\n- Remember, each time you fall,\n  the challenge grows harder.\n\n>Type switch to help.\n\n  [skymap]  [seamap]  [landmap]\n\nTyping Here\n->");
     textbox.setCharacterSize(25);
     textbox.setFillColor(sf::Color::Yellow);
-    textbox.setPosition(5, 5);
+    textbox.setPosition(10, 5);
 
     // 게임 오버 텍스트 설정
     gameOverText.setFont(font);
@@ -180,7 +182,7 @@ void UIManager::init() {
     inputKeyText.setString("");
     inputKeyText.setCharacterSize(38);
     inputKeyText.setFillColor(sf::Color::Yellow);
-    inputKeyText.setPosition(5, 250);
+    inputKeyText.setPosition(10, 250);
 
     // 목표 키 텍스트 초기화
     targetKeyText.setFont(font);
@@ -223,6 +225,15 @@ void UIManager::init() {
     resultText.setFillColor(sf::Color::White);
     resultText.setPosition(20, 600); // 화면 왼쪽 아래에 출력
     resultString = ""; // 초기 문자열은 비어 있음
+
+    // 강제 스테이지 이동까지 남은 시간 표시
+    mapchangetime.setFont(font);
+    mapchangetime.setCharacterSize(25);
+    mapchangetime.setFillColor(sf::Color::Yellow);
+    mapchangetime.setPosition(10, 6);
+    mapchangetime.setOutlineColor(sf::Color::Black);
+    mapchangetime.setOutlineThickness(2);
+
 }
 
 void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) { 
@@ -269,16 +280,8 @@ void UIManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
                 //std::cout << "landmap = " << s2 << std::endl;
 
             }
-            else if (s2 == "restart") {
-                if (onRestart) onRestart(); // restart 콜백 호출
-            }
+      
 
-            else {
-                //std::cout << "Invalid input: " << s2 << std::endl;
-            }
-
-
-            // std::cout << "s2 = " << s2 << std::endl;
         }
         else if (event.text.unicode < 128) {
             // 일반 문자 입력
@@ -344,7 +347,42 @@ void UIManager::updateKeyBoxes() {
 
 
 void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
-    // UI 요소 업데이트 코드
+
+    float elapsedTime = Game::stageTransitionClock.getElapsedTime().asSeconds();
+    elapsedTime = round((30.0f - elapsedTime) * 100) / 100.0f;
+    if (stageNumber == 4 || stageNumber == 5) {
+        mapchangetime.setOutlineColor(sf::Color::Red);
+        mapchangetime.setOutlineThickness(2);
+        elapsedTime = 999.99;
+    }
+    if (elapsedTime < 6) {
+        mapchangetime.setOutlineColor(sf::Color::Red);
+        mapchangetime.setOutlineThickness(2);
+
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(2) << elapsedTime;
+        elapsedTimeText.setFont(font);
+        elapsedTimeText.setString("Stage Transition Timer: " + ss.str());
+        elapsedTimeText.setCharacterSize(40); // 텍스트 크기
+        elapsedTimeText.setFillColor(sf::Color::Red); // 텍스트 색상
+        elapsedTimeText.setPosition(560, 30); // 출력 좌표 설정
+    }
+    else {
+        elapsedTimeText.setString("");
+        mapchangetime.setOutlineColor(sf::Color::Black);
+        mapchangetime.setOutlineThickness(2);
+    }
+
+
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(2) << elapsedTime;//소수 둘째 자리까지
+
+    mapchangetime.setString("                          " + oss.str());
+    //elapsedTime = round((30.0f-elapsedTime) * 100) / 100;
+    //mapchangetime.setString("Change Place "+std::to_string(elapsedTime));
+
+
+// UI 요소 업데이트 코드
     if (currentStageNumber != stageNumber) {
         setBackground(stageNumber);
         currentStageNumber = stageNumber;
@@ -384,6 +422,7 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
     // 노말유닛 10마리 처치시 E키 빨간색으로 변환
     if (player.killCountNomalUnit == 10 && !isRed) {
         boxE.setOutlineColor(sf::Color::Red);
+        specialCooldownBar.setFillColor(sf::Color(255, 0, 0, 100));
         isRed = true;
         player.setSpecialAttackCooldown(0.2);
         timer.restart();
@@ -391,6 +430,7 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
     // 3초가 지나면 테두리 색상을 원래대로 복구
     if (isRed && timer.getElapsedTime().asSeconds() > 3) {
         boxE.setOutlineColor(sf::Color::Green); // 기본 색상으로 복구
+        specialCooldownBar.setFillColor(sf::Color(50, 50, 50, 100));
         isRed = false; // 강조 상태 해제
         player.killCountNomalUnit = 0; // 노말 유닛 처치 수 0으로 초기화
         player.setSpecialAttackCooldown(2);
@@ -415,6 +455,8 @@ void UIManager::render(sf::RenderWindow& window) {
         window.draw(smallBoxr);
 
         window.draw(inputText);
+        window.draw(mapchangetime);
+
         window.draw(text);
       //
         window.draw(skytext);
@@ -442,6 +484,7 @@ void UIManager::render(sf::RenderWindow& window) {
         if (showBossText) {
             window.draw(bossText);
         }
+        window.draw(elapsedTimeText);
     }
 }
 void UIManager::setCooldownRatios(float ultimateRatio, float specialRatio) {

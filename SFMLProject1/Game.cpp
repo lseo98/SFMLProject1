@@ -4,6 +4,8 @@
 // 정적 멤버 정의
 sf::Clock Game::globalClock;
 sf::Clock Game::stageTransitionClock;
+bool Game::bossDefeated = false;
+
 
 Game::Game() {
     initVariables();
@@ -20,6 +22,8 @@ Game::~Game() {
 }
 
 bool Game::run() {
+    sf::Clock bossDefeatClock;
+    stageTransitionClock.restart();
     while (isRunning && window->isOpen()) {
         sf::Event event;
         dt = clock.restart().asSeconds(); // 프레임 간 경과 시간 측정
@@ -40,15 +44,40 @@ bool Game::run() {
                 stageNumber = lastStageNumber;
                 backStageTransition();
             }
-            if (minigame->getBadEnding()) return false;
+            if (minigame->getBadEnding()) { delete window; return false; }
+        }
+        // 보스 패배 상태 확인
+        if (!bossDefeated && boss->getHealth() <= 0) {
+            // 보스 파괴 시 큰 폭발 효과 생성
+            player.createExplosion(sf::Vector2f(450, 0), Player::ExplosionType::Q_missileImpact);
+            // 보스 패배 플래그 설정
+            bossDefeated = true;     
+            // 패배 시점 기록
+            bossDefeatClock.restart();    
+
+            enemies.clear(); // 모든 적군 유닛 제거
+
+            // **플레이어의 총알 및 미사일 제거 코드**
+            player.clearProjectiles();
+            clearEnemiesAndMissiles();
+        }
+        // 보스 패배 후 2초 경과 시 게임 종료
+        if (bossDefeated && bossDefeatClock.getElapsedTime().asSeconds() >= 2.0f) {
+            delete window; 
+            return true;
         }
         render();
-        if (boss->getHealth() <= 0) return true;
 
     }
-    return false;
+       return false;
 }
-
+void Game::clearEnemiesAndMissiles() {
+    // 적군 제거
+    for (auto* enemy : enemies) {
+        delete enemy;  // 동적 메모리 해제
+    }
+    enemies.clear();  // 적군 벡터 초기화
+}
 
 void Game::initVariables() {
     globalClock.restart(); // 게임 시작 시 Clock 초기화
@@ -58,6 +87,7 @@ void Game::initVariables() {
     isMaingameRunning = true;   // stage 1, 2, 3이 아닌 미니게임 혹은 화면 전환 중에는 false
     this->clock.restart(); // 추후 미니게임 혹은 메인 게임 시작 후 시간 계산하는 것으로 변경 필요
     stageNumber = 1;        // 1: 하늘, 2: 바다, 3: 땅
+    bool bossDefeated = false; // 초기값 설정
 
     uiManager.setStageChangeCallback([this](int stage) {
         this->changeStage(stage); // 콜백에서 Game의 메서드를 호출
@@ -567,7 +597,7 @@ void Game::render() {
         }
 
         if (stageNumber == 4) boss->render(*window, bossMissiles);
-     //   player.renderExplosions(*window);
+        player.renderExplosions(*window);
 
         window->setView(uiView); // UI 뷰 설정 (전체 화면 영역)
 
@@ -578,8 +608,6 @@ void Game::render() {
             uiManager.drawGameOverScreen(*window);
         }
         if (stageNumber != 5) player.draw(*window);
-        player.renderExplosions(*window);
-
     }
 
     window->display(); // 화면에 그린 내용을 표시
