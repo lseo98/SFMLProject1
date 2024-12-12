@@ -24,6 +24,10 @@ public:
     // 게임 실행
     bool run();
    
+    void clearEnemiesAndMissiles();
+    static bool bossDefeated;
+
+
 
 private:
     // 초기화 함수
@@ -50,6 +54,7 @@ private:
     sf::RenderWindow* window;
     sf::Event event;
     sf::Clock clock;
+   // sf::Clock bossDefeatClock;
 
     // 게임과 UI 뷰 
     sf::View gameView;

@@ -26,6 +26,7 @@ void Minigame::initTargetKeys() {
 	for (int i = 0; i < defaultOccure + minigameOccured; i++) {
 		targetKeys[i] = rand() % 10;
 	}
+	m_keyArray[0] = defaultOccure + minigameOccured;
 	m_keyArray[2] = targetKeys[correctCnt];
 }
 
