@@ -43,6 +43,8 @@ bool Game::run() {
             if (minigame->getSuccess()) {
                 stageNumber = lastStageNumber;
                 backStageTransition();
+                player.loadExplosionTextures();
+                player.setPlayer(stageNumber);
             }
             if (minigame->getBadEnding()) { delete window; return false; }
         }
