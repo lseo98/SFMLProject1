@@ -420,7 +420,7 @@ void UIManager::update(int stageNumber, bool isGameOver, Player& player) {
     landtext.setString("ARMY       " + std::to_string(player.killCountEliteUnit3) + " / " + std::to_string(player.maxKillEliteCount));
 
     // 노말유닛 10마리 처치시 E키 빨간색으로 변환
-    if (player.killCountNomalUnit == 10 && !isRed) {
+    if (player.killCountNomalUnit >= 10 && !isRed) {
         boxE.setOutlineColor(sf::Color::Red);
         specialCooldownBar.setFillColor(sf::Color(255, 0, 0, 100));
         isRed = true;

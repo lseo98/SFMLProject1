@@ -79,7 +79,7 @@ void printTutorialScript(std::string script) {
     }
 
     std::string result = script.substr(curPosition);
-    std::cout << result;
+    std::cout << result << std::endl;
 
     if (GetAsyncKeyState(VK_RETURN)) {
         return;
@@ -122,6 +122,7 @@ void badEndingScript() {
     printScript("왼편에서 레버가 당겨진다.\n쇳소리가 귀를 찢고, 형광등이 번쩍인다.\n제국군 장교가 미소 짓는 모습이 보이고, 나는 눈을 감는다.\n몇 초 뒤, 날카로운 충격이 온몸을 파고든다.\n모든 감각이 끊어지고, 어둠이 밀려온다.\n");
     printScript("철권 통치의 심장부 한가운데서, 나는 그렇게 사라진다.\n제국의 질서는 이어지고, 세계는 다시 총통의 얼굴 아래 숨죽인다.\n내 마지막 순간은 그들이 원하던 그림 그대로다.");
     printScript("Game Over");
+    printScript("");
 }
 void goodEndingScript() {
     printScript("나는 이제 감옥 벽을 등지고 서 있다.\n갓 부순 철문 틈으로 쏟아져 들어오는 외기가 차갑지만 상쾌하다.\n정보부 본부의 심장부를 파괴하며, 제국의 상징적 경계이자 최후의 방어선이었던 열차포 Der Kaiser가 마침내 침묵했다.\n병사들의 함성이 먼 곳에서 메아리치고, 검은 연기와 불길 사이를 뚫고 뛰쳐나온 나의 동료들이 뿌연 황혼을 가르며 달려온다.\n");
@@ -130,6 +131,9 @@ void goodEndingScript() {
     printScript("나는 조용히 BIOCOMMANDER-II를 만지작거린다.\n그 장치는 더 이상 절박한 구조 신호를 내보낼 필요가 없다.\n마침내 이 어두운 감옥 속에서 나오게 되었고, 금속 냄새가 진동하던 처형장의 공포도 지나간 일이다.\n나의 포로 신분은 끝났다.\n긴장에 떨던 동료들이 나를 향해 환호를 보내고, 서로 부축하며 앞으로 걸어나간다.\n");
     printScript("바깥 하늘은 이전보다 맑은 듯하다.\n제국이 조작한 진실과 언어가 더 이상 세계를 옥죌 수 없게 되었음을, 우리는 온몸으로 느끼고 있다.\n이제 신념과 투쟁, 희생을 통해 쟁취한 이 순간을 발판삼아, 새로운 질서를 세울 것이다.\n자유, 진실, 인간성이 살아숨쉬는 세계를 향해.\n");
     printScript("나는 굳게 주먹을 쥐고 걸음을 뗀다.\n뒤를 돌아볼 필요가 없다.\n이제 시작이다.\n우리의 해방은 이뤄졌다.");
+    printScript("Game Clear");
+    printScript("");
+    
 }
 
 
@@ -145,6 +149,7 @@ int main() {
     bool goodEnding = game.run();
     if (goodEnding) goodEndingScript();
     else  badEndingScript();
-
+    /*getchar();
+    goodEndingScript();*/
     return 0;
 }
